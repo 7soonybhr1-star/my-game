@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق - النسخة المتقدمة</title>
+  <title>غرفة التحقيق - نظام الرتب المتقدم</title>
   <style>
     /* ============================================================
        التصميم السينمائي المتقدم
@@ -26,7 +26,11 @@
       --text-muted: #8a7a6a;
       --text-light: #e8ddd0;
       --sidebar-width: 280px;
-      --heartbeat-color: #cc4444;
+      --rank-bronze: #cd7f32;
+      --rank-silver: #c0c0c0;
+      --rank-gold: #d4a843;
+      --rank-platinum: #e5e4e2;
+      --rank-diamond: #b9f2ff;
     }
 
     body {
@@ -137,6 +141,10 @@
       background: #44cc88;
       margin-right: auto;
     }
+    .sidebar .case-item .lock-icon {
+      font-size: 12px;
+      opacity: 0.5;
+    }
 
     /* ===== المحتوى الرئيسي ===== */
     .main-content {
@@ -145,46 +153,6 @@
       padding: 24px 32px;
       min-height: 100vh;
       transition: filter 0.5s;
-    }
-
-    /* ===== تأثير الإضاءة عند التوتر ===== */
-    .main-content.high-tension {
-      filter: brightness(1.1) contrast(1.05);
-    }
-    .main-content.critical-tension {
-      filter: brightness(0.95) contrast(1.1) saturate(1.1);
-    }
-    .main-content.confession-mode {
-      filter: brightness(1.2) saturate(0.8);
-    }
-
-    /* ===== نبضات القلب ===== */
-    @keyframes heartbeat {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-      14% {
-        transform: scale(1.02);
-      }
-      28% {
-        transform: scale(1);
-      }
-      42% {
-        transform: scale(1.01);
-      }
-      56% {
-        transform: scale(1);
-      }
-    }
-    .heartbeat {
-      animation: heartbeat 1.2s ease-in-out infinite;
-    }
-    .heartbeat-fast {
-      animation: heartbeat 0.6s ease-in-out infinite;
-    }
-    .heartbeat-critical {
-      animation: heartbeat 0.3s ease-in-out infinite;
     }
 
     /* ===== الهيدر ===== */
@@ -200,7 +168,6 @@
       flex-wrap: wrap;
       gap: 12px;
       backdrop-filter: blur(8px);
-      transition: all 0.3s;
     }
     .main-header .title {
       font-size: 20px;
@@ -217,7 +184,9 @@
       padding: 4px 18px;
       border-radius: 30px;
       border: 1px solid var(--border-color);
-      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .main-header .status .hl {
       color: var(--gold);
@@ -228,7 +197,6 @@
       height: 8px;
       border-radius: 50%;
       background: #44cc88;
-      margin-left: 6px;
       animation: pulseDot 1.5s infinite;
     }
     @keyframes pulseDot {
@@ -243,6 +211,65 @@
       }
     }
 
+    /* ===== شريط الرتبة ===== */
+    .rank-bar {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 14px 24px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-right: 4px solid var(--gold);
+    }
+    .rank-bar .rank-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .rank-bar .rank-badge {
+      font-size: 32px;
+      filter: drop-shadow(0 0 20px rgba(212, 168, 67, 0.2));
+    }
+    .rank-bar .rank-details .rank-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .rank-bar .rank-details .rank-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .rank-bar .rank-progress {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .rank-bar .rank-progress .xp-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .rank-bar .rank-progress .xp-text span {
+      color: var(--gold);
+    }
+    .rank-bar .rank-progress .xp-bar {
+      width: 180px;
+      height: 4px;
+      background: #1a1410;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .rank-bar .rank-progress .xp-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), #ffdd88);
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     /* ===== بطاقة القضية ===== */
     .case-hero {
       background: var(--panel-bg);
@@ -254,7 +281,6 @@
       background: linear-gradient(135deg, rgba(16, 14, 12, 0.95), rgba(26, 20, 16, 0.9));
       position: relative;
       overflow: hidden;
-      transition: border-color 0.5s;
     }
     .case-hero::before {
       content: '';
@@ -299,21 +325,29 @@
       line-height: 1.8;
       max-width: 80%;
     }
-    .case-hero .tension-indicator {
-      position: absolute;
-      left: 30px;
-      top: 50%;
-      transform: translateY(-50%);
-      text-align: center;
-      opacity: 0.6;
+    .case-hero .case-tools {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .case-hero .case-tools .tool {
       font-size: 12px;
       color: var(--text-muted);
+      background: #0a0806;
+      padding: 3px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .case-hero .tension-indicator .value {
-      font-size: 28px;
-      font-weight: 900;
+    .case-hero .case-tools .tool.locked {
+      opacity: 0.4;
+    }
+    .case-hero .case-tools .tool.unlocked {
+      border-color: var(--gold);
       color: var(--gold);
-      display: block;
     }
 
     /* ===== الضحية ===== */
@@ -409,13 +443,6 @@
       font-size: 38px;
       display: block;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-      transition: transform 0.3s;
-    }
-    .suspect-card .avatar.tense {
-      transform: scale(1.05) rotate(-2deg);
-    }
-    .suspect-card .avatar.breaking {
-      transform: scale(1.1) rotate(-4deg);
     }
     .suspect-card .name {
       font-size: 14px;
@@ -442,7 +469,7 @@
     .suspect-card .tension-bar .fill {
       height: 100%;
       background: linear-gradient(90deg, #44cc88, var(--gold), #cc4444);
-      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: width 0.8s;
       border-radius: 4px;
     }
     .suspect-card .status-label {
@@ -491,11 +518,16 @@
       .case-hero .case-desc {
         max-width: 100%;
       }
-      .case-hero .tension-indicator {
-        position: static;
-        transform: none;
-        margin-top: 10px;
-        text-align: right;
+      .rank-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .rank-bar .rank-progress {
+        align-items: stretch;
+      }
+      .rank-bar .rank-progress .xp-bar {
+        width: 100%;
       }
     }
 
@@ -509,18 +541,6 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      position: relative;
-    }
-    .transcript .typing-indicator {
-      color: var(--gold);
-      font-size: 12px;
-      padding: 4px 12px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      align-self: flex-start;
-    }
-    .transcript .typing-indicator.active {
-      opacity: 1;
     }
     .transcript .msg {
       padding: 10px 16px;
@@ -571,6 +591,14 @@
       align-self: center;
       color: #ffaa44;
       font-weight: 700;
+    }
+    .transcript .msg.rank-up {
+      background: #0d1a0d;
+      border-right: 3px solid var(--gold);
+      align-self: center;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 16px;
     }
     @keyframes fadeSlide {
       from {
@@ -672,6 +700,15 @@
       border-color: #cc6644;
       color: #cc6644;
     }
+    .action-bar button.promotion {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(212, 168, 67, 0.05);
+    }
+    .action-bar button.promotion:hover {
+      background: var(--gold);
+      color: #0a0806;
+    }
 
     .evidence-panel {
       background: #0a0806;
@@ -715,9 +752,6 @@
       border-right-color: #44cc88;
       color: #d0c0b0;
     }
-    .evidence-panel .clue-item .icon {
-      font-size: 14px;
-    }
     .evidence-panel .empty {
       color: #4a3a2a;
       text-align: center;
@@ -725,17 +759,127 @@
       font-size: 13px;
     }
 
+    /* ===== تقرير النيابة ===== */
+    .report-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+    }
+    .report-overlay.active {
+      display: flex;
+    }
+    .report-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px 40px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-right: 4px solid var(--gold);
+    }
+    .report-card h2 {
+      color: var(--gold);
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+    }
+    .report-card .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 15px;
+    }
+    .report-card .stat-item .label {
+      color: var(--text-muted);
+    }
+    .report-card .stat-item .value {
+      color: var(--text-light);
+      font-weight: 700;
+    }
+    .report-card .stat-item .value.good {
+      color: #44cc88;
+    }
+    .report-card .stat-item .value.bad {
+      color: #cc6644;
+    }
+    .report-card .stat-item .value.gold {
+      color: var(--gold);
+    }
+    .report-card .total-score {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gold);
+      padding: 16px 0;
+    }
+    .report-card .total-score span {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .report-card .rank-up-badge {
+      text-align: center;
+      font-size: 48px;
+      padding: 10px;
+      animation: pulseGold 1.5s infinite;
+    }
+    @keyframes pulseGold {
+      0%,
+      100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 10px rgba(212, 168, 67, 0.3));
+      }
+      50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 30px rgba(212, 168, 67, 0.6));
+      }
+    }
+    .report-card .close-report {
+      display: block;
+      margin: 16px auto 0;
+      background: var(--gold);
+      color: #0a0806;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .report-card .close-report:hover {
+      transform: scale(1.05);
+    }
+
     .transcript::-webkit-scrollbar,
     .evidence-panel::-webkit-scrollbar,
-    .sidebar::-webkit-scrollbar {
+    .sidebar::-webkit-scrollbar,
+    .report-card::-webkit-scrollbar {
       width: 3px;
     }
     .transcript::-webkit-scrollbar-track,
-    .evidence-panel::-webkit-scrollbar-track {
+    .evidence-panel::-webkit-scrollbar-track,
+    .report-card::-webkit-scrollbar-track {
       background: #050403;
     }
     .transcript::-webkit-scrollbar-thumb,
-    .evidence-panel::-webkit-scrollbar-thumb {
+    .evidence-panel::-webkit-scrollbar-thumb,
+    .report-card::-webkit-scrollbar-thumb {
       background: var(--gold);
       border-radius: 10px;
     }
@@ -759,6 +903,14 @@
 </head>
 <body>
 
+  <!-- ===== تقرير النيابة (Overlay) ===== -->
+  <div class="report-overlay" id="reportOverlay">
+    <div class="report-card" id="reportCard">
+      <h2>📋 تقرير النيابة العامة</h2>
+      <div id="reportContent"></div>
+    </div>
+  </div>
+
   <!-- ===== الشريط الجانبي ===== -->
   <aside class="sidebar" id="sidebar">
     <div class="brand">
@@ -767,6 +919,8 @@
     </div>
     <div class="section-title">أرشيف القضايا</div>
     <div id="caseList"></div>
+    <div class="section-title">مهام الترقية</div>
+    <div id="promotionList"></div>
   </aside>
 
   <!-- ===== المحتوى الرئيسي ===== -->
@@ -777,6 +931,23 @@
       <div class="status"><span class="pulse-dot"></span> الحالة: <span class="hl" id="globalStatus">قيد التحقيق</span></div>
     </header>
 
+    <!-- ===== شريط الرتبة ===== -->
+    <div class="rank-bar" id="rankBar">
+      <div class="rank-info">
+        <div class="rank-badge" id="rankBadge">🛡️</div>
+        <div class="rank-details">
+          <div class="rank-title" id="rankTitle">محقق متدرب</div>
+          <div class="rank-sub" id="rankSub">المستوى 1 • قضايا سرقة بسيطة</div>
+        </div>
+      </div>
+      <div class="rank-progress">
+        <div class="xp-text">نقاط الخبرة: <span id="xpCurrent">0</span> / <span id="xpNext">100</span></div>
+        <div class="xp-bar"><div class="fill" id="xpBar" style="width:0%;"></div></div>
+        <div class="xp-text" style="font-size:11px;color:#556;">السمعة: <span id="reputationDisplay" style="color:var(--gold);">0</span></div>
+      </div>
+    </div>
+
+    <!-- ===== القضية النشطة ===== -->
     <div class="case-hero" id="caseHero">
       <div class="case-title" id="caseTitle">مستشفى <span class="gold">القادسية</span></div>
       <div class="case-meta">
@@ -784,11 +955,15 @@
         <div class="item">👤 <span class="num" id="caseSuspects">8</span> مشتبهين</div>
         <div class="item">📦 <span class="num" id="caseClues">10</span> أدلة</div>
         <div class="item">📊 <span id="caseDifficulty" style="color:var(--gold);">صعبة</span></div>
+        <div class="item">🏷️ <span id="caseType" style="color:#44cc88;">قتل</span></div>
       </div>
       <div class="case-desc" id="caseDesc">مستشفى القادسية الأهلي، مبنى متعب على طريق سريع خارج المدينة. عُثر على رجل ميت في القبو. لا هوية، لا ملفات.</div>
-      <div class="tension-indicator">
-        <span style="font-size:11px;color:var(--text-muted);">التوتر العام</span>
-        <span class="value" id="globalTension">0%</span>
+      <div class="case-tools" id="caseTools">
+        <span class="tool unlocked">📝 أسئلة نصية</span>
+        <span class="tool locked">📱 فحص سجلات الهاتف</span>
+        <span class="tool locked">🔬 فحص البصمات</span>
+        <span class="tool locked">📜 أمر تفتيش</span>
+        <span class="tool locked">💼 تحليل مالي</span>
       </div>
     </div>
 
@@ -809,7 +984,6 @@
       <div>
         <div class="transcript" id="transcript">
           <div class="msg system">📋 اختر مشتبهاً وابدأ الاستجواب. اكتب سؤالك بحرية.</div>
-          <div class="typing-indicator" id="typingIndicator">✍️ المشتبه يكتب...</div>
         </div>
         <div class="input-area">
           <input type="text" id="questionInput" placeholder="✍️ اكتب سؤالك للمشتبه..." disabled>
@@ -820,6 +994,7 @@
           <button class="secondary" id="summaryBtn">📋 ملخص</button>
           <button class="danger" id="resetBtn">🔄 إعادة</button>
           <button class="secondary" id="contradictionBtn" disabled style="border-color:#ffaa44;color:#ffaa44;">🔍 تناقضات</button>
+          <button class="promotion" id="promotionBtn" disabled>⭐ قضية ترقية</button>
         </div>
       </div>
       <div class="evidence-panel" id="evidencePanel">
@@ -831,45 +1006,128 @@
 
   <script>
     // ================================================================
-    //  جميع القضايا (5 قضايا كاملة)
+    //  نظام الرتب والتقييم
+    // ================================================================
+    const RANKS = [{
+      level: 1,
+      title: 'محقق متدرب',
+      badge: '🛡️',
+      sub: 'قضايا سرقة بسيطة',
+      xpRequired: 0,
+      tools: ['أسئلة نصية'],
+      caseTypes: ['سرقة', 'اختفاء ممتلكات'],
+      maxSuspects: 3,
+      description: 'المبتدئون يبدأون هنا. قضايا بسيطة، أدلة ظاهرة.'
+    }, {
+      level: 2,
+      title: 'مساعد محقق',
+      badge: '🔍',
+      sub: 'قضايا احتيال مالي',
+      xpRequired: 100,
+      tools: ['أسئلة نصية', 'فحص سجلات الهاتف والمكالمات'],
+      caseTypes: ['احتيال مالي', 'اقتحام منشآت'],
+      maxSuspects: 4,
+      description: 'تبدأ القضايا بالتعقيد. تحتاج إلى ربط الأدلة.'
+    }, {
+      level: 3,
+      title: 'محقق ميداني',
+      badge: '🔬',
+      sub: 'جرائم سرية ووفيات مشبوهة',
+      xpRequired: 250,
+      tools: ['أسئلة نصية', 'فحص سجلات الهاتف', 'فحص البصمات (Forensics)'],
+      caseTypes: ['وفاة مشبوهة', 'جرائم سرية'],
+      maxSuspects: 5,
+      description: 'الميدان يتطلب دقة. كل بصمة تحكي قصة.'
+    }, {
+      level: 4,
+      title: 'محقق أول',
+      badge: '⚖️',
+      sub: 'جرائم قتل معقدة',
+      xpRequired: 500,
+      tools: ['أسئلة نصية', 'فحص سجلات الهاتف', 'فحص البصمات', 'أمر تفتيش منزل/مكتب'],
+      caseTypes: ['قتل معقد', 'جرائم متشابكة'],
+      maxSuspects: 6,
+      description: 'الآن أنت تلعب مع الكبار. القضايا تتشابك.'
+    }, {
+      level: 5,
+      title: 'مفتش قضايا جنائية',
+      badge: '👁️',
+      sub: 'جرائم منظمة وفساد',
+      xpRequired: 900,
+      tools: ['أسئلة نصية', 'فحص سجلات الهاتف', 'فحص البصمات', 'أمر تفتيش', 'تحليل مالي متقدم'],
+      caseTypes: ['جرائم منظمة', 'فساد كبرى'],
+      maxSuspects: 7,
+      description: 'المال والسلطة. هنا تحتاج إلى ذكاء حاد.'
+    }, {
+      level: 6,
+      title: 'رئيس قسم التحقيقات',
+      badge: '👑',
+      sub: 'القضايا الباردة والجرائم المستحيلة',
+      xpRequired: 1500,
+      tools: ['أسئلة نصية', 'فحص سجلات الهاتف', 'فحص البصمات', 'أمر تفتيش', 'تحليل مالي', 'الأرشيف السري'],
+      caseTypes: ['قضايا باردة', 'جرائم شبه مستحيلة'],
+      maxSuspects: 8,
+      description: 'أنت الأسطورة. القضايا التي عجز عنها الجميع.'
+    }];
+
+    // ================================================================
+    //  بيانات اللاعب
+    // ================================================================
+    let player = {
+      rank: 1,
+      xp: 0,
+      reputation: 0,
+      badges: [],
+      completedCases: 0,
+      promotionCaseAvailable: false,
+      promotionCasePassed: false,
+      totalCases: 0,
+      solvedCases: 0,
+      wrongAccusations: 0
+    };
+
+    // ================================================================
+    //  جميع القضايا (5 قضايا مع تصنيف)
     // ================================================================
     const ALL_CASES = [{
       id: '#10',
       title: 'مستشفى القادسية',
       difficulty: 'صعبة',
-      description: 'مستشفى القادسية الأهلي، مبنى متعب على طريق سريع خارج المدينة. عُثر على رجل ميت في القبو. لا هوية، لا ملفات. 8 موظفين كانوا يملكون الوصول إلى القبو. كلهم يخفون شيئاً.',
+      type: 'قتل معقد',
+      requiredRank: 3,
+      description: 'مستشفى القادسية الأهلي، مبنى متعب على طريق سريع خارج المدينة. عُثر على رجل ميت في القبو. لا هوية، لا ملفات. 8 موظفين كانوا يملكون الوصول إلى القبو.',
       victim: {
         name: 'ماجد بن سليمان العتيبي',
         age: '34 سنة',
         job: 'مقاول بناء',
-        cause: 'اختناق - لا توجد إصابات ظاهرة',
-        bio: 'ماجد رجل أعمال متوسط، كان يعمل على صفقة عقارية مع مستشفى القادسية.'
+        cause: 'اختناق',
+        bio: 'كان يعمل على صفقة عقارية مع المستشفى.'
       },
       photos: [
-        { icon: '🚪', label: 'باب القبو', desc: 'موصد من الداخل، آثار صدأ' },
-        { icon: '🩸', label: 'بصمة دم', desc: 'على مقبض الباب الخلفي' },
-        { icon: '🧤', label: 'قفازات طبية', desc: 'ممزقة في سلة المهملات' },
-        { icon: '📱', label: 'هاتف الضحية', desc: 'آخر مكالمة 11:15 مساءً' },
-        { icon: '💊', label: 'علبة دواء', desc: 'فارغة، اسم غير موجود' },
-        { icon: '📝', label: 'رسالة', desc: '"لا تفتح القبو" بخط اليد' }
+        { icon: '🚪', label: 'باب القبو', desc: 'موصد من الداخل' },
+        { icon: '🩸', label: 'بصمة دم', desc: 'على مقبض الباب' },
+        { icon: '🧤', label: 'قفازات طبية', desc: 'ممزقة' },
+        { icon: '📱', label: 'هاتف', desc: 'آخر مكالمة 11:15' },
+        { icon: '💊', label: 'علبة دواء', desc: 'فارغة' },
+        { icon: '📝', label: 'رسالة', desc: '"لا تفتح القبو"' }
       ],
       suspects: [
         { id: 's1', name: 'د. ريم', role: 'طبيبة امتياز', avatar: '👩‍⚕️', tension: 18, patience: 100,
-        relation: 'شهدت دخول الضحية' },
+          relation: 'شهدت دخول الضحية' },
         { id: 's2', name: 'مبارك', role: 'حارس الأمن', avatar: '🛡️', tension: 22, patience: 100,
-        relation: 'كان في الخدمة ليلة الحادث' },
+          relation: 'كان في الخدمة ليلة الحادث' },
         { id: 's3', name: 'د. فهد', role: 'المدير الطبي', avatar: '👨‍⚕️', tension: 12, patience: 100,
           relation: 'على خلاف مع الضحية' },
         { id: 's4', name: 'جابر', role: 'عامل الخدمات', avatar: '🧹', tension: 30, patience: 100,
-        relation: 'سمع صوتاً من القبو' },
+          relation: 'سمع صوتاً' },
         { id: 's5', name: 'هند', role: 'صيدلانية', avatar: '💊', tension: 20, patience: 100,
-        relation: 'رأت الضحية يطلب دواءً' },
+          relation: 'رأت الضحية يطلب دواءً' },
         { id: 's6', name: 'عادل', role: 'محاسب', avatar: '🧾', tension: 14, patience: 100,
-        relation: 'مسؤول عن مدفوعات الضحية' },
+          relation: 'مسؤول عن المدفوعات' },
         { id: 's7', name: 'نوال', role: 'رئيسة التمريض', avatar: '👩‍⚕️', tension: 24, patience: 100,
-          relation: 'تعرف الضحية من زيارات سابقة' },
+          relation: 'تعرف الضحية' },
         { id: 's8', name: 'ناصر', role: 'سائق إسعاف', avatar: '🚑', tension: 16, patience: 100,
-          relation: 'خارج المستشفى وقت الحادث' }
+          relation: 'خارج المستشفى' }
       ],
       clues: [
         'سوار معصم عليه حروف M.J',
@@ -885,270 +1143,293 @@
       ],
       scenario: {
         timeline: [
-          '9:00 مساءً - الضحية يدخل المستشفى ويطلب مقابلة المدير.',
+          '9:00 مساءً - الضحية يدخل المستشفى.',
           '10:30 مساءً - شاهده جابر يتجه نحو القبو.',
-          '11:15 مساءً - آخر مكالمة من هاتف الضحية.',
-          '11:45 مساءً - سمع جابر صوتاً من القبو.',
-          '12:00 منتصف الليل - انقطاع الكهرباء 10 دقائق.',
-          '1:00 صباحاً - عُثر على الجثة في القبو.'
+          '11:15 مساءً - آخر مكالمة.',
+          '11:45 مساءً - سمع جابر صوتاً.',
+          '12:00 - انقطاع الكهرباء 10 دقائق.',
+          '1:00 صباحاً - عُثر على الجثة.'
         ],
         witnesses: [
           'جابر: سمعت صوتاً يشبه الصراخ.',
-          'نوال: رأيت الضحية يتحدث مع المدير، كانا متوترين.',
-          'هند: طلب مني الضحية دواءً غريباً.',
-          'مبارك: الكاميرات كانت معطلة.',
-          'عادل: هناك مبالغ غير مسددة للضحية.'
+          'نوال: رأيت الضحية يتحدث مع المدير.',
+          'هند: طلب دواءً غريباً.',
+          'مبارك: الكاميرات معطلة.'
         ]
       },
-      // ربط الأدلة بالمشتبهين للمواجهة الصحيحة
       evidenceMap: {
-        'قفازات طبية ممزقة في سلة المهملات': ['د. فهد', 'جابر'],
-        'بصمة دم على مقبض الباب الخلفي': ['مبارك', 'ناصر'],
-        'سوار معصم عليه حروف M.J': ['د. ريم', 'نوال'],
-        'فاتورة كهرباء مرتفعة للقبو': ['عادل'],
-        'رسالة مكتوبة بخط اليد: "لا تفتح القبو"': ['جابر'],
-        'علبة دواء فارغة باسم غير موجود': ['هند', 'د. ريم'],
-        'جدول مناوبة يظهر أن مبارك كان خارج القبو': ['مبارك']
-      }
+        'قفازات طبية ممزقة': ['د. فهد', 'جابر'],
+        'بصمة دم': ['مبارك', 'ناصر'],
+        'سوار معصم': ['د. ريم', 'نوال'],
+        'فاتورة كهرباء': ['عادل'],
+        'رسالة: "لا تفتح القبو"': ['جابر'],
+        'علبة دواء فارغة': ['هند', 'د. ريم']
+      },
+      trueKiller: 'د. فهد',
+      rewards: { xp: 120, reputation: 15 }
     }, {
       id: '#7',
       title: 'جثة القاعة رقم 7',
       difficulty: 'صعبة',
-      description: 'قبل ليلة واحدة من تسليم مشروع تخرج يقود المكفوفين داخل المباني بعدة كاميرا وصوت يهمس بالاتجاهات – اجتمع فريقه السبعة في مختبر الكلية. في الصباح، عُثر على أحدهم ميتاً في القاعة رقم 7.',
+      type: 'قتل',
+      requiredRank: 3,
+      description: 'قبل ليلة واحدة من تسليم مشروع تخرج، عُثر على أحدهم ميتاً في القاعة رقم 7.',
       victim: {
         name: 'نادر الفهد',
         age: '28 سنة',
         job: 'قائد فريق التخرج',
-        cause: 'طعنة - أداة حادة',
-        bio: 'نادر كان قائد فريق التخرج. كان يعمل على مشروع للمكفوفين.'
+        cause: 'طعنة',
+        bio: 'كان يعمل على مشروع للمكفوفين.'
       },
       photos: [
-        { icon: '🔬', label: 'المختبر', desc: 'مكان الاجتماع الأخير' },
-        { icon: '🗡️', label: 'الأداة', desc: 'مشرط مختبر مفقود' },
-        { icon: '📹', label: 'كاميرا معطلة', desc: 'تعطلت قبل الحادث بيوم' },
-        { icon: '📱', label: 'هاتف الضحية', desc: 'رسالة: "لا تثق بأحد"' },
-        { icon: '📝', label: 'ملاحظات', desc: 'مخطط المشروع ممسوح' },
-        { icon: '🧪', label: 'أنبوب اختبار', desc: 'مكسور في الزاوية' }
+        { icon: '🔬', label: 'المختبر', desc: 'مكان الاجتماع' },
+        { icon: '🗡️', label: 'مشرط', desc: 'مفقود' },
+        { icon: '📹', label: 'كاميرا', desc: 'معطلة' },
+        { icon: '📱', label: 'هاتف', desc: '"لا تثق بأحد"' },
+        { icon: '📝', label: 'ملاحظات', desc: 'ممسوح' }
       ],
       suspects: [
-        { id: 't1', name: 'سارة', role: 'مطورة برمجيات', avatar: '👩‍💻', tension: 20, patience: 100,
-        relation: 'شريكة في المشروع' },
-        { id: 't2', name: 'فهد', role: 'مهندس صوت', avatar: '🎧', tension: 25, patience: 100,
-        relation: 'كان آخر من رآه' },
-        { id: 't3', name: 'ليلى', role: 'مصممة واجهات', avatar: '🎨', tension: 18, patience: 100,
-          relation: 'على خلاف مع الضحية' },
-        { id: 't4', name: 'سامي', role: 'مختبر ميداني', avatar: '🔬', tension: 28, patience: 100,
-          relation: 'يعرف سراً عن الضحية' },
-        { id: 't5', name: 'هناء', role: 'منسقة المشروع', avatar: '📋', tension: 16, patience: 100,
-          relation: 'تدير الميزانية' },
-        { id: 't6', name: 'ماجد', role: 'مساعد تقني', avatar: '🛠️', tension: 22, patience: 100,
-          relation: 'كان في المختبر ليلاً' },
-        { id: 't7', name: 'نورة', role: 'باحثة', avatar: '📚', tension: 30, patience: 100,
-        relation: 'شهدت مشادة كلامية' }
+        { id: 't1', name: 'سارة', role: 'مطورة', avatar: '👩‍💻', tension: 20, patience: 100, relation: 'شريكة' },
+        { id: 't2', name: 'فهد', role: 'مهندس صوت', avatar: '🎧', tension: 25, patience: 100, relation: 'آخر من رآه' },
+        { id: 't3', name: 'ليلى', role: 'مصممة', avatar: '🎨', tension: 18, patience: 100, relation: 'على خلاف' },
+        { id: 't4', name: 'سامي', role: 'مختبر', avatar: '🔬', tension: 28, patience: 100, relation: 'يعرف سراً' },
+        { id: 't5', name: 'هناء', role: 'منسقة', avatar: '📋', tension: 16, patience: 100, relation: 'تدير الميزانية' }
       ],
       clues: [
         'مشرط مختبر مفقود',
         'بصمة على لوحة المفاتيح',
         'جدول زمني غير مكتمل',
         'رسالة: "لا تثق بأحد"',
-        'كسر في نافذة المختبر',
-        'تسريب كود برمجي',
-        'مكالمة مع جهة مجهولة'
+        'كسر في نافذة المختبر'
       ],
       scenario: {
         timeline: [
-          '6:00 مساءً - اجتماع الفريق في المختبر.',
-          '8:00 مساءً - غادر الجميع باستثناء الضحية وفهد.',
-          '10:00 مساءً - شوهد ضوء في المختبر.',
-          '12:00 صباحاً - انقطاع التيار الكهربائي.',
+          '6:00 مساءً - اجتماع الفريق.',
+          '8:00 مساءً - غادر الجميع.',
+          '10:00 مساءً - ضوء في المختبر.',
+          '12:00 - انقطاع التيار.',
           '8:00 صباحاً - عُثر على الجثة.'
         ],
         witnesses: [
-          'فهد: غادرت المختبر مع الضحية لكنني عدت لأخذ هاتفي.',
-          'سارة: سمعت صوتاً عالياً من المختبر.',
-          'ليلى: الضحية كان متوتراً طوال اليوم.'
+          'فهد: غادرت معه لكنني عدت.',
+          'سارة: سمعت صوتاً.',
+          'ليلى: كان متوتراً.'
         ]
       },
       evidenceMap: {
         'مشرط مختبر مفقود': ['فهد', 'سامي'],
-        'بصمة على لوحة المفاتيح': ['سارة', 'ماجد'],
-        'رسالة: "لا تثق بأحد"': ['نورة', 'ليلى']
-      }
+        'بصمة على لوحة المفاتيح': ['سارة', 'ماجد']
+      },
+      trueKiller: 'فهد',
+      rewards: { xp: 100, reputation: 12 }
     }, {
       id: '#3',
       title: 'الغرفة المغلقة',
       difficulty: 'متوسطة',
-      description: 'في فندق "المدينة القديمة"، عُثر على رجل ميت في غرفة مغلقة من الداخل. باب الغرفة موصد، والنوافذ مغلقة من الداخل.',
+      type: 'قتل',
+      requiredRank: 2,
+      description: 'في فندق "المدينة القديمة"، عُثر على رجل ميت في غرفة مغلقة من الداخل.',
       victim: {
         name: 'سمير الهاشمي',
         age: '45 سنة',
         job: 'رجل أعمال',
-        cause: 'تسمم - مادة غير معروفة',
-        bio: 'سمير رجل أعمال ثري، كان مسافراً منفرداً.'
+        cause: 'تسمم',
+        bio: 'كان مسافراً منفرداً.'
       },
       photos: [
         { icon: '🚪', label: 'باب الغرفة', desc: 'مقفل من الداخل' },
-        { icon: '🪟', label: 'نافذة', desc: 'مغلقة، زجاج سليم' },
         { icon: '🥤', label: 'كأس ماء', desc: 'به مادة غريبة' },
-        { icon: '📱', label: 'هاتف', desc: 'رسالة: "سأنتظرك"' },
-        { icon: '👣', label: 'أثر حذاء', desc: 'غير مكتمل على السجادة' }
+        { icon: '📱', label: 'هاتف', desc: '"سأنتظرك"' },
+        { icon: '👣', label: 'أثر حذاء', desc: 'غير مكتمل' }
       ],
       suspects: [
         { id: 'h1', name: 'مدير الفندق', role: 'سمير', avatar: '👔', tension: 20, patience: 100,
           relation: 'يريد إخفاء الحادث' },
-        { id: 'h2', name: 'هدى', role: 'عاملة التنظيف', avatar: '🧹', tension: 28, patience: 100,
-        relation: 'رأت شيئاً' },
-        { id: 'h3', name: 'ناصر', role: 'حارس الأمن', avatar: '🛡️', tension: 22, patience: 100,
-          relation: 'كاميراته معطلة' },
-        { id: 'h4', name: 'ريم', role: 'نزيلة مجاورة', avatar: '👩', tension: 25, patience: 100,
-        relation: 'سمعت أصواتاً' },
-        { id: 'h5', name: 'فارس', role: 'طباخ', avatar: '🍳', tension: 18, patience: 100,
-        relation: 'يعرف الضحية' }
+        { id: 'h2', name: 'هدى', role: 'تنظيف', avatar: '🧹', tension: 28, patience: 100, relation: 'رأت شيئاً' },
+        { id: 'h3', name: 'ناصر', role: 'حارس', avatar: '🛡️', tension: 22, patience: 100, relation: 'كاميرات معطلة' },
+        { id: 'h4', name: 'ريم', role: 'نزيلة', avatar: '👩', tension: 25, patience: 100, relation: 'سمعت أصواتاً' }
       ],
       clues: [
-        'مزلاج داخلي على الباب',
+        'مزلاج داخلي',
         'كأس به مادة غريبة',
         'رسالة: "سأنتظرك"',
-        'أثر حذاء غير مكتمل',
-        'مكالمة في منتصف الليل',
-        'غبار على مقبض الباب من الخارج'
+        'أثر حذاء غير مكتمل'
       ],
       scenario: {
         timeline: [
-          '8:00 مساءً - الضحية يسجل في الفندق.',
-          '10:00 مساءً - طلب العشاء للغرفة.',
+          '8:00 مساءً - يسجل في الفندق.',
+          '10:00 مساءً - طلب العشاء.',
           '11:30 مساءً - سمعت ريم صوتاً.',
-          '12:00 صباحاً - انقطاع الكهرباء دقيقة.',
           '8:00 صباحاً - عُثر على الجثة.'
         ],
         witnesses: [
-          'ريم: سمعت صوتاً كأنه شجار.',
-          'هدى: رأيت شخصاً يغادر الغرفة في الصباح الباكر.',
-          'فارس: الضحية كان غريب الأطوار.'
+          'ريم: سمعت شجاراً.',
+          'هدى: رأيت شخصاً يغادر.'
         ]
       },
       evidenceMap: {
         'كأس به مادة غريبة': ['فارس', 'مدير الفندق'],
-        'رسالة: "سأنتظرك"': ['ريم', 'ناصر'],
-        'أثر حذاء غير مكتمل': ['هدى']
-      }
+        'رسالة: "سأنتظرك"': ['ريم']
+      },
+      trueKiller: 'مدير الفندق',
+      rewards: { xp: 80, reputation: 10 }
     }, {
       id: '#5',
       title: 'اختفاء المهندس',
       difficulty: 'متوسطة',
-      description: 'مهندس موقع بناء يدعى "زياد" اختفى فجأة قبل يومين من تسليم المشروع. كان آخر ظهور له في موقع البناء عند منتصف الليل.',
+      type: 'اختفاء',
+      requiredRank: 2,
+      description: 'مهندس موقع بناء اختفى فجأة قبل يومين من تسليم المشروع.',
       victim: {
         name: 'زياد الخالدي',
         age: '37 سنة',
         job: 'مهندس موقع',
-        cause: 'مفقود - يُعتقد أنه قُتل',
-        bio: 'زياد مهندس مشرف، اكتشف خطأً في الأساسات قبل اختفائه.'
+        cause: 'مفقود',
+        bio: 'اكتشف خطأً في الأساسات.'
       },
       photos: [
         { icon: '🏗️', label: 'موقع البناء', desc: 'مشروع ضخم' },
-        { icon: '📐', label: 'مخططات', desc: 'تظهر خطأ في الأساسات' },
-        { icon: '📱', label: 'هاتف المهندس', desc: 'موجود في المكتب' },
-        { icon: '🚗', label: 'سيارته', desc: 'ما زالت في الموقف' },
-        { icon: '🔦', label: 'كاميرا', desc: 'تظهر ظلاً عند منتصف الليل' }
+        { icon: '📐', label: 'مخططات', desc: 'خطأ في الأساسات' },
+        { icon: '📱', label: 'هاتفه', desc: 'في المكتب' },
+        { icon: '🔦', label: 'كاميرا', desc: 'ظل عند منتصف الليل' }
       ],
       suspects: [
         { id: 'z1', name: 'أيمن', role: 'مدير المشروع', avatar: '📐', tension: 30, patience: 100,
           relation: 'يريد إخفاء التقصير' },
-        { id: 'z2', name: 'سليمان', role: 'مشرف العمال', avatar: '🔧', tension: 22, patience: 100,
-          relation: 'يعرف كل شيء' },
-        { id: 'z3', name: 'نوال', role: 'محاسب المشروع', avatar: '🧾', tension: 18, patience: 100,
-          relation: 'لاحظت تحويلات غريبة' },
-        { id: 'z4', name: 'راشد', role: 'حارس الموقع', avatar: '🚧', tension: 25, patience: 100,
-          relation: 'كان نائماً' },
-        { id: 'z5', name: 'فوزية', role: 'مهندسة استشارية', avatar: '📏', tension: 20, patience: 100,
-          relation: 'آخر من تحدث معه' }
+        { id: 'z2', name: 'سليمان', role: 'مشرف', avatar: '🔧', tension: 22, patience: 100, relation: 'يعرف كل شيء' },
+        { id: 'z3', name: 'نوال', role: 'محاسب', avatar: '🧾', tension: 18, patience: 100, relation: 'لاحظت تحويلات' },
+        { id: 'z4', name: 'راشد', role: 'حارس', avatar: '🚧', tension: 25, patience: 100, relation: 'كان نائماً' }
       ],
       clues: [
-        'هاتف المهندس في المكتب',
+        'هاتفه في المكتب',
         'سيارته في الموقف',
         'رسالة: "الأساسات ليست كما تبدو"',
-        'رائحة كيماوية',
-        'جدول دوام غير مكتمل',
-        'ظل في كاميرا المراقبة'
+        'رائحة كيماوية'
       ],
       scenario: {
         timeline: [
-          '6:00 مساءً - انتهى دوام المهندس.',
-          '10:00 مساءً - شوهد في الموقع مرة أخرى.',
-          '12:00 صباحاً - ظهر في كاميرا المراقبة.',
-          '8:00 صباحاً - اختفى، هاتفه في المكتب.'
+          '6:00 مساءً - انتهى دوامه.',
+          '10:00 مساءً - شوهد في الموقع.',
+          '12:00 - ظهر في كاميرا المراقبة.',
+          '8:00 صباحاً - اختفى.'
         ],
         witnesses: [
-          'فوزية: تحدثت معه وكان قلقاً.',
-          'راشد: سمعت صوتاً لكنني ظننت أنه كلب.',
-          'سليمان: كان يعمل على الأساسات ليلاً.'
+          'فوزية: كان قلقاً.',
+          'راشد: سمعت صوتاً.'
         ]
       },
       evidenceMap: {
         'رسالة: "الأساسات ليست كما تبدو"': ['سليمان', 'أيمن'],
-        'ظل في كاميرا المراقبة': ['راشد', 'فوزية'],
-        'رائحة كيماوية': ['سليمان']
-      }
+        'ظل في كاميرا المراقبة': ['راشد']
+      },
+      trueKiller: 'أيمن',
+      rewards: { xp: 70, reputation: 8 }
     }, {
       id: '#2',
       title: 'فضيحة ألفا بيوتك',
       difficulty: 'سهلة',
-      description: 'انهار سهم شركة "ألفا بيوتك" فجأة بعد تسريب معلومات خطيرة لبيانات تجارب سرية من خوادم الشركة.',
+      type: 'احتيال مالي',
+      requiredRank: 1,
+      description: 'انهار سهم شركة "ألفا بيوتك" بعد تسريب معلومات خطيرة.',
       victim: {
         name: 'الشركة والمرضى',
         age: 'غير محدد',
         job: 'قطاع الأدوية',
-        cause: 'انهيار سمعة وخسائر مالية',
-        bio: 'ألفا بيوتك شركة تكنولوجيا حيوية.'
+        cause: 'انهيار سمعة',
+        bio: 'شركة تكنولوجيا حيوية.'
       },
       photos: [
-        { icon: '💻', label: 'الخادم', desc: 'مخترق في الثالثة فجراً' },
+        { icon: '💻', label: 'الخادم', desc: 'مخترق' },
         { icon: '📧', label: 'بريد مشفر', desc: 'من حساب داخلي' },
-        { icon: '💾', label: 'USB', desc: 'غير مسجل' },
-        { icon: '📊', label: 'بيانات', desc: 'مسربة لجهة منافسة' },
-        { icon: '🔑', label: 'كلمة مرور', desc: 'مشتركة بين الموظفين' }
+        { icon: '💾', label: 'USB', desc: 'غير مسجل' }
       ],
       suspects: [
-        { id: 'a1', name: 'د. ياسر', role: 'مدير الأبحاث', avatar: '🧪', tension: 20, patience: 100,
+        { id: 'a1', name: 'د. ياسر', role: 'مدير أبحاث', avatar: '🧪', tension: 20, patience: 100,
           relation: 'يدافع عن الشركة' },
-        { id: 'a2', name: 'نورة', role: 'مطورة أنظمة', avatar: '💻', tension: 28, patience: 100,
-          relation: 'تعرف نقاط الضعف' },
-        { id: 'a3', name: 'خالد', role: 'محلل بيانات', avatar: '📊', tension: 18, patience: 100,
-          relation: 'لديه حساب شخصي' },
-        { id: 'a4', name: 'منى', role: 'علاقات عامة', avatar: '📢', tension: 22, patience: 100,
-          relation: 'تخفي قلقها' },
-        { id: 'a5', name: 'سعد', role: 'فني خوادم', avatar: '🖥️', tension: 26, patience: 100,
-          relation: 'يدخل إلى الخوادم ليلاً' }
+        { id: 'a2', name: 'نورة', role: 'مطورة', avatar: '💻', tension: 28, patience: 100, relation: 'تعرف الثغرات' },
+        { id: 'a3', name: 'خالد', role: 'محلل', avatar: '📊', tension: 18, patience: 100, relation: 'لديه حساب شخصي' }
       ],
       clues: [
         'سجل دخول في الثالثة فجراً',
-        'بريد مشفر من حساب داخلي',
-        'نسخة احتياطية من البيانات',
-        'كلمة مرور مشتركة',
+        'بريد مشفر',
         'جهاز USB غير مسجل'
       ],
       scenario: {
         timeline: [
-          '3:00 صباحاً - تسجيل دخول إلى الخادم.',
+          '3:00 صباحاً - تسجيل دخول.',
           '4:00 صباحاً - نسخ البيانات.',
-          '8:00 صباحاً - ظهور التسريب في الإعلام.',
-          '10:00 صباحاً - انهيار سهم الشركة.'
+          '8:00 صباحاً - ظهور التسريب.'
         ],
         witnesses: [
-          'سعد: كنت في الخادم لكني لم ألمس البيانات.',
-          'نورة: هناك ثغرة أمنية في النظام.',
-          'ياسر: لا أحد من فريقي يفعل ذلك.'
+          'سعد: كنت في الخادم.',
+          'نورة: هناك ثغرة أمنية.'
         ]
       },
       evidenceMap: {
         'سجل دخول في الثالثة فجراً': ['سعد', 'نورة'],
-        'بريد مشفر من حساب داخلي': ['خالد', 'منى'],
         'جهاز USB غير مسجل': ['سعد']
+      },
+      trueKiller: 'نورة',
+      rewards: { xp: 50, reputation: 5 }
+    }];
+
+    // ================================================================
+    //  مهام الترقية
+    // ================================================================
+    const PROMOTION_CASES = [{
+      rank: 2,
+      title: 'قضية الترقية - المستوى 2',
+      description: 'أثبت جدارتك لتصبح مساعد محقق. حل هذه القضية دون مساعدة.',
+      caseData: {
+        id: '#P1',
+        title: 'سرقة المكتبة',
+        type: 'سرقة',
+        difficulty: 'سهلة',
+        description: 'سرقت مكتبة الجامعة ليلاً. 3 مشتبهين، أدلة ظاهرة. أوجد الجاني.',
+        victim: { name: 'المكتبة', cause: 'سرقة كتب نادرة' },
+        suspects: [
+          { id: 'p1', name: 'أحمد', role: 'طالب', avatar: '👨‍🎓', tension: 10, patience: 100, relation: 'شوهد بالقرب' },
+          { id: 'p2', name: 'سامي', role: 'حارس', avatar: '🛡️', tension: 15, patience: 100, relation: 'كان في الخدمة' },
+          { id: 'p3', name: 'ليلى', role: 'أمينة مكتبة', avatar: '👩‍🏫', tension: 12, patience: 100, relation: 'لديها المفتاح' }
+        ],
+        clues: ['بصمة على الباب', 'كاميرا تظهر شخصاً', 'مفتاح مفقود'],
+        evidenceMap: {
+          'بصمة على الباب': ['سامي'],
+          'مفتاح مفقود': ['ليلى']
+        },
+        trueKiller: 'سامي',
+        rewards: { xp: 30, reputation: 5 }
+      }
+    }, {
+      rank: 3,
+      title: 'قضية الترقية - المستوى 3',
+      description: 'حل قضية وفاة مشبوهة لتثبت أنك محقق ميداني.',
+      caseData: {
+        id: '#P2',
+        title: 'وفاة في المختبر',
+        type: 'وفاة مشبوهة',
+        difficulty: 'متوسطة',
+        description: 'عُثر على فني مختبر ميتاً. 4 مشتبهين.',
+        victim: { name: 'فني المختبر', cause: 'اختناق' },
+        suspects: [
+          { id: 'p1', name: 'د. سامر', role: 'مدير المختبر', avatar: '👨‍🔬', tension: 20, patience: 100,
+            relation: 'على خلاف مع الضحية' },
+          { id: 'p2', name: 'نورة', role: 'فنية', avatar: '👩‍🔬', tension: 18, patience: 100, relation: 'شهدت الحادث' },
+          { id: 'p3', name: 'خالد', role: 'حارس', avatar: '🛡️', tension: 25, patience: 100, relation: 'كان في الخدمة' },
+          { id: 'p4', name: 'منى', role: 'محاسبة', avatar: '🧾', tension: 15, patience: 100, relation: 'لديها دوافع' }
+        ],
+        clues: ['قفازات ممزقة', 'فاتورة غاز', 'بصمة على الباب'],
+        evidenceMap: {
+          'قفازات ممزقة': ['د. سامر'],
+          'بصمة على الباب': ['خالد']
+        },
+        trueKiller: 'د. سامر',
+        rewards: { xp: 50, reputation: 10 }
       }
     }];
 
     // ================================================================
-    //  محرك الشخصيات الذكية المتقدم
+    //  محرك الشخصيات الذكية
     // ================================================================
     class CharacterAI {
       constructor(suspect, victimName, caseData) {
@@ -1165,15 +1446,14 @@
       analyze(question) {
         const q = question.toLowerCase();
         return {
-          location: q.includes('أين') || q.includes('مكان') || q.includes('القبو') || q.includes('الغرفة'),
-          time: q.includes('متى') || q.includes('وقت') || q.includes('ليلة') || q.includes('ساعة'),
+          location: q.includes('أين') || q.includes('مكان') || q.includes('القبو'),
+          time: q.includes('متى') || q.includes('وقت') || q.includes('ليلة'),
           person: q.includes('من') || q.includes('شخص') || q.includes(this.victim),
           reason: q.includes('لماذا') || q.includes('سبب') || q.includes('دافع'),
-          evidence: q.includes('دليل') || q.includes('أثبت') || q.includes('السوار') || q.includes('بصمة') || q.includes(
-            'القفازات'),
+          evidence: q.includes('دليل') || q.includes('أثبت') || q.includes('السوار') || q.includes('بصمة'),
           confront: q.includes('واجه') || q.includes('اعترف') || q.includes('الحقيقة'),
           direct: q.includes('هل') || q.includes('أليس'),
-          nonsense: q.length < 5 || q.includes('هاها') || q.includes('لالا') || q.includes('ههه')
+          nonsense: q.length < 5 || q.includes('هاها') || q.includes('لالا')
         };
       }
 
@@ -1190,13 +1470,12 @@
         const foundClues = clues.filter(c => c.found).length;
         const isNearConfession = t > this.confessionThreshold;
 
-        // تحديث الحالة العاطفية
         if (t > 0.85) this.emotionalState = 'منهار';
         else if (t > 0.6) this.emotionalState = 'مراوغ';
         else if (t > 0.35) this.emotionalState = 'متوتر';
         else this.emotionalState = 'هادئ';
 
-        // ===== نظام الصبر =====
+        // نظام الصبر
         if (!this.isLogicalQuestion(question)) {
           this.refusalCount++;
           this.patience = Math.max(0, this.patience - 15);
@@ -1206,12 +1485,10 @@
           return 'هذا السؤال غير منطقي. من فضلك اسأل شيئاً مهماً.';
         }
 
-        // استعادة الصبر مع الأسئلة المنطقية
         this.patience = Math.min(100, this.patience + 3);
         this.refusalCount = Math.max(0, this.refusalCount - 1);
 
-        // ===== نظام المواجهة بالدليل =====
-        // التحقق من وجود دليل مرتبط بهذا المشتبه
+        // نظام المواجهة بالدليل
         let relatedEvidence = [];
         for (const [clue, suspects] of Object.entries(evidenceMap || {})) {
           if (suspects.includes(this.suspect.name) && clues.find(c => c.text === clue && c.found)) {
@@ -1227,7 +1504,6 @@
           return `أنت واجهتني بـ ${relatedEvidence[0]}... لا أستطيع الإنكار. نعم، أنا أعرف عن ذلك. لكنني لست القاتل!`;
         }
 
-        // ===== الاعتراف =====
         if (isNearConfession && Math.random() < t * 0.5) {
           return this.generateConfession();
         }
@@ -1245,9 +1521,7 @@
           `أدلة؟ أنت تمزح. ليس لديك أي دليل حقيقي.`,
           `أنت تتهمني؟ هذا جنون. لم أفعل أي شيء لـ ${victim}.`,
           `أنا خائف. ${victim} كان يهددني.`,
-          `نعم، أعرف ${victim}. لكن لم أره تلك الليلة.`,
-          `${victim} كان شخصًا غريبًا. لم يكن ينتمي إلى هنا.`,
-          `أنا متأكد أنني كنت بعيدًا عن القبو.`
+          `نعم، أعرف ${victim}. لكن لم أره تلك الليلة.`
         ];
         let response = responses[Math.floor(Math.random() * responses.length)];
         if (tension > 0.5) response += ' أنا متوتر.';
@@ -1278,59 +1552,171 @@
     }
 
     // ================================================================
-    //  نظام التناقضات
+    //  نظام التقييم
     // ================================================================
-    class ContradictionSystem {
-      constructor(caseData) {
-        this.caseData = caseData;
-        this.contradictions = [];
-        this.discovered = [];
+    function evaluateCase(accusedName, caseData) {
+      const isCorrect = accusedName === caseData.trueKiller;
+      const foundClues = state.clues.filter(c => c.found).length;
+      const totalClues = state.clues.length;
+      const clueRatio = foundClues / totalClues;
+      const questionsUsed = state.askedQuestions;
+      const efficiency = Math.max(0, 1 - (questionsUsed / state.maxQuestions) * 0.5);
+
+      // حساب النقاط
+      let xpEarned = caseData.rewards.xp || 50;
+      let repEarned = caseData.rewards.reputation || 5;
+
+      if (!isCorrect) {
+        xpEarned = Math.floor(xpEarned * 0.3);
+        repEarned = Math.floor(repEarned * 0.2);
+        player.wrongAccusations++;
+      } else {
+        player.solvedCases++;
+        // مكافأة الأدلة
+        if (clueRatio > 0.7) xpEarned += 20;
+        if (clueRatio > 0.9) xpEarned += 30;
+        // مكافأة الكفاءة
+        if (efficiency > 0.7) xpEarned += 15;
+        if (efficiency > 0.9) xpEarned += 25;
+        // مكافأة الاعتراف التام (إذا انهار المشتبه)
+        if (state.gameOver) xpEarned += 30;
       }
 
-      detect(suspect1, suspect2, statement1, statement2) {
-        // كشف التناقضات البسيطة
-        const keywords = ['القبو', 'الخارج', 'الداخل', 'الليل', 'النهار', 'رأيت', 'لم أرَ'];
-        let score = 0;
-        for (const word of keywords) {
-          if (statement1.includes(word) && statement2.includes(word)) {
-            const s1 = statement1.includes('لم') || statement1.includes('لا');
-            const s2 = statement2.includes('لم') || statement2.includes('لا');
-            if (s1 !== s2) score += 0.3;
-          }
+      player.xp += xpEarned;
+      player.reputation += repEarned;
+      player.completedCases++;
+
+      // عرض التقرير
+      showReport(isCorrect, accusedName, caseData, xpEarned, repEarned, clueRatio, efficiency, questionsUsed, foundClues,
+        totalClues);
+    }
+
+    function showReport(isCorrect, accusedName, caseData, xp, rep, clueRatio, efficiency, questions, found, total) {
+      const overlay = document.getElementById('reportOverlay');
+      const content = document.getElementById('reportContent');
+
+      const rankUp = checkRankUp();
+
+      let html = `
+        <div class="stat-item"><span class="label">لائحة الاتهام</span><span class="value ${isCorrect ? 'good' : 'bad'}">${isCorrect ? '✅ صحيح' : '❌ خاطئ'}</span></div>
+        <div class="stat-item"><span class="label">المتهم</span><span class="value">${accusedName}</span></div>
+        <div class="stat-item"><span class="label">القاتل الحقيقي</span><span class="value">${isCorrect ? '✅ مطابق' : caseData.trueKiller}</span></div>
+        <div class="stat-item"><span class="label">الأدلة المكتشفة</span><span class="value">${found}/${total} (${Math.round(clueRatio*100)}%)</span></div>
+        <div class="stat-item"><span class="label">كفاءة الاستجواب</span><span class="value">${Math.round(efficiency*100)}%</span></div>
+        <div class="stat-item"><span class="label">عدد الأسئلة</span><span class="value">${questions}</span></div>
+        <div class="stat-item"><span class="label">نقاط الخبرة</span><span class="value gold">+${xp}</span></div>
+        <div class="stat-item"><span class="label">السمعة</span><span class="value gold">+${rep}</span></div>
+        <div class="total-score">${xp + rep} <span>نقاط إجمالية</span></div>
+      `;
+
+      if (rankUp) {
+        html += `
+          <div class="rank-up-badge">⭐</div>
+          <div class="stat-item" style="border-bottom:none;text-align:center;font-size:18px;color:var(--gold);">
+            🎉 ترقية! أنت الآن ${RANKS[player.rank-1].title}
+          </div>
+        `;
+      }
+
+      if (player.badges.length > 0) {
+        html += `<div class="stat-item" style="border-bottom:none;text-align:center;font-size:14px;color:var(--gold);">
+          🏅 الأوسمة: ${player.badges.join(' ')}
+        </div>`;
+      }
+
+      content.innerHTML = html;
+      overlay.classList.add('active');
+
+      updateRankDisplay();
+      updateUI();
+    }
+
+    function checkRankUp() {
+      const currentRank = RANKS[player.rank - 1];
+      const nextRank = RANKS[player.rank];
+      if (nextRank && player.xp >= nextRank.xpRequired) {
+        player.rank++;
+        // التحقق من مهام الترقية
+        const promotion = PROMOTION_CASES.find(p => p.rank === player.rank);
+        if (promotion) {
+          player.promotionCaseAvailable = true;
+          addMessage('system', `⭐ قضية ترقية متاحة! أنت بحاجة لاجتيازها للترقية إلى ${nextRank.title}.`);
         }
-        if (statement1.includes('القبو') && statement2.includes('القبو')) {
-          if (statement1.includes('كان') && statement2.includes('لم يكن')) score += 0.4;
-          if (statement1.includes('رأيت') && statement2.includes('لم أرَ')) score += 0.4;
-        }
-        return score > 0.5;
+        return true;
       }
+      return false;
+    }
 
-      addContradiction(suspect1, suspect2, evidence, statement) {
-        this.contradictions.push({
-          suspect1,
-          suspect2,
-          evidence,
-          statement,
-          discovered: false
-        });
-      }
+    function updateRankDisplay() {
+      const rank = RANKS[player.rank - 1];
+      document.getElementById('rankBadge').textContent = rank.badge;
+      document.getElementById('rankTitle').textContent = rank.title;
+      document.getElementById('rankSub').textContent = `المستوى ${rank.level} • ${rank.sub}`;
 
-      getDiscoverable() {
-        return this.contradictions.filter(c => !c.discovered);
-      }
+      const nextRank = RANKS[player.rank];
+      const xpNext = nextRank ? nextRank.xpRequired : player.xp + 100;
+      document.getElementById('xpCurrent').textContent = player.xp;
+      document.getElementById('xpNext').textContent = xpNext;
+      const progress = nextRank ? Math.min(100, (player.xp / xpNext) * 100) : 100;
+      document.getElementById('xpBar').style.width = progress + '%';
+      document.getElementById('reputationDisplay').textContent = player.reputation;
 
-      discover(index) {
-        if (index < this.contradictions.length) {
-          this.contradictions[index].discovered = true;
-          this.discovered.push(this.contradictions[index]);
-          return this.contradictions[index];
-        }
-        return null;
-      }
+      // تحديث الأدوات المتاحة
+      updateTools(rank);
+    }
+
+    function updateTools(rank) {
+      const container = document.getElementById('caseTools');
+      const allTools = ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي', '🗄️ الأرشيف السري'];
+      container.innerHTML = '';
+      allTools.forEach(tool => {
+        const isUnlocked = rank.tools.includes(tool);
+        const span = document.createElement('span');
+        span.className = `tool ${isUnlocked ? 'unlocked' : 'locked'}`;
+        span.textContent = tool;
+        container.appendChild(span);
+      });
     }
 
     // ================================================================
-    //  حالة اللعبة
+    //  قضية الترقية
+    // ================================================================
+    function startPromotionCase() {
+      if (!player.promotionCaseAvailable) {
+        addMessage('system', '⚠️ لا توجد قضية ترقية متاحة حالياً.');
+        return;
+      }
+
+      const promotion = PROMOTION_CASES.find(p => p.rank === player.rank);
+      if (!promotion) {
+        addMessage('system', '⚠️ لا توجد قضية ترقية لهذه الرتبة.');
+        return;
+      }
+
+      addMessage('system', `⭐ بدء قضية الترقية: ${promotion.title}`);
+      addMessage('system', `📋 ${promotion.description}`);
+
+      // تحميل قضية الترقية مؤقتاً
+      const tempCase = promotion.caseData;
+      tempCase.id = promotion.rank + '_PROMO';
+      // نضيفها مؤقتاً للعب
+      const caseCopy = JSON.parse(JSON.stringify(tempCase));
+      caseCopy.trueKiller = tempCase.trueKiller;
+      caseCopy.evidenceMap = tempCase.evidenceMap || {};
+      caseCopy.rewards = tempCase.rewards || { xp: 30, reputation: 5 };
+
+      // نحمّل القضية
+      loadCaseData(caseCopy);
+
+      player.promotionCaseAvailable = false;
+      player.promotionCasePassed = false;
+      document.getElementById('promotionBtn').disabled = true;
+
+      addMessage('system', '🔒 هذه القضية تقييمية. لا توجد تلميحات. حظاً موفقاً!');
+    }
+
+    // ================================================================
+    //  دوال تحميل القضية
     // ================================================================
     let state = {
       currentCaseId: null,
@@ -1343,36 +1729,13 @@
       foundClues: [],
       gameOver: false,
       caseData: null,
-      contradictionSystem: null,
-      totalTension: 0
+      isPromotion: false,
+      totalTension: 0,
+      accusationMade: false
     };
 
-    // ================================================================
-    //  دوال العرض
-    // ================================================================
-    function renderCaseList() {
-      const container = document.getElementById('caseList');
-      container.innerHTML = '';
-      ALL_CASES.forEach(c => {
-        const div = document.createElement('div');
-        const isActive = state.currentCaseId === c.id;
-        div.className = `case-item${isActive ? ' active' : ''}`;
-        div.innerHTML = `
-          <span class="icon">📂</span>
-          ${c.title}
-          <span class="badge${isActive ? ' active-badge' : ''}">${c.id}</span>
-          ${isActive ? '<span class="status-dot"></span>' : ''}
-        `;
-        div.onclick = () => loadCase(c.id);
-        container.appendChild(div);
-      });
-    }
-
-    function loadCase(caseId) {
-      const caseData = ALL_CASES.find(c => c.id === caseId);
-      if (!caseData) return;
-
-      state.currentCaseId = caseId;
+    function loadCaseData(caseData) {
+      state.currentCaseId = caseData.id;
       state.currentSuspectId = null;
       state.askedQuestions = 0;
       state.conversationHistory = [];
@@ -1381,31 +1744,25 @@
       state.foundClues = [];
       state.gameOver = false;
       state.caseData = caseData;
+      state.accusationMade = false;
       state.totalTension = 0;
-
-      // تهيئة نظام التناقضات
-      state.contradictionSystem = new ContradictionSystem(caseData);
-      // إضافة تناقضات مبدئية
-      if (caseData.id === '#10') {
-        state.contradictionSystem.addContradiction('مبارك', 'نوال', 'جدول مناوبة', 'مبارك يقول إنه كان خارج القبو، لكن نوال تقول إنها رأته بالقرب من القبو');
-        state.contradictionSystem.addContradiction('د. ريم', 'هند', 'علبة دواء', 'د. ريم تقول إنها لم ترَ الضحية، لكن هند تقول إنها رأته يطلب دواءً');
-      }
 
       updateUI();
       renderCaseList();
 
       document.getElementById('globalStatus').textContent = 'قيد التحقيق';
       document.getElementById('caseTitle').innerHTML = `${caseData.title.replace(' ', ' <span class="gold">')}</span>`;
-      document.getElementById('caseId').textContent = caseData.id;
+      document.getElementById('caseId').textContent = caseData.id || 'PROMO';
       document.getElementById('caseSuspects').textContent = caseData.suspects.length;
       document.getElementById('caseClues').textContent = caseData.clues.length;
-      document.getElementById('caseDifficulty').textContent = caseData.difficulty;
+      document.getElementById('caseDifficulty').textContent = caseData.difficulty || 'متوسطة';
+      document.getElementById('caseType').textContent = caseData.type || 'جنائي';
       document.getElementById('caseDesc').textContent = caseData.description;
 
       document.getElementById('victimName').textContent = caseData.victim.name;
-      document.getElementById('victimAge').textContent = caseData.victim.age;
-      document.getElementById('victimJob').textContent = caseData.victim.job;
-      document.getElementById('victimCause').textContent = caseData.victim.cause;
+      document.getElementById('victimAge').textContent = caseData.victim.age || 'غير معروف';
+      document.getElementById('victimJob').textContent = caseData.victim.job || 'غير معروف';
+      document.getElementById('victimCause').textContent = caseData.victim.cause || 'غير معروف';
 
       renderGallery(caseData);
       renderSuspects();
@@ -1413,11 +1770,84 @@
       updateUI();
 
       document.getElementById('transcript').innerHTML =
-        `<div class="msg system">📋 قضية ${caseData.id}: ${caseData.title}. اختر مشتبهاً وابدأ الاستجواب.</div>`;
+        `<div class="msg system">📋 القضية: ${caseData.title}. اختر مشتبهاً وابدأ الاستجواب.</div>`;
       document.getElementById('questionInput').disabled = true;
       document.getElementById('sendBtn').disabled = true;
       document.getElementById('confrontBtn').disabled = true;
       document.getElementById('contradictionBtn').disabled = true;
+    }
+
+    function loadCase(caseId) {
+      if (caseId.includes('PROMO')) return;
+      const caseData = ALL_CASES.find(c => c.id === caseId);
+      if (!caseData) return;
+
+      // التحقق من الرتبة المطلوبة
+      if (caseData.requiredRank && player.rank < caseData.requiredRank) {
+        addMessage('system', `🔒 هذه القضية تتطلب رتبة ${RANKS[caseData.requiredRank-1].title}. أنت حالياً ${RANKS[player.rank-1].title}.`);
+        return;
+      }
+
+      loadCaseData(caseData);
+      renderCaseList();
+    }
+
+    function loadPromotionCase() {
+      startPromotionCase();
+    }
+
+    // ================================================================
+    //  دوال العرض
+    // ================================================================
+    function renderCaseList() {
+      const container = document.getElementById('caseList');
+      container.innerHTML = '';
+      ALL_CASES.forEach(c => {
+        const isActive = state.currentCaseId === c.id;
+        const isLocked = c.requiredRank && player.rank < c.requiredRank;
+        const div = document.createElement('div');
+        div.className = `case-item${isActive ? ' active' : ''}`;
+        div.innerHTML = `
+          <span class="icon">${isLocked ? '🔒' : '📂'}</span>
+          ${c.title}
+          <span class="badge${isActive ? ' active-badge' : ''}">${c.id}</span>
+          ${isActive ? '<span class="status-dot"></span>' : ''}
+          ${isLocked ? '<span class="lock-icon">🔒</span>' : ''}
+        `;
+        div.onclick = () => {
+          if (isLocked) {
+            addMessage('system', `🔒 هذه القضية مقفلة. ترقّ إلى ${RANKS[c.requiredRank-1].title}.`);
+            return;
+          }
+          loadCase(c.id);
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function renderPromotionList() {
+      const container = document.getElementById('promotionList');
+      container.innerHTML = '';
+      const available = PROMOTION_CASES.filter(p => p.rank === player.rank);
+      if (available.length === 0) {
+        container.innerHTML =
+          `<div class="case-item" style="opacity:0.5;cursor:default;"><span class="icon">✅</span> لا توجد مهام ترقية</div>`;
+        document.getElementById('promotionBtn').disabled = true;
+        return;
+      }
+
+      available.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'case-item active';
+        div.innerHTML = `
+          <span class="icon">⭐</span>
+          ${p.title}
+          <span class="badge active-badge">ترقية</span>
+        `;
+        div.onclick = () => startPromotionCase();
+        container.appendChild(div);
+      });
+      document.getElementById('promotionBtn').disabled = false;
     }
 
     function renderGallery(caseData) {
@@ -1442,9 +1872,8 @@
         const card = document.createElement('div');
         card.className = `suspect-card${state.currentSuspectId === s.id ? ' active' : ''}`;
         const label = s.tension < 30 ? 'هادئ' : s.tension < 60 ? 'متوتر' : s.tension < 85 ? 'مراوغ' : 'منهار';
-        const avatarClass = s.tension > 60 ? 'tense' : s.tension > 80 ? 'breaking' : '';
         card.innerHTML = `
-          <span class="avatar ${avatarClass}">${s.avatar}</span>
+          <span class="avatar">${s.avatar}</span>
           <div class="name">${s.name}</div>
           <div class="role">${s.role}</div>
           <div class="relation">${s.relation}</div>
@@ -1487,14 +1916,10 @@
       if (state.suspects.length > 0) {
         const total = state.suspects.reduce((sum, s) => sum + s.tension, 0);
         state.totalTension = Math.round(total / state.suspects.length);
-        document.getElementById('globalTension').textContent = state.totalTension + '%';
-
-        // تأثيرات بصرية
-        const main = document.getElementById('mainContent');
-        main.className = 'main-content';
-        if (state.totalTension > 70) main.classList.add('critical-tension');
-        else if (state.totalTension > 45) main.classList.add('high-tension');
-        if (state.gameOver) main.classList.add('confession-mode');
+        const hero = document.getElementById('caseHero');
+        if (state.totalTension > 70) hero.style.borderRightColor = '#cc4444';
+        else if (state.totalTension > 45) hero.style.borderRightColor = '#d4a843';
+        else hero.style.borderRightColor = '#8b6b3d';
       }
 
       if (state.gameOver) document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
@@ -1524,20 +1949,13 @@
       div.textContent = text;
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
-
-      // صوت كتابة (محاكاة)
-      if (type === 'suspect' || type === 'player') {
-        const typing = document.getElementById('typingIndicator');
-        typing.classList.add('active');
-        setTimeout(() => typing.classList.remove('active'), 800);
-      }
     }
 
     // ================================================================
     //  دالة استخدام الدليل في المواجهة
     // ================================================================
     window.useEvidenceForConfront = function(clueText) {
-      if (state.gameOver || !state.currentSuspectId) return;
+      if (state.gameOver || !state.currentSuspectId || state.accusationMade) return;
       const suspect = state.suspects.find(s => s.id === state.currentSuspectId);
       if (!suspect) return;
 
@@ -1545,7 +1963,6 @@
       const related = evidenceMap[clueText] || [];
 
       if (related.includes(suspect.name)) {
-        // مواجهة صحيحة
         const replies = [
           `لا... لا أستطيع إنكار ذلك. ${clueText} كان لي. لكنني لم أقتله!`,
           `حسناً، لقد وجدت ${clueText}. هذا دليل قوي. لكن هناك من هو أكثر ذنباً.`,
@@ -1560,9 +1977,15 @@
           state.gameOver = true;
           addMessage('confession', `💥 ${suspect.name} اعترف!`);
           document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
+          // نهاية القضية - تقييم
+          if (!state.accusationMade) {
+            state.accusationMade = true;
+            setTimeout(() => {
+              evaluateCase(suspect.name, state.caseData);
+            }, 1500);
+          }
         }
       } else {
-        // مواجهة خاطئة
         const replies = [
           `هذا الدليل لا يخصني! أنت تتهمني خطأً.`,
           `لماذا توجّه هذا الدليل لي؟ أنا لا علاقة لي به.`,
@@ -1570,10 +1993,11 @@
         ];
         addMessage('player', `[مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
         addMessage('suspect', replies[Math.floor(Math.random() * replies.length)]);
-        // عقاب: نقص في الصبر
         suspect.patience = Math.max(0, (suspect.patience || 100) - 10);
-        // تنبيه
         addMessage('system', '⚠️ هذا الدليل لا يتطابق مع هذا المشتبه. كن أكثر دقة.');
+        // عقاب: نقص سمعة
+        player.reputation = Math.max(0, player.reputation - 1);
+        updateRankDisplay();
       }
       updateUI();
     };
@@ -1582,7 +2006,7 @@
     //  زر المواجهة
     // ================================================================
     function confrontWithEvidence() {
-      if (state.gameOver) return;
+      if (state.gameOver || state.accusationMade) return;
       if (!state.currentSuspectId) return;
       const suspect = state.suspects.find(s => s.id === state.currentSuspectId);
       if (state.foundClues.length === 0) {
@@ -1590,7 +2014,6 @@
         return;
       }
 
-      // اختيار أول دليل
       const evidence = state.foundClues[0];
       useEvidenceForConfront(evidence);
     }
@@ -1599,25 +2022,38 @@
     //  نظام التناقضات
     // ================================================================
     function showContradictions() {
-      if (!state.contradictionSystem) return;
-      const discoverable = state.contradictionSystem.getDiscoverable();
-      if (discoverable.length === 0) {
-        addMessage('system', '🔍 لم يتم العثور على تناقضات جديدة.');
+      if (!state.caseData || state.accusationMade) return;
+      // محاكاة تناقضات مبنية على القصة
+      const contradictions = [];
+      if (state.suspects.length > 1) {
+        for (let i = 0; i < state.suspects.length; i++) {
+          for (let j = i + 1; j < state.suspects.length; j++) {
+            const s1 = state.suspects[i];
+            const s2 = state.suspects[j];
+            if (s1.tension > 50 && s2.tension > 50) {
+              contradictions.push({
+                suspect1: s1.name,
+                suspect2: s2.name,
+                statement: `${s1.name} و ${s2.name} لديهما تناقض في أقوالهما حول الحادث.`
+              });
+            }
+          }
+        }
+      }
+
+      if (contradictions.length === 0) {
+        addMessage('system', '🔍 لم يتم العثور على تناقضات واضحة.');
         return;
       }
 
-      const c = discoverable[0];
-      state.contradictionSystem.discover(0);
-      addMessage('contradiction',
-        `🔍 تناقض مكتشف! ${c.suspect1} و ${c.suspect2} لديهما تعارض: ${c.statement}`
-      );
+      const c = contradictions[0];
+      addMessage('contradiction', `🔍 تناقض مكتشف! ${c.suspect1} و ${c.suspect2}: ${c.statement}`);
       addMessage('system', `💡 استخدم هذا التناقض في استجواب ${c.suspect1} أو ${c.suspect2}.`);
 
-      // زيادة التوتر للمشتبهين المعنيين
       const s1 = state.suspects.find(s => s.name === c.suspect1);
       const s2 = state.suspects.find(s => s.name === c.suspect2);
-      if (s1) s1.tension = Math.min(100, s1.tension + 15);
-      if (s2) s2.tension = Math.min(100, s2.tension + 15);
+      if (s1) s1.tension = Math.min(100, s1.tension + 10);
+      if (s2) s2.tension = Math.min(100, s2.tension + 10);
       updateUI();
     }
 
@@ -1625,7 +2061,7 @@
     //  معالجة السؤال
     // ================================================================
     function handleQuestion(question) {
-      if (state.gameOver) {
+      if (state.gameOver || state.accusationMade) {
         addMessage('system', '⚠️ القضية منتهية.');
         return;
       }
@@ -1648,7 +2084,6 @@
         state.caseData
       );
 
-      // تمرير الـ evidenceMap للمحرك
       const reply = character.generateResponse(
         question,
         suspect.tension,
@@ -1657,15 +2092,15 @@
         state.caseData.evidenceMap || {}
       );
 
-      // تحديث الصبر
       suspect.patience = character.patience;
 
-      // زيادة التوتر
       if (!reply.includes('محامي') && !reply.includes('غير منطقي')) {
         suspect.tension = Math.min(100, suspect.tension + Math.floor(Math.random() * 3) + 1);
       } else {
-        // العقاب على الأسئلة غير المنطقية
         suspect.tension = Math.min(100, suspect.tension + 2);
+        // عقاب السمعة
+        player.reputation = Math.max(0, player.reputation - 1);
+        updateRankDisplay();
       }
 
       addMessage('player', question);
@@ -1681,10 +2116,14 @@
         addMessage('clue', `🔍 تم العثور على دليل: ${newClue.text}`);
       }
 
-      if (suspect.tension >= 100) {
+      if (suspect.tension >= 100 && !state.accusationMade) {
         state.gameOver = true;
+        state.accusationMade = true;
         addMessage('confession', `💥 ${suspect.name} انهار واعترف!`);
         document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
+        setTimeout(() => {
+          evaluateCase(suspect.name, state.caseData);
+        }, 1500);
       }
 
       updateUI();
@@ -1698,13 +2137,15 @@
     function showSummary() {
       const found = state.clues.filter(c => c.found).length;
       const total = state.clues.length;
-      let msg = `📋 **ملخص التحقيق - ${state.caseData.victim.name}**\n`;
+      let msg = `📋 **ملخص التحقيق**\n`;
       msg += `─ الأسئلة: ${state.askedQuestions}/${state.maxQuestions}\n`;
       msg += `─ الأدلة: ${found}/${total}\n`;
-      msg += `─ التسلسل الزمني:\n`;
-      state.caseData.scenario.timeline.forEach(t => msg += `   • ${t}\n`);
-      msg += `─ أقوال الشهود:\n`;
-      state.caseData.scenario.witnesses.forEach(w => msg += `   • ${w}\n`);
+      if (state.caseData && state.caseData.scenario) {
+        msg += `─ التسلسل الزمني:\n`;
+        state.caseData.scenario.timeline.forEach(t => msg += `   • ${t}\n`);
+        msg += `─ أقوال الشهود:\n`;
+        state.caseData.scenario.witnesses.forEach(w => msg += `   • ${w}\n`);
+      }
       msg += `─ أكثر المشتبهين توتراً:\n`;
       const sorted = [...state.suspects].sort((a, b) => b.tension - a.tension);
       sorted.slice(0, 3).forEach((s, i) => {
@@ -1721,7 +2162,20 @@
 
     function resetCase() {
       if (!state.currentCaseId) return;
-      loadCase(state.currentCaseId);
+      if (state.currentCaseId.includes('PROMO')) {
+        // إعادة قضية الترقية
+        const promo = PROMOTION_CASES.find(p => p.rank === player.rank);
+        if (promo) {
+          const caseCopy = JSON.parse(JSON.stringify(promo.caseData));
+          caseCopy.trueKiller = promo.caseData.trueKiller;
+          caseCopy.evidenceMap = promo.caseData.evidenceMap || {};
+          caseCopy.rewards = promo.caseData.rewards || { xp: 30, reputation: 5 };
+          loadCaseData(caseCopy);
+        }
+        return;
+      }
+      const caseData = ALL_CASES.find(c => c.id === state.currentCaseId);
+      if (caseData) loadCaseData(caseData);
     }
 
     // ================================================================
@@ -1739,14 +2193,29 @@
     document.getElementById('summaryBtn').addEventListener('click', showSummary);
     document.getElementById('resetBtn').addEventListener('click', resetCase);
     document.getElementById('contradictionBtn').addEventListener('click', showContradictions);
+    document.getElementById('promotionBtn').addEventListener('click', startPromotionCase);
 
     document.getElementById('menuToggle').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('open');
     });
 
+    document.querySelector('.close-report')?.addEventListener('click', () => {
+      document.getElementById('reportOverlay').classList.remove('active');
+    });
+
+    // إغلاق التقرير عند النقر خارج البطاقة
+    document.getElementById('reportOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) {
+        document.getElementById('reportOverlay').classList.remove('active');
+      }
+    });
+
     // ================================================================
     //  بدء التشغيل
     // ================================================================
+    updateRankDisplay();
+    renderCaseList();
+    renderPromotionList();
     loadCase(ALL_CASES[0].id);
   </script>
 </body>
