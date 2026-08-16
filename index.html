@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق الجنائي - DeepSeek AI</title>
+  <title>غرفة التحقيق الجنائي - Gemini Flash</title>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -74,11 +74,7 @@
     .auth-card h2 { color: var(--gold); font-size: 24px; font-weight: 900; }
     .auth-card p { color: var(--text-muted); font-size: 13px; margin: 6px 0 20px; }
 
-    .auth-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+    .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
     .auth-tab {
       flex: 1;
       padding: 10px;
@@ -129,12 +125,7 @@
     .auth-btn:hover { transform: translateY(-2px); }
     .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .error-msg {
-      color: #cc6666;
-      font-size: 12px;
-      margin-top: 10px;
-      display: none;
-    }
+    .error-msg { color: #cc6666; font-size: 12px; margin-top: 10px; display: none; }
     .error-msg.show { display: block; }
 
     /* ===== الشريط الجانبي ===== */
@@ -228,7 +219,7 @@
     .rank-bar .xp-bar { width: 160px; height: 5px; background: #14110e; border-radius: 4px; overflow: hidden; margin-top: 4px; }
     .rank-bar .xp-bar .fill { height: 100%; background: linear-gradient(90deg, var(--gold), #ffdf88); width: 0%; transition: width 0.6s; }
 
-    /* بطاقة تفاصيل القضية */
+    /* بطاقة القضية */
     .case-hero {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
@@ -242,7 +233,7 @@
     .case-hero .case-meta span { color: var(--gold); font-weight: 700; }
     .case-hero .case-desc { font-size: 14px; color: #b7a99c; margin-top: 10px; line-height: 1.8; }
 
-    /* ===== مسرح الجريمة المطور (Blueprint & Crime Scene Board) ===== */
+    /* ===== مسرح الجريمة المطور (Blueprint) ===== */
     .crime-scene-container {
       background: #0d0b09;
       border: 1px solid var(--border-color);
@@ -257,13 +248,7 @@
       align-items: center;
       margin-bottom: 12px;
     }
-    .crime-scene-header h3 {
-      font-size: 16px;
-      color: var(--gold);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .crime-scene-header h3 { font-size: 16px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
     .scene-canvas {
       position: relative;
       width: 100%;
@@ -336,14 +321,8 @@
       border-color: #fff;
       box-shadow: 0 8px 25px rgba(212, 168, 67, 0.4);
     }
-    .hotspot.discovered {
-      border-color: var(--green);
-      background: rgba(14, 30, 20, 0.9);
-    }
-    .hotspot.discovered::after {
-      background: var(--green);
-      color: #fff;
-    }
+    .hotspot.discovered { border-color: var(--green); background: rgba(14, 30, 20, 0.9); }
+    .hotspot.discovered::after { background: var(--green); color: #fff; }
 
     /* بطاقة الضحية */
     .victim-card {
@@ -525,7 +504,6 @@
     .term-tab.active { background: rgba(0, 255, 204, 0.2); border-color: var(--cyan); color: #fff; font-weight: 700; }
     .terminal-content-box { background: #050403; border: 1px solid #1a2926; border-radius: 10px; padding: 14px; min-height: 180px; max-height: 260px; overflow-y: auto; }
     .data-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 255, 204, 0.1); border-radius: 6px; margin-bottom: 8px; }
-    .tag { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
     .tag-suspicious { background: rgba(255, 82, 82, 0.2); color: #ff5252; border: 1px solid #ff5252; }
     .tag-verified { background: rgba(0, 255, 204, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
     .extract-btn { background: var(--cyan); color: #050403; border: none; padding: 4px 10px; border-radius: 6px; font-family: 'Cairo'; font-size: 11px; font-weight: 700; cursor: pointer; }
@@ -799,9 +777,33 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ===== إعدادات DeepSeek =====
-    const DEEPSEEK_API_KEY = 'sk-3f8cc6b4af934e88b9d505278b56d939';
-    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+    // ===== إعدادات Google Gemini Flash المجاني =====
+    const GEMINI_API_KEY = 'AQ.Ab8RN6JTfYqCYmGyA8s4rQ3eXrBLgAM2xErjcBOjdobYPLyjgg';
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+    // دالة مساعدة لطلب Gemini بتنسيق JSON مضمون
+    async function callGemini(systemInstruction, userContent) {
+      const payload = {
+        contents: [
+          { role: 'user', parts: [{ text: `${systemInstruction}\n\nالسياق الحالي: ${userContent}` }] }
+        ],
+        generationConfig: {
+          response_mime_type: "application/json",
+          temperature: 0.6,
+          maxOutputTokens: 250
+        }
+      };
+
+      const res = await fetch(GEMINI_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message || 'Gemini API Error');
+      return JSON.parse(data.candidates[0].content.parts[0].text);
+    }
 
     // ===== نظام الرتب والصلاحيات =====
     const RANKS = [
@@ -1226,7 +1228,7 @@
       box.scrollTop = box.scrollHeight;
     }
 
-    // ===== محرك الاستجواب والذكاء الاصطناعي =====
+    // ===== محرك الاستجواب الذكي عبر Gemini =====
     async function askAI(question) {
       if (!state.currentSuspectId || state.isBusy) return;
       const suspect = currentCase.suspects.find(x => x.id === state.currentSuspectId);
@@ -1238,36 +1240,17 @@
 
       const systemPrompt = `أنت تمثل شخصية "${suspect.name}" (${suspect.role}) في قضية "${currentCase.title}".
 الضحية: "${currentCase.victim.name}".
-سرك الشخصي: "${suspect.personality.secret}".
-حالتك: ${suspect.personality.guilty ? 'أنت القاتل الفعلي وتتهرب بذكاء وتتوتر عند محاصرتك.' : 'أنت بريء تماماً من القتل.'}
-
-أجب بصيغة JSON حصراً:
+سرك: "${suspect.personality.secret}".
+حالتك: ${suspect.personality.guilty ? 'القاتل الفعلي وتتهرب بذكاء' : 'بريء تماماً من القتل'}.
+المحقق يوجه لك سؤالاً.
+أجب بصيغة JSON حصراً بهذا الشكل:
 {
-  "reply": "(لغة جسدك) الرد الكلامي المباشر بجملة أو جملتين",
-  "tensionDelta": رقم بين -5 إلى +15 يمثل التوتر الناتج عن دقة السؤال
+  "reply": "(حركة الجسد) الرد الكلامي المباشر بجملة واحدة أو جملتين",
+  "tensionDelta": رقم بين -5 إلى 15
 }`;
 
       try {
-        const res = await fetch(DEEPSEEK_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              ...state.history.slice(-4),
-              { role: 'user', content: question }
-            ],
-            response_format: { type: 'json_object' },
-            temperature: 0.6
-          })
-        });
-
-        const data = await res.json();
-        const parsed = JSON.parse(data.choices[0].message.content);
+        const parsed = await callGemini(systemPrompt, `سؤال المحقق: ${question}`);
 
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري تحليل')) {
@@ -1289,11 +1272,12 @@
           }
         }
       } catch (err) {
+        console.error('Gemini Error:', err);
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري تحليل')) {
           box.removeChild(box.lastElementChild);
         }
-        addLog('system', '⚠️ تعذر الاتصال بالخادم.');
+        addLog('system', `⚠️ تعذر الاتصال بالخادم: (${err.message})`);
       }
 
       state.isBusy = false;
@@ -1319,36 +1303,17 @@
 حالتك: ${suspect.personality.guilty ? 'القاتل الفعلي' : 'بريء'}.
 المحقق يواجهك بالدليل: "${clueName}". الارتباط الحقيقي بك: (${isDirectlyLinked ? 'نعم يرتبط بك' : 'لا يخصك'}).
 
-أخرج النتيجة بصيغة JSON حصراً:
+أخرج JSON حصراً:
 {
   "bodyLanguage": "(لغة الجسد)",
-  "dialogue": "الرد الصوتي المباشر بجملة أو اثنتين",
-  "tensionDelta": رقم بين -10 و +35,
+  "dialogue": "الرد الصوتي المباشر",
+  "tensionDelta": رقم بين -10 و 35,
   "lieDetected": true أو false,
   "contradictionHint": "تلميح قصير بالثغرة إذا كذب"
 }`;
 
       try {
-        const res = await fetch(DEEPSEEK_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              ...state.history.slice(-4),
-              { role: 'user', content: `أواجهك بالدليل: ${clueName}` }
-            ],
-            response_format: { type: 'json_object' },
-            temperature: 0.5
-          })
-        });
-
-        const data = await res.json();
-        const result = JSON.parse(data.choices[0].message.content);
+        const result = await callGemini(systemPrompt, `المواجهة بالدليل: ${clueName}`);
 
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري رصد')) {
@@ -1366,6 +1331,7 @@
           addLog('clue', `⚡ رصد تناقض: ${result.contradictionHint}`);
         }
       } catch (err) {
+        console.error('Confront Error:', err);
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري رصد')) {
           box.removeChild(box.lastElementChild);
@@ -1492,14 +1458,14 @@
       document.getElementById('reportOverlay').classList.add('active');
     }
 
-    // ===== توليد القضايا الإجرائي =====
+    // ===== توليد القضايا الإجرائي عبر Gemini =====
     async function generateNewProceduralCase() {
       if (state.isBusy) return;
       const btn = document.getElementById('generateCaseBtn');
       btn.disabled = true;
       btn.textContent = '⏳ جاري التوليد...';
 
-      addLog('system', '📂 [الأرشيف الجنائي]: جاري فتح ملف بلاغ جديد بالذكاء الاصطناعي...');
+      addLog('system', '📂 [الأرشيف الجنائي]: جاري فتح ملف بلاغ جديد بواسطة Gemini Flash...');
 
       const suspectsCount = Math.min(8, 4 + (player.rank || 1));
       const caseNumber = '#' + Math.floor(100 + Math.random() * 900);
@@ -1508,7 +1474,7 @@
 القواعد:
 1. شخص واحد فقط guilty: true وباقي الأشخاص guilty: false ولكن لكل منهم سر مريب personality.secret.
 2. ولد 4 أدلة sceneEvidence بإحداثيات (top و left) وتقرير معمل جنائي report وربط relatedSuspects.
-أخرج JSON حصراً بهذا الهيكل:
+أخرج JSON حصراً:
 {
   "id": "${caseNumber}",
   "title": "عنوان مثير",
@@ -1523,26 +1489,12 @@
 }`;
 
       try {
-        const res = await fetch(DEEPSEEK_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages: [{ role: 'system', content: prompt }],
-            response_format: { type: 'json_object' },
-            temperature: 0.7
-          })
-        });
-
-        const data = await res.json();
-        const genCase = JSON.parse(data.choices[0].message.content);
+        const genCase = await callGemini(prompt, "توليد ملف قضية كامل");
         ALL_CASES.unshift(genCase);
         loadCaseData(genCase);
         addLog('system', `✨ تم توليد قضية (${genCase.title}) بنجاح!`);
       } catch (e) {
+        console.error(e);
         addLog('system', '⚠️ تعذر توليد قضية جديدة.');
       }
       btn.disabled = false;
