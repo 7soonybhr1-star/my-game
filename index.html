@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق - نظام الهوية الجنائية</title>
+  <title>غرفة التحقيق - اللعبة الكاملة</title>
   <style>
     /* ===== التصميم الأساسي ===== */
     * {
@@ -17,7 +17,7 @@
       --primary: #d4a843;
       --gold: #d4a843;
       --dark-bg: #0a0806;
-      --panel-bg: rgba(16, 14, 12, 0.92);
+      --panel-bg: rgba(16, 14, 12, 0.95);
       --border-color: #2a2218;
       --text-muted: #8a7a6a;
       --text-light: #e8ddd0;
@@ -34,6 +34,147 @@
         radial-gradient(ellipse at 15% 20%, #1a1410 0%, #0a0806 70%),
         radial-gradient(ellipse at 85% 80%, #1a1410 0%, #0a0806 70%);
       background-attachment: fixed;
+    }
+
+    /* ===== شاشة التسجيل ===== */
+    .auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(16px);
+    }
+    .auth-overlay.hidden {
+      display: none;
+    }
+    .auth-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 36px 40px;
+      max-width: 440px;
+      width: 100%;
+      border-right: 4px solid var(--gold);
+      animation: fadeSlide 0.5s ease;
+      text-align: center;
+    }
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .auth-card .auth-icon {
+      font-size: 52px;
+      margin-bottom: 4px;
+    }
+    .auth-card h2 {
+      color: var(--gold);
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .auth-card .sub {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin: 2px 0 20px 0;
+    }
+    .auth-card .mode-badge {
+      display: inline-block;
+      font-size: 11px;
+      background: rgba(212, 168, 67, 0.08);
+      color: var(--gold);
+      padding: 3px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(212, 168, 67, 0.15);
+      margin-bottom: 16px;
+    }
+    .auth-card .form-group {
+      margin-bottom: 14px;
+      text-align: right;
+    }
+    .auth-card .form-group label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .auth-card .form-group input {
+      width: 100%;
+      background: #0a0806;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 11px 16px;
+      color: #e8ddd0;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+    .auth-card .form-group input:focus {
+      border-color: var(--gold);
+    }
+    .auth-card .form-group input::placeholder {
+      color: #4a3a2a;
+    }
+    .auth-card .auth-btn {
+      width: 100%;
+      background: var(--gold);
+      color: #0a0806;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 4px;
+    }
+    .auth-card .auth-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(212, 168, 67, 0.3);
+    }
+    .auth-card .auth-error {
+      color: #cc6644;
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 22px;
+    }
+    .auth-card .auth-success {
+      color: #44cc88;
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 22px;
+    }
+    .auth-card .divider {
+      border-top: 1px solid var(--border-color);
+      margin: 16px 0;
+    }
+    .auth-card .switch-auth {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .auth-card .switch-auth a {
+      color: var(--gold);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .auth-card .switch-auth a:hover {
+      text-decoration: underline;
     }
 
     /* ===== الشريط الجانبي ===== */
@@ -89,8 +230,6 @@
       display: flex;
       align-items: center;
       padding: 10px 22px;
-      cursor: pointer;
-      transition: all 0.3s ease;
       border-right: 3px solid transparent;
       gap: 12px;
       font-size: 14px;
@@ -98,18 +237,7 @@
       border: 1px solid rgba(212, 168, 67, 0.05);
       border-radius: 6px;
       margin: 2px 10px;
-    }
-    .sidebar .case-item:hover {
-      transform: translateX(-4px);
-      border-color: rgba(212, 168, 67, 0.3);
-      background: rgba(212, 168, 67, 0.05);
-      color: #eee;
-    }
-    .sidebar .case-item.active {
-      border-right-color: var(--gold);
-      background: rgba(212, 168, 67, 0.08);
-      color: #eee;
-      border-color: rgba(212, 168, 67, 0.2);
+      cursor: default;
     }
     .sidebar .case-item .badge {
       font-size: 10px;
@@ -133,10 +261,6 @@
       border-radius: 50%;
       background: #44cc88;
       margin-right: auto;
-    }
-    .sidebar .case-item .lock-icon {
-      font-size: 12px;
-      opacity: 0.5;
     }
 
     /* ===== المحتوى الرئيسي ===== */
@@ -611,13 +735,6 @@
       font-weight: 700;
       font-size: 16px;
     }
-    .transcript .msg.contradiction {
-      background: #1a1010;
-      border-right: 3px solid #ffaa44;
-      align-self: center;
-      color: #ffaa44;
-      font-weight: 700;
-    }
     @keyframes fadeSlide {
       from {
         opacity: 0;
@@ -761,138 +878,6 @@
       text-align: center;
       padding: 25px 0;
       font-size: 13px;
-    }
-
-    /* ===== نافذة التسجيل ===== */
-    .auth-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.92);
-      z-index: 2000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      backdrop-filter: blur(16px);
-    }
-    .auth-overlay.hidden {
-      display: none;
-    }
-    .auth-card {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 36px 40px;
-      max-width: 440px;
-      width: 100%;
-      border-right: 4px solid var(--gold);
-      animation: fadeSlide 0.5s ease;
-      text-align: center;
-    }
-    .auth-card .auth-icon {
-      font-size: 48px;
-      margin-bottom: 6px;
-      filter: drop-shadow(0 0 30px rgba(212, 168, 67, 0.15));
-    }
-    .auth-card h2 {
-      color: var(--gold);
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-    .auth-card .sub {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin: 2px 0 18px 0;
-    }
-    .auth-card .form-group {
-      margin-bottom: 14px;
-      text-align: right;
-    }
-    .auth-card .form-group label {
-      display: block;
-      color: var(--text-muted);
-      font-size: 12px;
-      margin-bottom: 4px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-    .auth-card .form-group input {
-      width: 100%;
-      background: #0a0806;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 10px 16px;
-      color: #e8ddd0;
-      font-family: 'Cairo', sans-serif;
-      font-size: 14px;
-      outline: none;
-      transition: border 0.3s;
-    }
-    .auth-card .form-group input:focus {
-      border-color: var(--gold);
-    }
-    .auth-card .form-group input::placeholder {
-      color: #4a3a2a;
-    }
-    .auth-card .auth-btn {
-      width: 100%;
-      background: var(--gold);
-      color: #0a0806;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      font-family: 'Cairo', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 4px;
-    }
-    .auth-card .auth-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 30px rgba(212, 168, 67, 0.3);
-    }
-    .auth-card .auth-error {
-      color: #cc6644;
-      font-size: 13px;
-      margin-top: 8px;
-      min-height: 20px;
-    }
-    .auth-card .auth-success {
-      color: #44cc88;
-      font-size: 13px;
-      margin-top: 8px;
-      min-height: 20px;
-    }
-    .auth-card .divider {
-      border-top: 1px solid var(--border-color);
-      margin: 14px 0;
-    }
-    .auth-card .switch-auth {
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-    .auth-card .switch-auth a {
-      color: var(--gold);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .auth-card .switch-auth a:hover {
-      text-decoration: underline;
-    }
-    .auth-card .mode-badge {
-      display: inline-block;
-      font-size: 10px;
-      background: rgba(212, 168, 67, 0.1);
-      color: var(--gold);
-      padding: 2px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(212, 168, 67, 0.2);
-      margin-bottom: 6px;
     }
 
     /* ===== تقرير النيابة ===== */
@@ -1049,29 +1034,37 @@
 </head>
 <body>
 
-  <!-- ===== نافذة التسجيل والدخول ===== -->
+  <!-- ===== شاشة التسجيل ===== -->
   <div class="auth-overlay" id="authOverlay">
     <div class="auth-card">
       <div class="auth-icon">🕵️</div>
-      <h2>غرفة التحقيق</h2>
-      <div class="sub">سجل دخولك أو أنشئ ملفاً جنائياً</div>
+      <h2 id="authTitle">غرفة التحقيق</h2>
+      <div class="sub" id="authSub">سجل دخولك لتبدأ التحقيق</div>
       <div class="mode-badge" id="authModeBadge">🔐 تسجيل الدخول</div>
 
       <div class="form-group">
         <label>👤 اسم المستخدم (للدخول)</label>
         <input type="text" id="authUsername" placeholder="مثال: saqr99" dir="ltr">
       </div>
-      <div class="form-group">
+
+      <div class="form-group" id="displayNameGroup" style="display:none;">
         <label>📛 الاسم الرسمي للمحقق</label>
         <input type="text" id="authDisplayName" placeholder="مثال: صقر العتيبي" dir="rtl">
       </div>
+
       <div class="form-group">
         <label>🔑 كلمة المرور</label>
         <input type="password" id="authPassword" placeholder="••••••••" dir="ltr">
       </div>
 
+      <div class="form-group" id="confirmPasswordGroup" style="display:none;">
+        <label>✅ تأكيد كلمة المرور</label>
+        <input type="password" id="authConfirmPassword" placeholder="••••••••" dir="ltr">
+      </div>
+
       <div id="authError" class="auth-error"></div>
       <div id="authSuccess" class="auth-success"></div>
+
       <button class="auth-btn" id="authBtn">🚪 دخول</button>
 
       <div class="divider"></div>
@@ -1187,76 +1180,34 @@
 
   <script>
     // ================================================================
-    //  نظام الهوية الجنائية المتكامل
+    //  نظام الحسابات والرتب
     // ================================================================
 
-    // ===== تعريف الرتب والألقاب =====
-    const RANKS = [{
-      level: 1,
-      title: 'محقق متدرب',
-      badge: '🛡️',
-      sub: 'قضايا سرقة بسيطة',
-      xpRequired: 0,
-      tools: ['📝 أسئلة نصية']
-    }, {
-      level: 2,
-      title: 'مساعد محقق',
-      badge: '🔍',
-      sub: 'قضايا احتيال مالي',
-      xpRequired: 100,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف']
-    }, {
-      level: 3,
-      title: 'محقق ميداني',
-      badge: '🔬',
-      sub: 'جرائم سرية ووفيات مشبوهة',
-      xpRequired: 250,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات']
-    }, {
-      level: 4,
-      title: 'محقق أول',
-      badge: '⚖️',
-      sub: 'جرائم قتل معقدة',
-      xpRequired: 500,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش']
-    }, {
-      level: 5,
-      title: 'مفتش قضايا جنائية',
-      badge: '👁️',
-      sub: 'جرائم منظمة وفساد',
-      xpRequired: 900,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي']
-    }, {
-      level: 6,
-      title: 'رئيس قسم التحقيقات',
-      badge: '👑',
-      sub: 'القضايا الباردة والجرائم المستحيلة',
-      xpRequired: 1500,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي', '🗄️ الأرشيف السري']
-    }];
-
-    // ===== الحصول على اللقب الكامل =====
-    function getFullTitle(rank, displayName) {
-      const rankData = RANKS[rank - 1];
-      if (!rankData) return `محقق / ${displayName || 'غير معروف'}`;
-      return `${rankData.title} / ${displayName || 'غير معروف'}`;
+    // ===== دوال التخزين =====
+    function getPlayerKey(username) {
+      return `detective_${username.toLowerCase().trim()}`;
     }
 
-    function getRankBadge(rank) {
-      const rankData = RANKS[rank - 1];
-      return rankData ? rankData.badge : '🛡️';
+    function loadPlayer(username) {
+      try {
+        const key = getPlayerKey(username);
+        const data = localStorage.getItem(key);
+        if (data) {
+          return JSON.parse(data);
+        }
+      } catch (e) { console.warn('خطأ في تحميل اللاعب:', e); }
+      return null;
     }
 
-    function getRankTitle(rank) {
-      const rankData = RANKS[rank - 1];
-      return rankData ? rankData.title : 'محقق';
+    function savePlayer(player) {
+      try {
+        const key = getPlayerKey(player.username);
+        localStorage.setItem(key, JSON.stringify(player));
+        return true;
+      } catch (e) { console.warn('خطأ في حفظ اللاعب:', e); return false; }
     }
 
-    // ================================================================
-    //  نظام الحسابات المتقدم
-    // ================================================================
-
-    // هيكل بيانات اللاعب
+    // ===== هيكل البيانات الافتراضي =====
     const DEFAULT_PLAYER = {
       username: '',
       displayName: '',
@@ -1267,49 +1218,27 @@
       badges: [],
       completedCases: 0,
       solvedCases: 0,
-      wrongAccusations: 0,
-      unlockedCases: [],
-      promotionCaseAvailable: false,
-      promotionCasePassed: false
+      wrongAccusations: 0
     };
 
-    // دوال التخزين
-    function getPlayerKey(username) {
-      return `detective_${username.toLowerCase().trim()}`;
+    // ===== تعريف الرتب =====
+    const RANKS = [
+      { level: 1, title: 'محقق متدرب', badge: '🛡️', sub: 'قضايا سرقة بسيطة', xpRequired: 0 },
+      { level: 2, title: 'مساعد محقق', badge: '🔍', sub: 'قضايا احتيال مالي', xpRequired: 100 },
+      { level: 3, title: 'محقق ميداني', badge: '🔬', sub: 'جرائم سرية', xpRequired: 250 },
+      { level: 4, title: 'محقق أول', badge: '⚖️', sub: 'جرائم قتل معقدة', xpRequired: 500 },
+      { level: 5, title: 'مفتش قضايا جنائية', badge: '👁️', sub: 'جرائم منظمة', xpRequired: 900 },
+      { level: 6, title: 'رئيس قسم التحقيقات', badge: '👑', sub: 'القضايا الباردة', xpRequired: 1500 }
+    ];
+
+    function getRank(level) {
+      return RANKS.find(r => r.level === level) || RANKS[0];
     }
 
-    function loadPlayer(username) {
-      try {
-        const key = getPlayerKey(username);
-        const data = localStorage.getItem(key);
-        if (data) {
-          const parsed = JSON.parse(data);
-          return { ...DEFAULT_PLAYER, ...parsed, username: username };
-        }
-      } catch (e) {}
-      return null;
+    function getFullTitle(rank, displayName) {
+      const rankData = getRank(rank);
+      return `${rankData.title} / ${displayName || 'غير معروف'}`;
     }
-
-    function savePlayer(player) {
-      try {
-        const key = getPlayerKey(player.username);
-        localStorage.setItem(key, JSON.stringify(player));
-        return true;
-      } catch (e) { return false; }
-    }
-
-    function deletePlayer(username) {
-      try {
-        localStorage.removeItem(getPlayerKey(username));
-        return true;
-      } catch (e) { return false; }
-    }
-
-    // ================================================================
-    //  حالة اللاعب النشط
-    // ================================================================
-    let currentPlayer = null;
-    let isLoggedIn = false;
 
     // ================================================================
     //  بيانات القضية
@@ -1539,6 +1468,10 @@
     // ================================================================
     //  حالة اللعبة
     // ================================================================
+    let currentPlayer = null;
+    let isLoggedIn = false;
+    let authMode = 'login';
+
     let state = {
       currentSuspectId: null,
       askedQuestions: 0,
@@ -1633,7 +1566,6 @@
       const container = document.getElementById('transcript');
       const div = document.createElement('div');
       div.className = `msg ${type}`;
-      // إضافة اللقب لرسائل المحقق
       if (type === 'player' && currentPlayer) {
         const title = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
         div.textContent = `[${title}]: ${text}`;
@@ -1662,20 +1594,25 @@
           `(ينهار) لا أستطيع الإنكار. هذا دليل قوي. لكن ${CASE_DATA.victim.name} كان ميتاً بالفعل.`
         ];
         const title = currentPlayer ? getFullTitle(currentPlayer.rank, currentPlayer.displayName) : 'المحقق';
-        addMessage('player', `[مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
+        addMessage('player', `[${title}]: [مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
         addMessage('suspect', replies[Math.floor(Math.random() * replies.length)]);
         suspect.tension = Math.min(100, suspect.tension + 25);
         if (suspect.tension >= 100) {
           state.gameOver = true;
           addMessage('confession', `💥 ${suspect.name} اعترف!`);
           document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
+          // إظهار التقرير بعد الاعتراف
+          setTimeout(() => {
+            evaluateCase(suspect.name, clueText, 'ضغط الأدلة', CASE_DATA);
+          }, 1000);
         }
       } else {
         const replies = [
           `(يضحك ساخراً) هذا الدليل لا يخصني. أنت تخطئ.`,
           `(ينظر إليك باستغراب) لماذا توجّه هذا الدليل لي؟ لا علاقة لي به.`
         ];
-        addMessage('player', `[مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
+        const title = currentPlayer ? getFullTitle(currentPlayer.rank, currentPlayer.displayName) : 'المحقق';
+        addMessage('player', `[${title}]: [مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
         addMessage('suspect', replies[Math.floor(Math.random() * replies.length)]);
         suspect.patience = Math.max(0, (suspect.patience || 100) - 10);
         addMessage('system', '⚠️ هذا الدليل لا يتطابق مع هذا المشتبه.');
@@ -1726,6 +1663,9 @@
         state.gameOver = true;
         addMessage('confession', `💥 ${suspect.name} انهار واعترف!`);
         document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
+        setTimeout(() => {
+          evaluateCase(suspect.name, state.foundClues[0] || 'دليل غير محدد', 'انهيار تحت الضغط', CASE_DATA);
+        }, 1000);
       }
 
       updateUI();
@@ -1734,152 +1674,107 @@
     }
 
     // ================================================================
-    //  نظام الحسابات - المصادقة
+    //  نظام التقييم والتقارير
     // ================================================================
-    let authMode = 'login';
-
-    function initAuth() {
-      const overlay = document.getElementById('authOverlay');
-      const usernameInput = document.getElementById('authUsername');
-      const displayNameInput = document.getElementById('authDisplayName');
-      const passwordInput = document.getElementById('authPassword');
-      const btn = document.getElementById('authBtn');
-      const error = document.getElementById('authError');
-      const success = document.getElementById('authSuccess');
-      const switchText = document.getElementById('authSwitchText');
-      const switchLink = document.getElementById('authSwitchLink');
-      const modeBadge = document.getElementById('authModeBadge');
-
-      // التحقق من وجود لاعب نشط
-      const savedUsername = localStorage.getItem('current_detective_username');
-      if (savedUsername) {
-        const player = loadPlayer(savedUsername);
-        if (player) {
-          currentPlayer = player;
-          isLoggedIn = true;
-          overlay.classList.add('hidden');
-          onLoginSuccess();
-          return;
-        }
-      }
-
-      overlay.classList.remove('hidden');
-
-      function updateAuthMode(mode) {
-        authMode = mode;
-        if (mode === 'login') {
-          btn.textContent = '🚪 دخول';
-          modeBadge.textContent = '🔐 تسجيل الدخول';
-          switchText.innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
-          document.querySelector('.auth-card h2').textContent = 'غرفة التحقيق';
-          document.querySelector('.auth-card .sub').textContent = 'سجل دخولك لتبدأ التحقيق';
-          displayNameInput.style.display = 'none';
-          displayNameInput.value = '';
-          document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'none';
-        } else {
-          btn.textContent = '📝 إنشاء ملف';
-          modeBadge.textContent = '📝 إنشاء ملف جديد';
-          switchText.innerHTML = 'لديك ملف بالفعل؟ <a id="authSwitchLink">تسجيل الدخول</a>';
-          document.querySelector('.auth-card h2').textContent = '📝 ملف محقق جديد';
-          document.querySelector('.auth-card .sub').textContent = 'أنشئ هويتك الجنائية';
-          displayNameInput.style.display = 'block';
-          document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'block';
-        }
-        document.getElementById('authSwitchLink').onclick = () => {
-          updateAuthMode(authMode === 'login' ? 'signup' : 'login');
-          error.textContent = '';
-          success.textContent = '';
-          usernameInput.value = '';
-          displayNameInput.value = '';
-          passwordInput.value = '';
-          usernameInput.focus();
-        };
-      }
-
-      updateAuthMode('login');
-
-      btn.onclick = () => {
-        const username = usernameInput.value.trim();
-        const displayName = displayNameInput.value.trim();
-        const password = passwordInput.value.trim();
-
-        error.textContent = '';
-        success.textContent = '';
-
-        if (!username) {
-          error.textContent = '⚠️ الرجاء إدخال اسم المستخدم.';
-          return;
-        }
-        if (!password) {
-          error.textContent = '⚠️ الرجاء إدخال كلمة المرور.';
-          return;
-        }
-
-        if (authMode === 'login') {
-          const player = loadPlayer(username);
-          if (player) {
-            if (player.password === password) {
-              currentPlayer = player;
-              isLoggedIn = true;
-              overlay.classList.add('hidden');
-              localStorage.setItem('current_detective_username', username);
-              success.textContent = '✅ مرحباً بعودتك أيها المحقق!';
-              onLoginSuccess();
-            } else {
-              error.textContent = '❌ كلمة المرور غير صحيحة.';
-            }
-          } else {
-            error.textContent = '❌ لا يوجد ملف بهذا الاسم. هل تريد إنشاء ملف جديد؟';
-          }
-        } else {
-          // تسجيل جديد
-          if (!displayName) {
-            error.textContent = '⚠️ الرجاء إدخال الاسم الرسمي للمحقق.';
-            return;
-          }
-          const existing = loadPlayer(username);
-          if (existing) {
-            error.textContent = '⚠️ هذا الاسم مستخدم بالفعل. اختر اسماً آخر.';
-            return;
-          }
-          const newPlayer = {
-            ...DEFAULT_PLAYER,
-            username: username,
-            displayName: displayName,
-            password: password
-          };
-          if (savePlayer(newPlayer)) {
-            currentPlayer = newPlayer;
-            isLoggedIn = true;
-            overlay.classList.add('hidden');
-            localStorage.setItem('current_detective_username', username);
-            success.textContent = '✅ تم إنشاء الملف بنجاح!';
-            onLoginSuccess();
-          } else {
-            error.textContent = '❌ حدث خطأ أثناء إنشاء الملف.';
-          }
-        }
-      };
-
-      usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
-      passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
-      displayNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
-
-      usernameInput.focus();
-    }
-
-    function onLoginSuccess() {
+    function evaluateCase(accusedName, evidenceUsed, motive, caseData) {
       if (!currentPlayer) return;
-      updateDetectiveDisplay();
-      renderCaseList();
-      updateUI();
-      const title = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
-      addMessage('system', `🕵️ مرحباً أيها ${title}! استعد للتحقيق.`);
+
+      const isCorrect = accusedName === caseData.trueKiller;
+      const foundClues = state.clues.filter(c => c.found).length;
+      const totalClues = state.clues.length;
+      const clueRatio = foundClues / totalClues;
+      const questionsUsed = state.askedQuestions;
+      const efficiency = Math.max(0, 1 - (questionsUsed / state.maxQuestions) * 0.5);
+
+      let xpEarned = caseData.rewards.xp || 50;
+      let repEarned = caseData.rewards.reputation || 5;
+
+      if (!isCorrect) {
+        xpEarned = Math.floor(xpEarned * 0.2);
+        repEarned = Math.floor(repEarned * 0.1);
+        currentPlayer.wrongAccusations = (currentPlayer.wrongAccusations || 0) + 1;
+      } else {
+        currentPlayer.solvedCases = (currentPlayer.solvedCases || 0) + 1;
+        if (clueRatio > 0.7) xpEarned += 20;
+        if (clueRatio > 0.9) xpEarned += 30;
+        if (efficiency > 0.7) xpEarned += 15;
+        if (efficiency > 0.9) xpEarned += 25;
+        if (state.gameOver) xpEarned += 30;
+        if (motive && motive.length > 5) xpEarned += 15;
+      }
+
+      currentPlayer.xp = (currentPlayer.xp || 0) + xpEarned;
+      currentPlayer.reputation = (currentPlayer.reputation || 0) + repEarned;
+      currentPlayer.completedCases = (currentPlayer.completedCases || 0) + 1;
+
+      // التحقق من الترقية
+      const rankUp = checkRankUp();
+
+      // حفظ التلقائي
+      savePlayer(currentPlayer);
+
+      // عرض التقرير
+      showReport(isCorrect, accusedName, evidenceUsed, motive, caseData, xpEarned, repEarned, clueRatio, efficiency,
+        questionsUsed, foundClues, totalClues, rankUp);
     }
 
+    function checkRankUp() {
+      if (!currentPlayer) return false;
+      const nextRank = RANKS[currentPlayer.rank];
+      if (nextRank && currentPlayer.xp >= nextRank.xpRequired) {
+        currentPlayer.rank++;
+        savePlayer(currentPlayer);
+        return true;
+      }
+      return false;
+    }
+
+    function showReport(isCorrect, accused, evidence, motive, caseData, xp, rep, clueRatio, efficiency, questions, found,
+      total, rankUp) {
+      const overlay = document.getElementById('reportOverlay');
+      const content = document.getElementById('reportContent');
+      const signature = document.getElementById('reportSignature');
+
+      const fullTitle = currentPlayer ? getFullTitle(currentPlayer.rank, currentPlayer.displayName) : 'محقق / غير معروف';
+      signature.textContent = `تقرير صادر بتوقيع: ${fullTitle}`;
+
+      let html = `
+        <div class="stat-item"><span class="label">لائحة الاتهام</span><span class="value ${isCorrect ? 'good' : 'bad'}">${isCorrect ? '✅ صحيح' : '❌ خاطئ'}</span></div>
+        <div class="stat-item"><span class="label">المتهم</span><span class="value">${accused}</span></div>
+        <div class="stat-item"><span class="label">الدليل القاطع</span><span class="value">${evidence || 'غير محدد'}</span></div>
+        <div class="stat-item"><span class="label">الدافع</span><span class="value">${motive || 'غير محدد'}</span></div>
+        <div class="stat-item"><span class="label">القاتل الحقيقي</span><span class="value ${isCorrect ? 'good' : 'bad'}">${isCorrect ? '✅ مطابق' : caseData.trueKiller}</span></div>
+        <div class="stat-item"><span class="label">الأدلة المكتشفة</span><span class="value">${found}/${total} (${Math.round(clueRatio*100)}%)</span></div>
+        <div class="stat-item"><span class="label">كفاءة الاستجواب</span><span class="value">${Math.round(efficiency*100)}%</span></div>
+        <div class="stat-item"><span class="label">عدد الأسئلة</span><span class="value">${questions}</span></div>
+        <div class="stat-item"><span class="label">نقاط الخبرة</span><span class="value gold">+${xp}</span></div>
+        <div class="stat-item"><span class="label">السمعة</span><span class="value gold">+${rep}</span></div>
+        <div class="total-score">${xp + rep} <span>نقاط إجمالية</span></div>
+      `;
+
+      if (rankUp) {
+        const newRank = RANKS[currentPlayer.rank - 1];
+        html += `
+          <div class="rank-up-badge">⭐</div>
+          <div class="stat-item" style="border-bottom:none;text-align:center;font-size:18px;color:var(--gold);">
+            🎉 ترقية! أنت الآن ${newRank.title}
+          </div>
+        `;
+      }
+
+      content.innerHTML = html;
+      overlay.classList.add('active');
+
+      updateDetectiveDisplay();
+      updateUI();
+    }
+
+    // ================================================================
+    //  تحديث واجهة المحقق
+    // ================================================================
     function updateDetectiveDisplay() {
       if (!currentPlayer) return;
-      const rank = RANKS[currentPlayer.rank - 1];
+      const rank = getRank(currentPlayer.rank);
       const fullTitle = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
 
       document.getElementById('badgeIcon').textContent = rank.badge;
@@ -1912,52 +1807,186 @@
       });
     }
 
-    function logout() {
-      if (currentPlayer) {
-        savePlayer(currentPlayer);
-        localStorage.removeItem('current_detective_username');
+    // ================================================================
+    //  نظام المصادقة
+    // ================================================================
+    function initAuth() {
+      const overlay = document.getElementById('authOverlay');
+      const usernameInput = document.getElementById('authUsername');
+      const displayNameInput = document.getElementById('authDisplayName');
+      const passwordInput = document.getElementById('authPassword');
+      const confirmPasswordInput = document.getElementById('authConfirmPassword');
+      const btn = document.getElementById('authBtn');
+      const error = document.getElementById('authError');
+      const success = document.getElementById('authSuccess');
+      const switchText = document.getElementById('authSwitchText');
+      const switchLink = document.getElementById('authSwitchLink');
+      const modeBadge = document.getElementById('authModeBadge');
+      const title = document.getElementById('authTitle');
+      const sub = document.getElementById('authSub');
+      const displayNameGroup = document.getElementById('displayNameGroup');
+      const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+
+      // التحقق من وجود لاعب نشط
+      const savedUsername = localStorage.getItem('current_detective_username');
+      if (savedUsername) {
+        const player = loadPlayer(savedUsername);
+        if (player) {
+          currentPlayer = player;
+          isLoggedIn = true;
+          overlay.classList.add('hidden');
+          updateDetectiveDisplay();
+          renderCaseList();
+          renderGallery();
+          updateUI();
+          const title2 = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
+          addMessage('system', `🕵️ مرحباً أيها ${title2}! استعد للتحقيق.`);
+          return;
+        }
       }
-      currentPlayer = null;
-      isLoggedIn = false;
-      document.getElementById('authOverlay').classList.remove('hidden');
-      document.getElementById('authUsername').value = '';
-      document.getElementById('authDisplayName').value = '';
-      document.getElementById('authPassword').value = '';
-      document.getElementById('authError').textContent = '';
-      document.getElementById('authSuccess').textContent = '';
-      authMode = 'login';
-      document.getElementById('authBtn').textContent = '🚪 دخول';
-      document.getElementById('authModeBadge').textContent = '🔐 تسجيل الدخول';
-      document.getElementById('authSwitchText').innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
-      document.querySelector('.auth-card h2').textContent = 'غرفة التحقيق';
-      document.querySelector('.auth-card .sub').textContent = 'سجل دخولك لتبدأ التحقيق';
-      document.getElementById('authDisplayName').style.display = 'none';
-      document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'none';
-      document.getElementById('authSwitchLink').onclick = () => {
-        authMode = 'signup';
-        document.getElementById('authBtn').textContent = '📝 إنشاء ملف';
-        document.getElementById('authModeBadge').textContent = '📝 إنشاء ملف جديد';
-        document.getElementById('authSwitchText').innerHTML = 'لديك ملف بالفعل؟ <a id="authSwitchLink">تسجيل الدخول</a>';
-        document.querySelector('.auth-card h2').textContent = '📝 ملف محقق جديد';
-        document.querySelector('.auth-card .sub').textContent = 'أنشئ هويتك الجنائية';
-        document.getElementById('authDisplayName').style.display = 'block';
-        document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'block';
-        document.getElementById('authSwitchLink').onclick = arguments.callee;
+
+      overlay.classList.remove('hidden');
+
+      function updateAuthUI(mode) {
+        authMode = mode;
+        if (mode === 'login') {
+          title.textContent = 'غرفة التحقيق';
+          sub.textContent = 'سجل دخولك لتبدأ التحقيق';
+          modeBadge.textContent = '🔐 تسجيل الدخول';
+          btn.textContent = '🚪 دخول';
+          switchText.innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
+          displayNameGroup.style.display = 'none';
+          confirmPasswordGroup.style.display = 'none';
+          displayNameInput.value = '';
+          confirmPasswordInput.value = '';
+          document.getElementById('authSwitchLink').onclick = () => updateAuthUI('signup');
+        } else {
+          title.textContent = '📝 ملف محقق جديد';
+          sub.textContent = 'أنشئ هويتك الجنائية';
+          modeBadge.textContent = '📝 إنشاء ملف جديد';
+          btn.textContent = '📝 إنشاء ملف';
+          switchText.innerHTML = 'لديك ملف بالفعل؟ <a id="authSwitchLink">تسجيل الدخول</a>';
+          displayNameGroup.style.display = 'block';
+          confirmPasswordGroup.style.display = 'block';
+          document.getElementById('authSwitchLink').onclick = () => updateAuthUI('login');
+        }
+        error.textContent = '';
+        success.textContent = '';
+        usernameInput.focus();
+      }
+
+      updateAuthUI('login');
+
+      btn.onclick = () => {
+        const username = usernameInput.value.trim();
+        const displayName = displayNameInput.value.trim();
+        const password = passwordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
+
+        error.textContent = '';
+        success.textContent = '';
+
+        if (!username) {
+          error.textContent = '⚠️ الرجاء إدخال اسم المستخدم.';
+          usernameInput.focus();
+          return;
+        }
+        if (username.length < 3) {
+          error.textContent = '⚠️ اسم المستخدم يجب أن يكون 3 أحرف على الأقل.';
+          usernameInput.focus();
+          return;
+        }
+        if (!password) {
+          error.textContent = '⚠️ الرجاء إدخال كلمة المرور.';
+          passwordInput.focus();
+          return;
+        }
+        if (password.length < 4) {
+          error.textContent = '⚠️ كلمة المرور يجب أن تكون 4 أحرف على الأقل.';
+          passwordInput.focus();
+          return;
+        }
+
+        if (authMode === 'login') {
+          const player = loadPlayer(username);
+          if (!player) {
+            error.textContent = '❌ لا يوجد ملف بهذا الاسم. هل تريد إنشاء ملف جديد؟';
+            usernameInput.focus();
+            return;
+          }
+          if (player.password !== password) {
+            error.textContent = '❌ كلمة المرور غير صحيحة.';
+            passwordInput.value = '';
+            passwordInput.focus();
+            return;
+          }
+          currentPlayer = player;
+          isLoggedIn = true;
+          localStorage.setItem('current_detective_username', username);
+          success.textContent = '✅ مرحباً بعودتك أيها المحقق!';
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+            updateDetectiveDisplay();
+            renderCaseList();
+            renderGallery();
+            updateUI();
+            const title2 = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
+            addMessage('system', `🕵️ مرحباً أيها ${title2}! استعد للتحقيق.`);
+          }, 500);
+        } else {
+          if (!displayName) {
+            error.textContent = '⚠️ الرجاء إدخال الاسم الرسمي للمحقق.';
+            displayNameInput.focus();
+            return;
+          }
+          if (displayName.length < 2) {
+            error.textContent = '⚠️ الاسم الرسمي قصير جداً.';
+            displayNameInput.focus();
+            return;
+          }
+          if (password !== confirmPassword) {
+            error.textContent = '❌ كلمة المرور وتأكيدها غير متطابقين.';
+            confirmPasswordInput.value = '';
+            confirmPasswordInput.focus();
+            return;
+          }
+          const existing = loadPlayer(username);
+          if (existing) {
+            error.textContent = '⚠️ هذا الاسم مستخدم بالفعل. اختر اسماً آخر.';
+            usernameInput.value = '';
+            usernameInput.focus();
+            return;
+          }
+          const newPlayer = {
+            ...DEFAULT_PLAYER,
+            username: username,
+            displayName: displayName,
+            password: password
+          };
+          if (savePlayer(newPlayer)) {
+            currentPlayer = newPlayer;
+            isLoggedIn = true;
+            localStorage.setItem('current_detective_username', username);
+            success.textContent = '✅ تم إنشاء الملف بنجاح!';
+            setTimeout(() => {
+              overlay.classList.add('hidden');
+              updateDetectiveDisplay();
+              renderCaseList();
+              renderGallery();
+              updateUI();
+              const title2 = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
+              addMessage('system', `🕵️ مرحباً أيها ${title2}! استعد للتحقيق.`);
+            }, 500);
+          } else {
+            error.textContent = '❌ حدث خطأ أثناء إنشاء الملف. حاول مرة أخرى.';
+          }
+        }
       };
-      state = {
-        currentSuspectId: null,
-        askedQuestions: 0,
-        maxQuestions: 25,
-        conversationHistory: [],
-        suspects: JSON.parse(JSON.stringify(CASE_DATA.suspects)),
-        clues: CASE_DATA.clues.map(c => ({ text: c, found: false })),
-        foundClues: [],
-        gameOver: false,
-        accusationMade: false
-      };
-      updateUI();
-      document.getElementById('transcript').innerHTML = `<div class="msg system">🚪 تم تسجيل الخروج. نراكم قريباً.</div>`;
-      document.getElementById('globalStatus').textContent = 'غير متصل';
+
+      usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
+      displayNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
+      passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
+      confirmPasswordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
     }
 
     // ================================================================
@@ -1978,6 +2007,19 @@
         `;
         container.appendChild(div);
       });
+    }
+
+    // ================================================================
+    //  تسجيل الخروج
+    // ================================================================
+    function logout() {
+      if (currentPlayer) {
+        savePlayer(currentPlayer);
+        localStorage.removeItem('current_detective_username');
+      }
+      currentPlayer = null;
+      isLoggedIn = false;
+      location.reload();
     }
 
     // ================================================================
@@ -2030,9 +2072,13 @@
       document.getElementById('sidebar').classList.toggle('open');
     });
 
-    // إغلاق التقرير
     document.getElementById('closeReportBtn').addEventListener('click', () => {
       document.getElementById('reportOverlay').classList.remove('active');
+      // تحديث الواجهة بعد إغلاق التقرير
+      updateDetectiveDisplay();
+      renderCaseList();
+      renderGallery();
+      updateUI();
     });
 
     // ================================================================
