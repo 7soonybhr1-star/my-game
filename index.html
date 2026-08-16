@@ -4,8 +4,612 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>غرفة التحقيق – الإصدار الاحترافي</title>
-    <link rel="stylesheet" href="style-final.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== style-final.css – تم دمجه هنا ===== */
+        :root {
+            --gold: #d4a843;
+            --gold-dark: #a8822a;
+            --gold-light: #f0d78a;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12141c;
+            --bg-card: #1a1d2a;
+            --bg-panel: #161926;
+            --text-primary: #ece6d5;
+            --text-secondary: #9a9485;
+            --text-muted: #6a6558;
+            --border: #2a2d3a;
+            --shadow: 0 10px 40px rgba(0,0,0,0.6);
+            --shadow-gold: 0 0 40px rgba(212, 168, 67, 0.1);
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: radial-gradient(ellipse at 50% 0%, #1a1d2a 0%, #0a0a0f 70%);
+        }
+
+        #app { max-width: 1600px; margin: 0 auto; }
+
+        /* ===== الصفحة الرئيسية ===== */
+        #home-screen { min-height: 90vh; }
+
+        #main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 35px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon { font-size: 2.5rem; }
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .version {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 2px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+        }
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stat-icon { font-size: 1.3rem; }
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--gold);
+        }
+        .stat-label { color: var(--text-secondary); font-size: 0.85rem; }
+
+        #btn-new-random {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            color: #0a0a0f;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #btn-new-random:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        #cases-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .filter-btn:hover { border-color: var(--gold); color: var(--text-primary); }
+        .filter-btn.active {
+            background: var(--gold);
+            color: #0a0a0f;
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+
+        #cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .case-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .case-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .case-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .case-card-body {
+            padding: 20px;
+        }
+        .case-card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .case-card-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .case-card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .case-card-difficulty {
+            padding: 3px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .difficulty-easy { background: #2d5a2d; color: #8fca8f; }
+        .difficulty-medium { background: #6a5a2d; color: #f0d78a; }
+        .difficulty-hard { background: #6a2d2d; color: #f08a8a; }
+
+        .case-card-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-solved { color: #4caf50; }
+        .status-unsolved { color: var(--text-muted); }
+
+        /* ===== شاشة اللعبة ===== */
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 90vh;
+        }
+
+        #game-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #game-case-title { font-weight: 700; font-size: 1.1rem; }
+        #progress-bar { color: var(--gold); font-weight: 700; }
+
+        #game-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr 300px;
+            gap: 15px;
+            flex: 1;
+            min-height: 70vh;
+        }
+
+        /* العمود الأيسر */
+        #left-game-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #crime-scene-panel {
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            padding: 18px;
+            border: 1px solid var(--border);
+        }
+
+        #scene-image-container {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        #scene-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        #body-image-container {
+            margin-top: 10px;
+        }
+        #body-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #8b2c2c;
+        }
+
+        #scene-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            padding: 8px 0;
+        }
+
+        #clues-panel {
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            padding: 15px 18px;
+            border: 1px solid var(--border);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #clues-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .clue-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border-right: 3px solid var(--gold);
+        }
+        .clue-item .clue-icon { font-size: 1.1rem; }
+        .clue-item.found { border-right-color: #4caf50; }
+        .clue-item.hidden { opacity: 0.5; }
+
+        /* العمود الأوسط */
+        #center-game-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #suspects-header {
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            padding: 12px 18px;
+            border: 1px solid var(--border);
+        }
+        #suspects-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .suspect-tab {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .suspect-tab:hover { border-color: var(--gold); color: var(--text-primary); }
+        .suspect-tab.active {
+            background: var(--gold);
+            color: #0a0a0f;
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+        .suspect-tab .tab-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .tab-status.normal { background: #4caf50; }
+        .tab-status.stressed { background: #ff9800; }
+        .tab-status.broken { background: #f44336; }
+
+        #interrogation-room {
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 400px;
+        }
+
+        #chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        #suspect-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        #suspect-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+        }
+        #suspect-name { font-weight: 700; font-size: 1.05rem; }
+        #suspect-job { font-size: 0.8rem; color: var(--text-muted); display: block; }
+
+        #suspect-state {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        #suspect-mood { font-size: 1rem; }
+        #suspect-trust {
+            background: var(--bg-card);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+
+        #chat-window {
+            flex: 1;
+            padding: 15px 20px;
+            overflow-y: auto;
+            min-height: 250px;
+        }
+        #messages {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg-player {
+            align-self: flex-end;
+            background: var(--gold);
+            color: #0a0a0f;
+            padding: 10px 18px;
+            border-radius: 18px 18px 4px 18px;
+            max-width: 80%;
+            font-size: 0.95rem;
+        }
+        .msg-suspect {
+            align-self: flex-start;
+            background: var(--bg-card);
+            padding: 10px 18px;
+            border-radius: 18px 18px 18px 4px;
+            max-width: 80%;
+            font-size: 0.95rem;
+            border: 1px solid var(--border);
+        }
+        .msg-system {
+            align-self: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+        .msg-thinking {
+            align-self: center;
+            color: var(--gold);
+            font-size: 0.85rem;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        #input-area {
+            display: flex;
+            gap: 10px;
+            padding: 12px 18px;
+            border-top: 1px solid var(--border);
+        }
+        #question-input {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        #question-input:focus { border-color: var(--gold); }
+
+        /* العمود الأيمن */
+        #right-game-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #investigation-board {
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            padding: 18px;
+            border: 1px solid var(--border);
+            flex: 1;
+            overflow-y: auto;
+        }
+        #investigation-board h4 { color: var(--gold); margin-bottom: 12px; }
+        #investigation-board h5 { color: var(--text-secondary); font-size: 0.9rem; margin: 10px 0 5px; }
+
+        #timeline-events, #proof-list, #relations-map {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .timeline-event {
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+        .timeline-event .time { color: var(--gold); font-weight: 700; }
+
+        .proof-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        #action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        #action-buttons button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 0.9rem;
+        }
+        .danger-btn {
+            background: #6a2d2d;
+            color: #f08a8a;
+        }
+        .danger-btn:hover { background: #8a3d3d; }
+        .primary-btn {
+            background: var(--gold);
+            color: #0a0a0f;
+        }
+        .primary-btn:hover { background: var(--gold-dark); }
+        .secondary-btn {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        .secondary-btn:hover { border-color: var(--gold); color: var(--text-primary); }
+
+        /* ===== شاشة النتيجة ===== */
+        #result-screen {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+        .result-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 45px;
+            max-width: 750px;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        #result-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        #result-icon { font-size: 4rem; }
+        #result-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+        #result-details { margin: 20px 0; }
+        #result-summary {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+        #result-evidence-list {
+            margin: 20px 0;
+        }
+        #result-evidence-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        #result-evidence-list li {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        #result-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .result-stat {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .result-stat span:first-child { color: var(--text-muted); display: block; font-size: 0.8rem; }
+        .result-stat span:last-child { font-weight: 700; font-size: 1.2rem; color: var(--gold); }
+
+        #result-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        #result-actions button { flex: 1; min-width: 120px; }
+
+        /* ===== التجاوب ===== */
+        @media (max-width: 1200px) {
+            #game-layout { grid-template-columns: 1fr; }
+            #left-game-panel { flex-direction: row; flex-wrap: wrap; }
+            #left-game-panel > div { flex: 1; min-width: 250px; }
+        }
+
+        @media (max-width: 768px) {
+            #main-header { flex-direction: column; align-items: stretch; }
+            .header-stats { justify-content: space-around; }
+            #cases-grid { grid-template-columns: 1fr; }
+            .result-container { padding: 25px; }
+            #result-stats { grid-template-columns: 1fr; }
+            #api-settings { flex-direction: column; align-items: stretch; }
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -65,7 +669,6 @@
 
         <!-- ========== شاشة اللعبة ========== -->
         <section id="game-screen" style="display:none;">
-            <!-- شريط التنقل -->
             <nav id="game-nav">
                 <button id="btn-back-home" class="secondary-btn">← العودة للقائمة</button>
                 <span id="game-case-title">قضية: <span id="case-id-display"></span></span>
@@ -73,7 +676,6 @@
             </nav>
 
             <div id="game-layout">
-                <!-- العمود الأيسر: مسرح الجريمة والأدلة -->
                 <div id="left-game-panel">
                     <div id="crime-scene-panel">
                         <h3>🏚️ مسرح الجريمة</h3>
@@ -81,26 +683,21 @@
                             <img id="scene-img" src="" alt="مسرح الجريمة">
                         </div>
                         <div id="scene-description"></div>
-                        
-                        <!-- صورة الجثة -->
                         <div id="body-image-container" style="display:none;">
                             <h4>⚠️ موقع الجثة</h4>
                             <img id="body-img" src="" alt="موقع الجثة">
                         </div>
                     </div>
-
                     <div id="clues-panel">
                         <h4>📌 الأدلة المكتشفة</h4>
                         <div id="clues-list"></div>
                     </div>
                 </div>
 
-                <!-- العمود الأوسط: الاستجواب -->
                 <div id="center-game-panel">
                     <div id="suspects-header">
                         <div id="suspects-tabs"></div>
                     </div>
-                    
                     <div id="interrogation-room">
                         <div id="chat-header">
                             <div id="suspect-profile">
@@ -115,11 +712,9 @@
                                 <span id="suspect-trust">الثقة: 50%</span>
                             </div>
                         </div>
-                        
                         <div id="chat-window">
                             <div id="messages"></div>
                         </div>
-                        
                         <div id="input-area">
                             <input type="text" id="question-input" placeholder="اسأل المشتبه به... (اسأل بحرية)">
                             <button id="btn-send" class="primary-btn">➤ إرسال</button>
@@ -128,7 +723,6 @@
                     </div>
                 </div>
 
-                <!-- العمود الأيمن: لوحة التحقيق -->
                 <div id="right-game-panel">
                     <div id="investigation-board">
                         <h4>📋 لوحة التحقيق</h4>
@@ -145,7 +739,6 @@
                             <div id="relations-map"></div>
                         </div>
                     </div>
-                    
                     <div id="action-buttons">
                         <button id="btn-accuse" class="danger-btn">⚖️ اتهام الفاعل</button>
                         <button id="btn-report" class="secondary-btn">📄 تقرير نهائي</button>
@@ -192,8 +785,1288 @@
         </section>
     </div>
 
-    <script src="cases-data.js"></script>
-    <script src="engine-final.js"></script>
-    <script src="script-final.js"></script>
+    <script>
+        // ===== ملف cases-data.js =====
+        // 12 قصة كاملة مع صور وأدلة ومشتبهين
+        const CASES_DATABASE = [{
+            id: 'C001',
+            title: 'جريمة الفيلا المغلقة',
+            subtitle: 'قتل رجل أعمال في فيلته المغلقة',
+            type: 'قتل',
+            difficulty: 'medium',
+            image: 'https://picsum.photos/seed/villa1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body1/600/300',
+            sceneDescription: 'فيلا فاخرة في ضواحي المدينة. النوافذ مغلقة من الداخل. الباب الرئيسي موصد. لا يوجد أثر اقتحام. الجثة في غرفة المعيشة.',
+            time: 'الليلة الماضية، 11:47 مساءً',
+            location: 'فيلا المنصور، ضاحية النخيل',
+            weapon: 'سكين مطبخ',
+            suspects: [
+                { name: 'يوسف المنصور', job: 'مصرفي', personality: 'بارد', avatar: 'https://picsum.photos/seed/yusuf/200/200' },
+                { name: 'ليلى السعدي', job: 'طبيبة', personality: 'عصبية', avatar: 'https://picsum.photos/seed/layla/200/200' },
+                { name: 'خالد النجار', job: 'محامي', personality: 'متلاعب', avatar: 'https://picsum.photos/seed/khalid/200/200' },
+                { name: 'سارة العمران', job: 'مهندسة', personality: 'خائفة', avatar: 'https://picsum.photos/seed/sarah/200/200' },
+                { name: 'عادل الفهد', job: 'سائق', personality: 'غامض', avatar: 'https://picsum.photos/seed/adil/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'بصمة غامضة على مقبض الباب', icon: '🖐️', leadsTo: 2 },
+                { id: 'c2', desc: 'رسالة تهديد ممزقة', icon: '📜', leadsTo: 1 },
+                { id: 'c3', desc: 'تسجيل كاميرا يظهر شخصاً يهرب', icon: '📹', leadsTo: 0 },
+                { id: 'c4', desc: 'أثر حذاء في الوحل', icon: '👟', leadsTo: 3 },
+                { id: 'c5', desc: 'منديل به دماء وبصمة', icon: '🧣', leadsTo: 0 },
+                { id: 'c6', desc: 'ساعة مكسورة تشير إلى 11:45', icon: '⌚', leadsTo: 4 },
+                { id: 'c7', desc: 'مكالمة هاتفية مسجلة', icon: '📞', leadsTo: 0 }
+            ],
+            finalProof: 'المنديل يحتوي على دم الضحية وبصمة يوسف المنصور المتطابقة مع عينة الحمض النووي',
+            killerId: 0,
+            killerMotive: 'مال – الضحية كانت تهدد بإفلاسه'
+        }, {
+            id: 'C002',
+            title: 'لغز المتحف المسروق',
+            subtitle: 'سرقة لوحة نادرة من متحف محصن',
+            type: 'سرقة',
+            difficulty: 'hard',
+            image: 'https://picsum.photos/seed/museum1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body2/600/300',
+            sceneDescription: 'متحف الفن الحديث. اللوحة المسروقة كانت في غرفة مؤمنة. نظام الإنذار معطل. كاميرات المراقبة تم تشويشها.',
+            time: 'فجر اليوم، 3:15 صباحاً',
+            location: 'متحف الفن الحديث',
+            weapon: 'لا يوجد (سرقة)',
+            suspects: [
+                { name: 'فهد العتيبي', job: 'حارس أمن', personality: 'متوتر', avatar: 'https://picsum.photos/seed/fahd/200/200' },
+                { name: 'نورة السالم', job: 'أمينة متحف', personality: 'ذكية', avatar: 'https://picsum.photos/seed/nora/200/200' },
+                { name: 'سامي الغامدي', job: 'تاجر تحف', personality: 'جشع', avatar: 'https://picsum.photos/seed/sami/200/200' },
+                { name: 'هدى القحطاني', job: 'مصممة', personality: 'غامضة', avatar: 'https://picsum.photos/seed/huda/200/200' },
+                { name: 'راشد المالكي', job: 'عامل نظافة', personality: 'بسيط', avatar: 'https://picsum.photos/seed/rashid/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'بصمة على زجاج الواجهة', icon: '🖐️', leadsTo: 2 },
+                { id: 'c2', desc: 'أداة قطع الزجاج', icon: '🔧', leadsTo: 0 },
+                { id: 'c3', desc: 'تسجيل صوتي لخطوة', icon: '🎤', leadsTo: 3 },
+                { id: 'c4', desc: 'سيارة مشبوهة قرب المتحف', icon: '🚗', leadsTo: 1 },
+                { id: 'c5', desc: 'قطعة قماش عالقة بالباب', icon: '🧵', leadsTo: 4 },
+                { id: 'c6', desc: 'الكاميرا التالفة', icon: '📷', leadsTo: 2 },
+                { id: 'c7', desc: 'تذكرة دخول مكررة', icon: '🎫', leadsTo: 1 }
+            ],
+            finalProof: 'قطعة القماش تطابق سترة سامي الغامدي، وعُثر على اللوحة في مستودعه',
+            killerId: 2,
+            killerMotive: 'جشع – يريد بيع اللوحة في السوق السوداء'
+        }, {
+            id: 'C003',
+            title: 'جريمة المكتب الموصد',
+            subtitle: 'محامي مقتول في مكتبه',
+            type: 'قتل',
+            difficulty: 'medium',
+            image: 'https://picsum.photos/seed/office1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body3/600/300',
+            sceneDescription: 'مكتب المحامي خالد النجار. الباب موصد من الداخل. النوافذ مغلقة. الجثة خلف المكتب.',
+            time: 'أمس، 8:30 مساءً',
+            location: 'مكتب المحامي، برج الأعمال',
+            weapon: 'مسدس كاتم للصوت',
+            suspects: [
+                { name: 'أحمد السالم', job: 'شريك محامي', personality: 'طموح', avatar: 'https://picsum.photos/seed/ahmed/200/200' },
+                { name: 'منى السعيد', job: 'سكرتيرة', personality: 'خائفة', avatar: 'https://picsum.photos/seed/mona/200/200' },
+                { name: 'طلال الحربي', job: 'عميل', personality: 'غاضب', avatar: 'https://picsum.photos/seed/talal/200/200' },
+                { name: 'نوال الشمري', job: 'زوجة', personality: 'حزينة', avatar: 'https://picsum.photos/seed/nawal/200/200' },
+                { name: 'سعود المطيري', job: 'محقق خاص', personality: 'غامض', avatar: 'https://picsum.photos/seed/saud/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'رصاصة من مسدس كاتم', icon: '🔫', leadsTo: 0 },
+                { id: 'c2', desc: 'مذكرة تهديد مكتوبة', icon: '📄', leadsTo: 2 },
+                { id: 'c3', desc: 'بصمة على الزجاج', icon: '🖐️', leadsTo: 3 },
+                { id: 'c4', desc: 'تسجيل من كاميرا الحارس', icon: '📹', leadsTo: 1 },
+                { id: 'c5', desc: 'هاتف مكسور', icon: '📱', leadsTo: 4 },
+                { id: 'c6', desc: 'بطاقة هوية ساقطة', icon: '🪪', leadsTo: 0 },
+                { id: 'c7', desc: 'دخان كثيف من المكتب', icon: '💨', leadsTo: 2 }
+            ],
+            finalProof: 'بطاقة هوية أحمد السالم موجودة تحت الجثة، والبصمة على المسدس تطابق بصمته',
+            killerId: 0,
+            killerMotive: 'طموح – يريد الاستحواذ على الشركة'
+        }, {
+            id: 'C004',
+            title: 'لغز العمارة المهجورة',
+            subtitle: 'جثة فتاة في عمارة مهجورة',
+            type: 'غموض',
+            difficulty: 'hard',
+            image: 'https://picsum.photos/seed/building1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body4/600/300',
+            sceneDescription: 'عمارة قديمة مهجورة. الجثة في الطابق الخامس. آثار معارك حول المكان. ضوء خافت.',
+            time: 'قبل 3 أيام، 10:20 مساءً',
+            location: 'عمارة الأمل المهجورة',
+            weapon: 'أداة حادة',
+            suspects: [
+                { name: 'ماجد الشمري', job: 'حارس عقار', personality: 'منعزل', avatar: 'https://picsum.photos/seed/majed/200/200' },
+                { name: 'فاطمة العتيبي', job: 'صحفية', personality: 'فضولية', avatar: 'https://picsum.photos/seed/fatima/200/200' },
+                { name: 'خالد الحربي', job: 'متسول', personality: 'بائس', avatar: 'https://picsum.photos/seed/khalid2/200/200' },
+                { name: 'سارة المالكي', job: 'طالبة', personality: 'خائفة', avatar: 'https://picsum.photos/seed/sara2/200/200' },
+                { name: 'عبدالله الناصر', job: 'ضابط متقاعد', personality: 'صارم', avatar: 'https://picsum.photos/seed/abdullah/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'أثر قدمين مختلفين', icon: '👣', leadsTo: 2 },
+                { id: 'c2', desc: 'زر مطرز', icon: '🧵', leadsTo: 1 },
+                { id: 'c3', desc: 'رسالة مكتوبة بالدم', icon: '🩸', leadsTo: 3 },
+                { id: 'c4', desc: 'كاميرا قديمة مع شريط', icon: '📼', leadsTo: 4 },
+                { id: 'c5', desc: 'سلسلة مفاتيح', icon: '🔑', leadsTo: 0 },
+                { id: 'c6', desc: 'آثار موقد نار', icon: '🔥', leadsTo: 2 },
+                { id: 'c7', desc: 'صورة ممزقة', icon: '🖼️', leadsTo: 1 }
+            ],
+            finalProof: 'الشريط من الكاميرا يظهر ماجد الشمري وهو يغادر المكان مساء الجريمة',
+            killerId: 0,
+            killerMotive: 'خوف – الضحية كانت تهدده بكشف جرائمه القديمة'
+        }, {
+            id: 'C005',
+            title: 'سرقة البنك',
+            subtitle: 'سرقة كبرى من بنك مركزي',
+            type: 'سرقة',
+            difficulty: 'medium',
+            image: 'https://picsum.photos/seed/bank1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body5/600/300',
+            sceneDescription: 'بنك مركزي. الخزنة مفتوحة. الحراس مصابون. الكاميرات معطلة.',
+            time: 'الفجر، 4:00 صباحاً',
+            location: 'البنك المركزي',
+            weapon: 'غاز مسيل للدموع',
+            suspects: [
+                { name: 'فيصل الجابر', job: 'مدير البنك', personality: 'متوتر', avatar: 'https://picsum.photos/seed/faisal/200/200' },
+                { name: 'ناصر القحطاني', job: 'حارس', personality: 'خائف', avatar: 'https://picsum.photos/seed/naser/200/200' },
+                { name: 'منى الدوسري', job: 'محاسبة', personality: 'ذكية', avatar: 'https://picsum.photos/seed/mona2/200/200' },
+                { name: 'سعد العنزي', job: 'سائق', personality: 'غامض', avatar: 'https://picsum.photos/seed/saad/200/200' },
+                { name: 'هيفاء الشهراني', job: 'زبونة', personality: 'غريبة', avatar: 'https://picsum.photos/seed/haifa/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'قناع ملقى', icon: '🎭', leadsTo: 1 },
+                { id: 'c2', desc: 'بصمة على الخزنة', icon: '🖐️', leadsTo: 3 },
+                { id: 'c3', desc: 'سيارة هربت', icon: '🚗', leadsTo: 0 },
+                { id: 'c4', desc: 'حقيبة نقود ممزقة', icon: '💰', leadsTo: 2 },
+                { id: 'c5', desc: 'قبعة مهجورة', icon: '🧢', leadsTo: 4 },
+                { id: 'c6', desc: 'دماء على الباب', icon: '🩸', leadsTo: 1 },
+                { id: 'c7', desc: 'مفتاح إضافي', icon: '🔑', leadsTo: 0 }
+            ],
+            finalProof: 'المفتاح الإضافي موجود في مكتب المدير فيصل الجابر، وهو مطابق لمفتاح الخزنة',
+            killerId: 0,
+            killerMotive: 'مال – كان متورطاً في اختلاس الأموال'
+        }, {
+            id: 'C006',
+            title: 'جريمة القصر القديم',
+            subtitle: 'وريث قتيل في قصره',
+            type: 'قتل',
+            difficulty: 'hard',
+            image: 'https://picsum.photos/seed/palace1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body6/600/300',
+            sceneDescription: 'قصر عريق. الجثة في غرفة النوم الرئيسية. نوافذ مفتوحة.',
+            time: 'آخر الليل، 1:30 صباحاً',
+            location: 'قصر العائلة القديم',
+            weapon: 'خنجر مزخرف',
+            suspects: [
+                { name: 'تركي السلمان', job: 'أخ', personality: 'طموح', avatar: 'https://picsum.photos/seed/turki/200/200' },
+                { name: 'نورة السلمان', job: 'زوجة', personality: 'حزينة', avatar: 'https://picsum.photos/seed/nora2/200/200' },
+                { name: 'بدر السلمان', job: 'ابن عم', personality: 'متآمر', avatar: 'https://picsum.photos/seed/bader/200/200' },
+                { name: 'غادة السلمان', job: 'أخت', personality: 'غامضة', avatar: 'https://picsum.photos/seed/ghada/200/200' },
+                { name: 'سليمان الحسن', job: 'خادم', personality: 'خائف', avatar: 'https://picsum.photos/seed/sulaiman/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'الخنجر المزخرف', icon: '🗡️', leadsTo: 0 },
+                { id: 'c2', desc: 'وشاح متروك', icon: '🧣', leadsTo: 1 },
+                { id: 'c3', desc: 'رسالة غير مكتملة', icon: '📜', leadsTo: 2 },
+                { id: 'c4', desc: 'أثر حذاء في الحديقة', icon: '👟', leadsTo: 3 },
+                { id: 'c5', desc: 'زجاجة مكسورة', icon: '🍾', leadsTo: 4 },
+                { id: 'c6', desc: 'كاميرا مراقبة مكسورة', icon: '📷', leadsTo: 0 },
+                { id: 'c7', desc: 'ساعة توقفت عند 1:30', icon: '⌚', leadsTo: 2 }
+            ],
+            finalProof: 'الوشاح يحمل عطر نورة السلمان، والخنجر به بصماتها',
+            killerId: 1,
+            killerMotive: 'غيرة – كانت الضحية تخطط لتطليقها'
+        }, {
+            id: 'C007',
+            title: 'لغز المختبر',
+            subtitle: 'عالم مقتول في مختبره',
+            type: 'غموض',
+            difficulty: 'medium',
+            image: 'https://picsum.photos/seed/lab1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body7/600/300',
+            sceneDescription: 'مختبر أبحاث. الجثة بجانب المواد الكيميائية. رائحة غريبة.',
+            time: 'بعد الظهر، 3:00 مساءً',
+            location: 'مختبر الأبحاث العلمية',
+            weapon: 'سم',
+            suspects: [
+                { name: 'دكتور هاني', job: 'زميل عالم', personality: 'منافس', avatar: 'https://picsum.photos/seed/hani/200/200' },
+                { name: 'ريم السالم', job: 'فنية مختبر', personality: 'خائفة', avatar: 'https://picsum.photos/seed/reem/200/200' },
+                { name: 'سامر الخالد', job: 'طالب دكتوراه', personality: 'طموح', avatar: 'https://picsum.photos/seed/samer/200/200' },
+                { name: 'نادية الشريف', job: 'مديرة', personality: 'صارمة', avatar: 'https://picsum.photos/seed/nadia/200/200' },
+                { name: 'فيصل السبيعي', job: 'حارس', personality: 'غافل', avatar: 'https://picsum.photos/seed/faisal2/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'زجاجة سم مفتوحة', icon: '🧪', leadsTo: 0 },
+                { id: 'c2', desc: 'قفازات مطاطية', icon: '🧤', leadsTo: 1 },
+                { id: 'c3', desc: 'سجل المختبر', icon: '📋', leadsTo: 2 },
+                { id: 'c4', desc: 'كاميرا التصوير', icon: '📸', leadsTo: 3 },
+                { id: 'c5', desc: 'كوب شاي', icon: '☕', leadsTo: 4 },
+                { id: 'c6', desc: 'مذكرة موقعة', icon: '📄', leadsTo: 0 },
+                { id: 'c7', desc: 'جهاز تحليل', icon: '🔬', leadsTo: 2 }
+            ],
+            finalProof: 'المذكرة موقعة من دكتور هاني، وتحتوي على تفاصيل عن جرعة السم',
+            killerId: 0,
+            killerMotive: 'منافسة – كان يريد الحصول على براءة الاختراع'
+        }, {
+            id: 'C008',
+            title: 'اختطاف ابنة الوزير',
+            subtitle: 'ابنة وزير مختطفة',
+            type: 'اختطاف',
+            difficulty: 'hard',
+            image: 'https://picsum.photos/seed/kidnap1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body8/600/300',
+            sceneDescription: 'منزل الوزير. باب خلفي مفتوح. حراسة غير كافية.',
+            time: 'عند الفجر، 5:15 صباحاً',
+            location: 'منزل الوزير',
+            weapon: 'مسدس',
+            suspects: [
+                { name: 'وزير الداخلية', job: 'وزير', personality: 'قلق', avatar: 'https://picsum.photos/seed/minister/200/200' },
+                { name: 'ناصر الفهد', job: 'حارس خاص', personality: 'مهمل', avatar: 'https://picsum.photos/seed/naser2/200/200' },
+                { name: 'هند العتيبي', job: 'خادمة', personality: 'خائفة', avatar: 'https://picsum.photos/seed/hind/200/200' },
+                { name: 'عبدالرحمن السعيد', job: 'سائق', personality: 'غامض', avatar: 'https://picsum.photos/seed/abdulrahman/200/200' },
+                { name: 'ليلى المطيري', job: 'قريبة', personality: 'غاضبة', avatar: 'https://picsum.photos/seed/layla2/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'رسالة فدية', icon: '📨', leadsTo: 2 },
+                { id: 'c2', desc: 'بصمة على الباب', icon: '🖐️', leadsTo: 1 },
+                { id: 'c3', desc: 'سيارة مشبوهة', icon: '🚗', leadsTo: 3 },
+                { id: 'c4', desc: 'هاتف مكسور', icon: '📱', leadsTo: 4 },
+                { id: 'c5', desc: 'مفتاح غرفة', icon: '🔑', leadsTo: 0 },
+                { id: 'c6', desc: 'أثر حذاء', icon: '👟', leadsTo: 1 },
+                { id: 'c7', desc: 'وشاح تركته الفتاة', icon: '🧣', leadsTo: 3 }
+            ],
+            finalProof: 'الوشاح وعليه أثر عطر نادر – موجود في سيارة السائق',
+            killerId: 3,
+            killerMotive: 'انتقام – الوزير رفض طلبه السابق'
+        }, {
+            id: 'C009',
+            title: 'جريمة المزرعة',
+            subtitle: 'مزارع مقتول في أرضه',
+            type: 'قتل',
+            difficulty: 'easy',
+            image: 'https://picsum.photos/seed/farm1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body9/600/300',
+            sceneDescription: 'مزرعة نائية. الجثة في الحظيرة. أدوات زراعية مبعثرة.',
+            time: 'أمس، 7:20 مساءً',
+            location: 'مزرعة النخيل',
+            weapon: 'فأس',
+            suspects: [
+                { name: 'خالد الفوزان', job: 'جاره', personality: 'غاضب', avatar: 'https://picsum.photos/seed/khalid3/200/200' },
+                { name: 'أحمد الدوسري', job: 'عامل', personality: 'خائف', avatar: 'https://picsum.photos/seed/ahmed2/200/200' },
+                { name: 'محمد الشمري', job: 'شقيقه', personality: 'جشع', avatar: 'https://picsum.photos/seed/mohammed/200/200' },
+                { name: 'فاطمة السعيد', job: 'زوجته', personality: 'حزينة', avatar: 'https://picsum.photos/seed/fatima2/200/200' },
+                { name: 'عبدالله المطيري', job: 'تاجر مواشي', personality: 'بارد', avatar: 'https://picsum.photos/seed/abdullah2/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'الفأس الملطخ بالدماء', icon: '🪓', leadsTo: 0 },
+                { id: 'c2', desc: 'قبعة ملقاة', icon: '🧢', leadsTo: 1 },
+                { id: 'c3', desc: 'شيك مرتجع', icon: '💳', leadsTo: 2 },
+                { id: 'c4', desc: 'رسالة حب قديمة', icon: '💌', leadsTo: 3 },
+                { id: 'c5', desc: 'أثر عجلة', icon: '🚜', leadsTo: 4 },
+                { id: 'c6', desc: 'سكين في الحقل', icon: '🔪', leadsTo: 0 },
+                { id: 'c7', desc: 'هاتف الجثة', icon: '📱', leadsTo: 2 }
+            ],
+            finalProof: 'الهاتف يحتوي على رسالة تهديد من محمد الشمري قبل ساعة من الجريمة',
+            killerId: 2,
+            killerMotive: 'جشع – يريد المزرعة كاملة'
+        }, {
+            id: 'C010',
+            title: 'لغز الكنيسة القديمة',
+            subtitle: 'كاهن مقتول في الكنيسة',
+            type: 'غموض',
+            difficulty: 'hard',
+            image: 'https://picsum.photos/seed/church1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body10/600/300',
+            sceneDescription: 'كنيسة أثرية. الجثة عند المذبح. شموع مطفأة.',
+            time: 'ليلة الأحد، 11:30 مساءً',
+            location: 'كنيسة القديسة ماريا',
+            weapon: 'صليب معدني',
+            suspects: [
+                { name: 'الأب بولس', job: 'كاهن مساعد', personality: 'غامض', avatar: 'https://picsum.photos/seed/pope/200/200' },
+                { name: 'مرسال الخوري', job: 'شماس', personality: 'خائف', avatar: 'https://picsum.photos/seed/mersal/200/200' },
+                { name: 'سامية كريم', job: 'مصلية', personality: 'غاضبة', avatar: 'https://picsum.photos/seed/samia/200/200' },
+                { name: 'جورج سليمان', job: 'حارس', personality: 'مهمل', avatar: 'https://picsum.photos/seed/george/200/200' },
+                { name: 'هاني نصيف', job: 'قريب', personality: 'حزين', avatar: 'https://picsum.photos/seed/hany/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'الصليب الدموي', icon: '✝️', leadsTo: 0 },
+                { id: 'c2', desc: 'وشاح مطهر', icon: '🧣', leadsTo: 1 },
+                { id: 'c3', desc: 'رسالة اعتراف', icon: '📜', leadsTo: 2 },
+                { id: 'c4', desc: 'كاميرا الكنيسة', icon: '📹', leadsTo: 3 },
+                { id: 'c5', desc: 'مفتاح الخزانة', icon: '🔑', leadsTo: 4 },
+                { id: 'c6', desc: 'زجاجة نبيذ', icon: '🍷', leadsTo: 0 },
+                { id: 'c7', desc: 'ساعة قديمة', icon: '🕰️', leadsTo: 2 }
+            ],
+            finalProof: 'كاميرا الكنيسة سجلت الأب بولس وهو يغادر المذبح مساء الجريمة',
+            killerId: 0,
+            killerMotive: 'طموح – يريد منصب كبير الكهنة'
+        }, {
+            id: 'C011',
+            title: 'جريمة البحر',
+            subtitle: 'غرق غامض على اليخت',
+            type: 'قتل',
+            difficulty: 'medium',
+            image: 'https://picsum.photos/seed/sea1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body11/600/300',
+            sceneDescription: 'يخت فاخر في عرض البحر. الجثة في الماء. لا شهود.',
+            time: 'البحر، 9:00 مساءً',
+            location: 'على بعد 20 ميلاً من الشاطئ',
+            weapon: 'غرق',
+            suspects: [
+                { name: 'رائد البحري', job: 'قبطان', personality: 'متوتر', avatar: 'https://picsum.photos/seed/raed/200/200' },
+                { name: 'سحر السالم', job: 'ضيافة', personality: 'خائفة', avatar: 'https://picsum.photos/seed/sahar/200/200' },
+                { name: 'نواف الظفيري', job: 'غواص', personality: 'غامض', avatar: 'https://picsum.photos/seed/nawaf/200/200' },
+                { name: 'أمل الفهد', job: 'سيدة أعمال', personality: 'باردة', avatar: 'https://picsum.photos/seed/amal/200/200' },
+                { name: 'ياسر القحطاني', job: 'طاهٍ', personality: 'عصبي', avatar: 'https://picsum.photos/seed/yaser/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'سترة نجاة ممزقة', icon: '🦺', leadsTo: 0 },
+                { id: 'c2', desc: 'حبل مربوط', icon: '🪢', leadsTo: 1 },
+                { id: 'c3', desc: 'جهاز GPS', icon: '📍', leadsTo: 2 },
+                { id: 'c4', desc: 'كأس مكسور', icon: '🍸', leadsTo: 3 },
+                { id: 'c5', desc: 'سكين في الماء', icon: '🔪', leadsTo: 4 },
+                { id: 'c6', desc: 'صورة عائلية', icon: '🖼️', leadsTo: 0 },
+                { id: 'c7', desc: 'هاتف مقاوم للماء', icon: '📱', leadsTo: 3 }
+            ],
+            finalProof: 'هاتف أمل الفهد يحتوي على رسالة تهديد للضحية',
+            killerId: 3,
+            killerMotive: 'خوف – الضحية كانت تهدد بكشف صفقاتها غير القانونية'
+        }, {
+            id: 'C012',
+            title: 'جريمة المستشفى',
+            subtitle: 'مريض قتل في سريره',
+            type: 'قتل',
+            difficulty: 'easy',
+            image: 'https://picsum.photos/seed/hospital1/800/400',
+            bodyImage: 'https://picsum.photos/seed/body12/600/300',
+            sceneDescription: 'مستشفى خاص. الجثة في غرفة العناية. آثار حقنة.',
+            time: 'الليل، 2:00 صباحاً',
+            location: 'مستشفى السلام',
+            weapon: 'جرعة زائدة',
+            suspects: [
+                { name: 'دكتور سامي', job: 'طبيب', personality: 'مستعجل', avatar: 'https://picsum.photos/seed/sami2/200/200' },
+                { name: 'مها العتيبي', job: 'ممرضة', personality: 'خائفة', avatar: 'https://picsum.photos/seed/maha/200/200' },
+                { name: 'خالد الفهد', job: 'صيدلي', personality: 'غامض', avatar: 'https://picsum.photos/seed/khalid4/200/200' },
+                { name: 'نورة السبيعي', job: 'زميلة المريض', personality: 'حزينة', avatar: 'https://picsum.photos/seed/nora3/200/200' },
+                { name: 'سليمان المطيري', job: 'حارس', personality: 'مهمل', avatar: 'https://picsum.photos/seed/sulaiman2/200/200' }
+            ],
+            clues: [
+                { id: 'c1', desc: 'محقنة فارغة', icon: '💉', leadsTo: 0 },
+                { id: 'c2', desc: 'سجل الوصفات', icon: '📋', leadsTo: 1 },
+                { id: 'c3', desc: 'زجاجة دواء مفتوحة', icon: '💊', leadsTo: 2 },
+                { id: 'c4', desc: 'هاتف المريض', icon: '📱', leadsTo: 3 },
+                { id: 'c5', desc: 'كوب ماء', icon: '🥤', leadsTo: 4 },
+                { id: 'c6', desc: 'بطاقة هوية', icon: '🪪', leadsTo: 0 },
+                { id: 'c7', desc: 'كاميرا الممر', icon: '📹', leadsTo: 2 }
+            ],
+            finalProof: 'الكاميرا سجلت خالد الفهد وهو يدخل غرفة المريض وقت الجريمة',
+            killerId: 2,
+            killerMotive: 'مال – أراد بيع أعضاء المريض في السوق السوداء'
+        }];
+
+        function getCaseById(id) {
+            const caseData = CASES_DATABASE.find(c => c.id === id);
+            if (!caseData) {
+                console.warn('⚠️ القضية غير موجودة، يتم إرجاع أول قضية');
+                return CASES_DATABASE[0];
+            }
+            return caseData;
+        }
+
+        function getRandomCase() {
+            return CASES_DATABASE[Math.floor(Math.random() * CASES_DATABASE.length)];
+        }
+
+        function getCasesByType(type) {
+            if (type === 'all') return CASES_DATABASE;
+            const filtered = CASES_DATABASE.filter(c => c.type === type);
+            return filtered.length > 0 ? filtered : CASES_DATABASE;
+        }
+
+        window.CASES_DATABASE = CASES_DATABASE;
+        window.getCaseById = getCaseById;
+        window.getRandomCase = getRandomCase;
+        window.getCasesByType = getCasesByType;
+
+        console.log('✅ تم تحميل', CASES_DATABASE.length, 'قضية بنجاح');
+
+        // ===== ملف engine-final.js =====
+        class InvestigationEngine {
+            constructor() {
+                this.currentCase = null;
+                this.suspects = [];
+                this.clues = [];
+                this.interrogations = {};
+                this.foundClues = new Set();
+                this.questionsAsked = 0;
+                this.startTime = null;
+                this.solved = false;
+                this.progress = 0;
+
+                this.apiKey = 'sk-3f8cc6b4af934e88b9d505278b56d939';
+                this.apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+                this.model = 'deepseek-chat';
+                this.provider = 'deepseek';
+            }
+
+            loadCase(caseData) {
+                this.currentCase = JSON.parse(JSON.stringify(caseData));
+                this.suspects = this.currentCase.suspects.map(s => ({
+                    ...s,
+                    mood: 'محايد',
+                    trust: 50,
+                    testimony: [],
+                    secrets: this.generateSecrets(s)
+                }));
+                this.clues = this.currentCase.clues.map(c => ({ ...c, found: false }));
+                this.interrogations = {};
+                this.foundClues = new Set();
+                this.questionsAsked = 0;
+                this.startTime = Date.now();
+                this.solved = false;
+                this.progress = 0;
+
+                this.suspects.forEach(s => {
+                    this.interrogations[s.name] = [];
+                });
+
+                return this.currentCase;
+            }
+
+            generateSecrets(suspect) {
+                const secrets = [
+                    'كان على علاقة بالضحية',
+                    'لديه دين كبير للضحية',
+                    'كان يخطط للهروب',
+                    'يعرف شيئاً لم يخبر به',
+                    'كان في مكان الجريمة لكنه يخفي ذلك'
+                ];
+                return secrets[Math.floor(Math.random() * secrets.length)];
+            }
+
+            buildContext(suspect, isKiller) {
+                const caseData = this.currentCase;
+                const allTestimony = suspect.testimony.map(t => `س: ${t.q}\nج: ${t.a}`).join('\n');
+                const foundCluesList = this.clues.filter(c => c.found).map(c => c.desc).join('، ') || 'لا توجد أدلة مكتشفة بعد';
+
+                return {
+                    systemPrompt: `
+            أنت "${suspect.name}"، ${suspect.job}، في قضية جريمة.
+            تفاصيل القضية:
+            - الجريمة: ${caseData.crime ? caseData.crime.type || caseData.crime : 'غير معروفة'}
+            - المكان: ${caseData.location}
+            - الوقت: ${caseData.time}
+            - السلاح: ${caseData.weapon || 'غير معروف'}
+
+            شخصيتك: ${suspect.personality || 'طبيعي'}
+            دافعك الظاهر: ${suspect.motive || 'لا يوجد'}
+            ${isKiller ? '⚠️ أنت الجاني الحقيقي. يجب أن تحاول التهرب وعدم الاعتراف إلا إذا واجهتك أدلة قاطعة.' : 'أنت بريء. حاول إقناع المحقق ببراءتك.'}
+
+            أسرارك: ${suspect.secrets || 'لا شيء مهم'}
+
+            الأدلة المكتشفة حتى الآن: ${foundCluesList}
+
+            سجل الاستجواب السابق:
+            ${allTestimony || 'لا يوجد استجواب سابق'}
+
+            قواعد الرد:
+            1. تحدث بلهجة عربية فصحى أو عامية حسب شخصيتك.
+            2. كن طبيعياً ومقنعاً.
+            3. إذا كنت الجاني، حاول التهرب ولا تعترف إلا عند الضغط الشديد.
+            4. إذا كنت بريئاً، تعاون ولكن مع بعض التحفظ.
+            5. ردودك يجب أن تكون مختلفة لكل سؤال، وليست مكررة.
+            6. استخدم أدوات لغوية مثل: التردد، التكتم، التغيير المفاجئ في النبرة.
+            7. لا تخرج عن دورك.
+            8. اجعل ردودك قصيرة ومباشرة (لا تتجاوز 3 جمل).
+            `,
+                    suspectName: suspect.name,
+                    isKiller,
+                    caseData
+                };
+            }
+
+            async callAI(context, question) {
+                if (this.provider === 'local') {
+                    return this.simulateResponse(context, question);
+                }
+
+                try {
+                    const response = await fetch(this.apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: this.model,
+                            messages: [
+                                { role: 'system', content: context.systemPrompt },
+                                { role: 'user', content: `المحقق يسأل: ${question}` }
+                            ],
+                            temperature: 0.85,
+                            max_tokens: 200,
+                            presence_penalty: 0.5,
+                            frequency_penalty: 0.3,
+                            stream: false
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('❌ خطأ DeepSeek:', errorData);
+                        throw new Error(`API Error: ${errorData.error?.message || response.status}`);
+                    }
+
+                    const data = await response.json();
+                    let reply = data.choices[0].message.content.trim();
+                    reply = reply.replace(/^["']|["']$/g, '');
+                    return reply;
+
+                } catch (error) {
+                    console.error('❌ فشل الاتصال بـ DeepSeek:', error);
+                    return this.simulateResponse(context, question);
+                }
+            }
+
+            simulateResponse(context, question) {
+                const isKiller = context.isKiller;
+                const q = question.toLowerCase();
+
+                const responses = {
+                    'متى|وقت|ساعة': isKiller ?
+                        `كان الوقت حوالي ${this.currentCase.time}... لكن لا أتذكر بالضبط.` :
+                        `كنت في منزلي في ذلك الوقت. لدي شهود.`,
+                    'أين|مكان|موقع': isKiller ?
+                        `كنت في ${this.currentCase.location}... لكن ليس طوال الوقت.` :
+                        `كنت في العمل حتى وقت متأخر. زملائي يؤكدون ذلك.`,
+                    'سلاح|قتل|جريمة': isKiller ?
+                        `السلاح؟ لا أعرف عن أي سلاح تتحدث!` :
+                        `سمعت أن السلاح كان ${this.currentCase.weapon || 'غير معروف'}.`,
+                    'دليل|بصمة|أثر': isKiller ?
+                        `ربما تركت شيئاً دون قصد... لكن هذا لا يعني أني الجاني!` :
+                        `الأدلة يمكن أن تكون مضللة.`,
+                    'اعترف|أنت الفاعل|قتلت': isKiller ?
+                        `(صمت طويل)... لا أستطيع...` :
+                        `كيف تجرؤ؟! أنا بريء تماماً!`,
+                    'الدافع|سبب|لماذا': isKiller ?
+                        `الدافع كان... لا أريد التحدث عن هذا.` :
+                        `ليس لدي أي دافع. علاقتي بالضحية كانت جيدة.`
+                };
+
+                for (const [pattern, response] of Object.entries(responses)) {
+                    const regex = new RegExp(pattern, 'i');
+                    if (regex.test(q)) {
+                        return response;
+                    }
+                }
+
+                return isKiller ?
+                    `أنا متوتر... لا أتذكر جيداً. دعني أفكر.` :
+                    `هذا السؤال لا يخدم التحقيق. اسأل شيئاً آخر.`;
+            }
+
+            async interrogate(suspectName, question) {
+                const suspect = this.suspects.find(s => s.name === suspectName);
+                if (!suspect) return 'المشتبه به غير موجود.';
+
+                this.questionsAsked++;
+                const isKiller = (this.suspects.indexOf(suspect) === this.currentCase.killerId);
+                const context = this.buildContext(suspect, isKiller);
+
+                try {
+                    const response = await this.callAI(context, question);
+                    this.analyzeResponse(response, suspect);
+
+                    suspect.testimony.push({ q: question, a: response });
+                    this.interrogations[suspect.name].push({ q: question, a: response });
+                    this.updateProgress();
+
+                    return response;
+                } catch (error) {
+                    console.error('❌ خطأ:', error);
+                    return 'عذراً، حدث خطأ. حاول مرة أخرى.';
+                }
+            }
+
+            analyzeResponse(response, suspect) {
+                const lower = response.toLowerCase();
+
+                if (lower.includes('اعترف') || lower.includes('أنا من فعل') || lower.includes('نعم أنا')) {
+                    suspect.mood = 'منهار';
+                    suspect.trust = 10;
+                } else if (lower.includes('خائف') || lower.includes('خوف') || lower.includes('لا أعرف')) {
+                    suspect.mood = 'خائف';
+                    suspect.trust = Math.max(0, suspect.trust - 10);
+                } else if (lower.includes('غاضب') || lower.includes('كيف تجرؤ') || lower.includes('اتهام')) {
+                    suspect.mood = 'غاضب جداً';
+                    suspect.trust = Math.max(0, suspect.trust - 15);
+                } else if (lower.includes('متوتر') || lower.includes('قلق') || lower.includes('تردد')) {
+                    suspect.mood = 'متوتر';
+                    suspect.trust = Math.max(0, suspect.trust - 5);
+                } else if (lower.includes('بريء') || lower.includes('شاهد') || lower.includes('دليل')) {
+                    suspect.mood = 'واثق';
+                    suspect.trust = Math.min(100, suspect.trust + 10);
+                }
+
+                this.clues.forEach(c => {
+                    if (!c.found && (lower.includes(c.desc.substring(0, 10)) || lower.includes(c.icon))) {
+                        c.found = true;
+                        this.foundClues.add(c.id);
+                    }
+                });
+            }
+
+            updateProgress() {
+                const totalClues = this.clues.length;
+                const found = this.foundClues.size;
+                const trustSum = this.suspects.reduce((sum, s) => sum + s.trust, 0);
+                const trustAvg = trustSum / this.suspects.length;
+
+                this.progress = Math.min(100, (found / totalClues) * 50 + (trustAvg / 100) * 50);
+                this.progress = Math.round(this.progress);
+            }
+
+            getProgress() { return this.progress; }
+
+            accuse(suspectName) {
+                const suspect = this.suspects.find(s => s.name === suspectName);
+                if (!suspect) return { success: false, message: 'المشتبه به غير موجود.' };
+
+                const isKiller = (this.suspects.indexOf(suspect) === this.currentCase.killerId);
+
+                if (isKiller) {
+                    this.solved = true;
+                    this.progress = 100;
+                    return {
+                        success: true,
+                        message: `✅ صحيح! ${suspectName} هو الفاعل.`,
+                        details: `الدليل القاطع: ${this.currentCase.finalProof}`,
+                        motive: suspect.motive,
+                        evidence: this.clues.filter(c => c.found).map(c => c.desc),
+                        time: Math.round((Date.now() - this.startTime) / 60000),
+                        questions: this.questionsAsked,
+                        performance: this.getPerformance()
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: `❌ خطأ! ${suspectName} بريء.`,
+                        details: 'أعد التحقيق وابحث عن الأدلة الحاسمة.'
+                    };
+                }
+            }
+
+            getPerformance() {
+                const score = this.progress;
+                if (score >= 90) return 'ممتاز 🏆';
+                if (score >= 70) return 'جيد جداً ⭐';
+                if (score >= 50) return 'جيد 👍';
+                return 'يحتاج تحسين 📚';
+            }
+
+            getTimeline() {
+                return [
+                    { time: '10:00 مساءً', event: 'الضحية كان في اجتماع' },
+                    { time: '10:30 مساءً', event: 'مغادرة الضحية الاجتماع' },
+                    { time: '11:00 مساءً', event: 'وصول الضحية إلى المنزل' },
+                    { time: '11:30 مساءً', event: 'آخر مكالمة هاتفية للضحية' },
+                    { time: '11:47 مساءً', event: 'وقت الوفاة المقدر' },
+                    { time: '12:00 صباحاً', event: 'اكتشاف الجثة' }
+                ];
+            }
+
+            getRelations() {
+                const names = this.suspects.map(s => s.name);
+                const relations = [];
+                for (let i = 0; i < names.length; i++) {
+                    for (let j = i + 1; j < names.length; j++) {
+                        if (Math.random() > 0.6) {
+                            relations.push(`${names[i]} ↔ ${names[j]}: ${['عداوة', 'صداقة', 'شراكة', 'خلاف عائلي', 'علاقة سرية'][Math.floor(Math.random() * 5)]}`);
+                        }
+                    }
+                }
+                return relations;
+            }
+
+            getHint() {
+                const found = this.foundClues.size;
+                const total = this.clues.length;
+                if (found === 0) return '💡 حاول التركيز على الأدلة المادية في مسرح الجريمة.';
+                if (found < total / 2) return '💡 اسأل المشتبهين عن علاقتهم بالضحية ودوافعهم.';
+                if (found < total * 0.75) return '💡 ركز على التناقضات في أقوال المشتبهين.';
+                return '💡 لديك أدلة كافية. حان وقت الاتهام.';
+            }
+
+            async testConnection() {
+                if (this.provider === 'local') {
+                    return { success: true, message: 'المحاكاة المحلية تعمل' };
+                }
+
+                if (!this.apiKey || this.apiKey.length < 10) {
+                    return { success: false, message: 'مفتاح API غير صحيح' };
+                }
+
+                try {
+                    const response = await fetch('https://api.deepseek.com/v1/models', {
+                        headers: { 'Authorization': `Bearer ${this.apiKey}` }
+                    });
+
+                    if (response.ok) {
+                        return { success: true, message: '✅ الاتصال بـ DeepSeek ناجح!' };
+                    } else {
+                        const error = await response.text();
+                        return { success: false, message: `⚠️ فشل الاتصال: ${error}` };
+                    }
+                } catch (e) {
+                    return { success: false, message: `❌ خطأ: ${e.message}` };
+                }
+            }
+        }
+
+        window.InvestigationEngine = InvestigationEngine;
+        console.log('✅ تم تحميل محرك التحقيق مع DeepSeek');
+
+        // ===== ملف script-final.js =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 بدء تشغيل غرفة التحقيق');
+
+            const homeScreen = document.getElementById('home-screen');
+            const gameScreen = document.getElementById('game-screen');
+            const resultScreen = document.getElementById('result-screen');
+            const casesGrid = document.getElementById('cases-grid');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const btnNewRandom = document.getElementById('btn-new-random');
+            const btnBackHome = document.getElementById('btn-back-home');
+            const btnHomeFromResult = document.getElementById('btn-home-from-result');
+
+            const apiKeyInput = document.getElementById('api-key-input');
+            const apiProvider = document.getElementById('api-provider');
+            const btnSaveApi = document.getElementById('btn-save-api');
+            const apiStatus = document.getElementById('api-status');
+
+            const sceneImg = document.getElementById('scene-img');
+            const bodyImg = document.getElementById('body-img');
+            const bodyContainer = document.getElementById('body-image-container');
+            const sceneDescription = document.getElementById('scene-description');
+            const cluesList = document.getElementById('clues-list');
+            const suspectsTabs = document.getElementById('suspects-tabs');
+            const suspectAvatar = document.getElementById('suspect-avatar');
+            const suspectName = document.getElementById('suspect-name');
+            const suspectJob = document.getElementById('suspect-job');
+            const suspectMood = document.getElementById('suspect-mood');
+            const suspectTrust = document.getElementById('suspect-trust');
+            const messagesDiv = document.getElementById('messages');
+            const questionInput = document.getElementById('question-input');
+            const btnSend = document.getElementById('btn-send');
+            const btnAccuse = document.getElementById('btn-accuse');
+            const btnReport = document.getElementById('btn-report');
+            const btnHint = document.getElementById('btn-hint');
+            const btnSuspectNotes = document.getElementById('btn-suspect-notes');
+            const proofList = document.getElementById('proof-list');
+            const timelineEvents = document.getElementById('timeline-events');
+            const relationsMap = document.getElementById('relations-map');
+            const progressBar = document.getElementById('progress-bar');
+            const caseIdDisplay = document.getElementById('case-id-display');
+
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultSummary = document.getElementById('result-summary');
+            const resultProofs = document.getElementById('result-proofs');
+            const resultTime = document.getElementById('result-time');
+            const resultQuestions = document.getElementById('result-questions');
+            const resultPerformance = document.getElementById('result-performance');
+            const btnReplay = document.getElementById('btn-replay');
+            const btnShare = document.getElementById('btn-share');
+
+            let engine = new InvestigationEngine();
+            let currentCase = null;
+            let currentSuspectName = '';
+            let currentFilter = 'all';
+
+            function setupAPI() {
+                const key = apiKeyInput.value.trim();
+                const provider = apiProvider.value;
+
+                if (provider === 'local') {
+                    engine.provider = 'local';
+                    engine.apiKey = '';
+                    apiStatus.textContent = '🟡 المحاكاة المحلية';
+                    apiStatus.style.color = '#ff9800';
+                    return;
+                }
+
+                if (!key || key.length < 10) {
+                    apiStatus.textContent = '⚠️ مفتاح API غير صحيح';
+                    apiStatus.style.color = '#f44336';
+                    return;
+                }
+
+                engine.apiKey = key;
+                engine.provider = provider;
+
+                if (provider === 'deepseek') {
+                    engine.apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+                    engine.model = 'deepseek-chat';
+                    apiStatus.textContent = '🟢 DeepSeek متصل';
+                    apiStatus.style.color = '#4caf50';
+                } else if (provider === 'openai') {
+                    engine.apiUrl = 'https://api.openai.com/v1/chat/completions';
+                    engine.model = 'gpt-3.5-turbo';
+                    apiStatus.textContent = '🟢 OpenAI متصل';
+                    apiStatus.style.color = '#4caf50';
+                }
+
+                engine.testConnection().then(result => {
+                    if (!result.success) {
+                        apiStatus.textContent = `⚠️ ${result.message}`;
+                        apiStatus.style.color = '#ff9800';
+                    }
+                });
+            }
+
+            btnSaveApi.addEventListener('click', setupAPI);
+
+            function renderCases(filter = 'all') {
+                console.log('📋 جاري عرض القضايا، الفلتر:', filter);
+
+                if (typeof window.CASES_DATABASE === 'undefined') {
+                    casesGrid.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">
+                    <p>❌ خطأ في تحميل البيانات</p>
+                </div>
+                `;
+                    return;
+                }
+
+                const cases = getCasesByType(filter);
+                console.log('📦 عدد القضايا:', cases.length);
+
+                if (!cases || cases.length === 0) {
+                    casesGrid.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">
+                    <p>📭 لا توجد قضايا في هذا التصنيف.</p>
+                </div>
+                `;
+                    return;
+                }
+
+                casesGrid.innerHTML = '';
+
+                cases.forEach((c) => {
+                    try {
+                        const card = document.createElement('div');
+                        card.className = 'case-card';
+                        card.innerHTML = `
+                    <img src="${c.image || 'https://picsum.photos/seed/default/800/400'}" 
+                         alt="${c.title || 'قضية'}" 
+                         class="case-card-image" 
+                         loading="lazy"
+                         onerror="this.src='https://picsum.photos/seed/error/800/400'">
+                    <div class="case-card-body">
+                        <div class="case-card-title">${c.title || 'قضية بدون عنوان'}</div>
+                        <div class="case-card-subtitle">${c.subtitle || ''}</div>
+                        <div class="case-card-meta">
+                            <span>📍 ${c.location || 'موقع غير معروف'}</span>
+                            <span class="case-card-difficulty difficulty-${c.difficulty || 'medium'}">
+                                ${c.difficulty === 'easy' ? 'سهل' : c.difficulty === 'medium' ? 'متوسط' : 'صعب'}
+                            </span>
+                        </div>
+                        <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="color:var(--text-secondary); font-size:0.85rem;">🔍 ${c.type || 'عام'}</span>
+                            <span class="case-card-status status-unsolved">⏳ غير محلولة</span>
+                        </div>
+                    </div>
+                `;
+                        card.addEventListener('click', () => startCase(c.id));
+                        casesGrid.appendChild(card);
+                    } catch (err) {
+                        console.error('❌ خطأ في عرض البطاقة:', err);
+                    }
+                });
+
+                document.getElementById('total-cases').textContent = CASES_DATABASE.length;
+                document.getElementById('solved-cases').textContent = Math.floor(CASES_DATABASE.length * 0.3);
+                document.getElementById('rating').textContent = '4.8';
+            }
+
+            function startCase(caseId) {
+                console.log('🕵️ بدء القضية:', caseId);
+                const caseData = getCaseById(caseId);
+                if (!caseData) {
+                    alert('⚠️ القضية غير موجودة');
+                    return;
+                }
+
+                currentCase = engine.loadCase(caseData);
+                currentSuspectName = currentCase.suspects[0].name;
+
+                caseIdDisplay.textContent = caseData.id;
+                sceneImg.src = caseData.image || 'https://picsum.photos/seed/default/800/400';
+
+                if (caseData.bodyImage) {
+                    bodyImg.src = caseData.bodyImage;
+                    bodyContainer.style.display = 'block';
+                } else {
+                    bodyContainer.style.display = 'none';
+                }
+
+                sceneDescription.textContent = caseData.sceneDescription || 'وصف مسرح الجريمة غير متوفر';
+
+                renderClues();
+                renderSuspectsTabs();
+                updateSuspectInfo();
+                renderMessages();
+                renderProofs();
+                renderTimeline();
+                renderRelations();
+                updateProgress();
+
+                homeScreen.style.display = 'none';
+                gameScreen.style.display = 'flex';
+                resultScreen.style.display = 'none';
+
+                messagesDiv.innerHTML = `
+                <div class="msg-system">🕵️ قضية: ${caseData.title}</div>
+                <div class="msg-system">📍 ${caseData.location}</div>
+                <div class="msg-system">⏰ ${caseData.time}</div>
+                <div class="msg-suspect">🔹 ابدأ الاستجواب باختيار مشتبه به وطرح الأسئلة.</div>
+            `;
+            }
+
+            function renderClues() {
+                cluesList.innerHTML = '';
+                if (!engine.clues || engine.clues.length === 0) {
+                    cluesList.innerHTML = '<div style="color:var(--text-muted);">لا توجد أدلة</div>';
+                    return;
+                }
+
+                engine.clues.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = `clue-item ${c.found ? 'found' : 'hidden'}`;
+                    div.innerHTML = `
+                    <span class="clue-icon">${c.icon || '🔍'}</span>
+                    <span>${c.desc}</span>
+                    ${c.found ? '<span style="color:#4caf50; font-size:0.7rem;">✓ مكتشف</span>' : '<span style="color:var(--text-muted); font-size:0.7rem;">🔒 غير مكتشف</span>'}
+                `;
+                    cluesList.appendChild(div);
+                });
+            }
+
+            function renderSuspectsTabs() {
+                suspectsTabs.innerHTML = '';
+                if (!engine.suspects || engine.suspects.length === 0) {
+                    suspectsTabs.innerHTML = '<div style="color:var(--text-muted);">لا يوجد مشتبهين</div>';
+                    return;
+                }
+
+                engine.suspects.forEach(s => {
+                    const tab = document.createElement('button');
+                    const isActive = s.name === currentSuspectName;
+                    const statusClass = s.mood === 'منهار' ? 'broken' : s.mood === 'متوتر' || s.mood === 'غاضب' ?
+                        'stressed' : 'normal';
+                    tab.className = `suspect-tab ${isActive ? 'active' : ''}`;
+                    tab.innerHTML = `
+                    <span class="tab-status ${statusClass}"></span>
+                    ${s.name}
+                `;
+                    tab.onclick = () => {
+                        currentSuspectName = s.name;
+                        renderSuspectsTabs();
+                        updateSuspectInfo();
+                        renderMessages();
+                    };
+                    suspectsTabs.appendChild(tab);
+                });
+            }
+
+            function updateSuspectInfo() {
+                const s = engine.suspects.find(s => s.name === currentSuspectName);
+                if (!s) return;
+
+                suspectAvatar.src = s.avatar || 'https://picsum.photos/seed/default/200/200';
+                suspectName.textContent = s.name;
+                suspectJob.textContent = s.job || 'مشتبه به';
+
+                const moodMap = {
+                    'محايد': '😐 محايد',
+                    'متوتر': '😰 متوتر',
+                    'غاضب': '😡 غاضب',
+                    'غاضب جداً': '🤬 غاضب جداً',
+                    'منهار': '😩 منهار',
+                    'ندم': '😔 نادم',
+                    'هادئ': '😌 هادئ',
+                    'فضولي': '🤔 فضولي',
+                    'مستاء': '😒 مستاء',
+                    'واثق': '😏 واثق',
+                    'غير مبال': '😑 غير مبال',
+                    'خائف': '😨 خائف',
+                    'غامض': '🤨 غامض'
+                };
+                suspectMood.textContent = moodMap[s.mood] || '😐 محايد';
+
+                const trustColor = s.trust > 70 ? '#4caf50' : s.trust > 40 ? '#ff9800' : '#f44336';
+                suspectTrust.textContent = `الثقة: ${s.trust}%`;
+                suspectTrust.style.color = trustColor;
+            }
+
+            function renderMessages() {
+                const s = engine.suspects.find(s => s.name === currentSuspectName);
+                if (!s) return;
+
+                messagesDiv.innerHTML = '';
+                if (s.testimony.length === 0) {
+                    const msg = document.createElement('div');
+                    msg.className = 'msg-suspect';
+                    msg.textContent = `🕵️ ${s.name} ينتظر سؤالك الأول...`;
+                    messagesDiv.appendChild(msg);
+                    return;
+                }
+
+                s.testimony.forEach(t => {
+                    const qDiv = document.createElement('div');
+                    qDiv.className = 'msg-player';
+                    qDiv.textContent = `أنت: ${t.q}`;
+                    messagesDiv.appendChild(qDiv);
+
+                    const aDiv = document.createElement('div');
+                    aDiv.className = 'msg-suspect';
+                    aDiv.textContent = `${s.name}: ${t.a}`;
+                    messagesDiv.appendChild(aDiv);
+                });
+
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            function renderProofs() {
+                proofList.innerHTML = '';
+                if (!engine.clues) return;
+
+                const found = engine.clues.filter(c => c.found);
+                if (found.length === 0) {
+                    proofList.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">لم يتم اكتشاف أدلة بعد</div>';
+                    return;
+                }
+                found.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'proof-item';
+                    div.innerHTML = `${c.icon || '🔍'} ${c.desc}`;
+                    proofList.appendChild(div);
+                });
+            }
+
+            function renderTimeline() {
+                timelineEvents.innerHTML = '';
+                const events = engine.getTimeline();
+                events.forEach(e => {
+                    const div = document.createElement('div');
+                    div.className = 'timeline-event';
+                    div.innerHTML = `<span class="time">${e.time}</span><span>${e.event}</span>`;
+                    timelineEvents.appendChild(div);
+                });
+            }
+
+            function renderRelations() {
+                relationsMap.innerHTML = '';
+                const relations = engine.getRelations();
+                if (relations.length === 0) {
+                    relationsMap.innerHTML =
+                    '<div style="color:var(--text-muted); font-size:0.85rem;">لا توجد علاقات مسجلة</div>';
+                    return;
+                }
+                relations.forEach(r => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'padding:4px 0; font-size:0.85rem; border-bottom:1px solid var(--border);';
+                    div.textContent = r;
+                    relationsMap.appendChild(div);
+                });
+            }
+
+            function updateProgress() {
+                progressBar.textContent = `${engine.getProgress()}%`;
+            }
+
+            async function sendQuestion() {
+                const q = questionInput.value.trim();
+                if (!q) {
+                    questionInput.focus();
+                    return;
+                }
+
+                const suspect = engine.suspects.find(s => s.name === currentSuspectName);
+                if (!suspect) return;
+
+                const thinkingDiv = document.createElement('div');
+                thinkingDiv.className = 'msg-thinking';
+                thinkingDiv.textContent = '⏳ جاري التفكير...';
+                messagesDiv.appendChild(thinkingDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                btnSend.disabled = true;
+                btnSend.textContent = '⏳';
+
+                try {
+                    const response = await engine.interrogate(currentSuspectName, q);
+
+                    messagesDiv.removeChild(thinkingDiv);
+
+                    const qDiv = document.createElement('div');
+                    qDiv.className = 'msg-player';
+                    qDiv.textContent = `أنت: ${q}`;
+                    messagesDiv.appendChild(qDiv);
+
+                    const aDiv = document.createElement('div');
+                    aDiv.className = 'msg-suspect';
+                    aDiv.textContent = `${suspect.name}: ${response}`;
+                    messagesDiv.appendChild(aDiv);
+
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    questionInput.value = '';
+                    questionInput.focus();
+
+                    updateSuspectInfo();
+                    renderClues();
+                    renderProofs();
+                    updateProgress();
+                    renderSuspectsTabs();
+
+                } catch (error) {
+                    console.error('❌ خطأ:', error);
+                    messagesDiv.removeChild(thinkingDiv);
+                    alert('حدث خطأ في الاتصال بالذكاء الاصطناعي. حاول مرة أخرى.');
+                } finally {
+                    btnSend.disabled = false;
+                    btnSend.textContent = '➤ إرسال';
+                }
+            }
+
+            function handleAccuse() {
+                const result = engine.accuse(currentSuspectName);
+
+                if (result.success) {
+                    gameScreen.style.display = 'none';
+                    resultScreen.style.display = 'flex';
+                    resultIcon.textContent = '✅';
+                    resultTitle.textContent = '⚖️ القضية محلولة';
+                    resultSummary.innerHTML = `
+                    <strong>${result.message}</strong><br>
+                    الدافع: ${result.motive || 'غير معروف'}<br>
+                    ${result.details}
+                `;
+
+                    resultProofs.innerHTML = '';
+                    if (result.evidence && result.evidence.length > 0) {
+                        result.evidence.forEach(e => {
+                            const li = document.createElement('li');
+                            li.textContent = `🔍 ${e}`;
+                            resultProofs.appendChild(li);
+                        });
+                    } else {
+                        resultProofs.innerHTML = '<li style="color:var(--text-muted);">لا توجد أدلة مسجلة</li>';
+                    }
+
+                    resultTime.textContent = `${result.time || 0} دقيقة`;
+                    resultQuestions.textContent = result.questions || 0;
+                    resultPerformance.textContent = result.performance || 'ممتاز';
+                } else {
+                    alert(`${result.message}\n${result.details}`);
+                }
+            }
+
+            function handleHint() {
+                alert(engine.getHint());
+            }
+
+            function handleReport() {
+                const s = engine.suspects.find(s => s.name === currentSuspectName);
+                if (!s) return;
+
+                const report = `
+            📄 تقرير التحقيق
+            ━━━━━━━━━━━━━━━━━━━
+            📋 القضية: ${currentCase ? currentCase.title : 'غير معروفة'}
+            🔍 المشتبه به: ${s.name}
+            😐 الحالة: ${s.mood}
+            📊 الثقة: ${s.trust}%
+            📝 عدد الأسئلة: ${s.testimony.length}
+            🔍 الأدلة المكتشفة: ${engine.clues ? engine.clues.filter(c => c.found).length : 0} / ${engine.clues ? engine.clues.length : 0}
+            📈 التقدم: ${engine.getProgress()}%
+                `;
+                alert(report);
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderCases(currentFilter);
+                });
+            });
+
+            btnNewRandom.addEventListener('click', () => {
+                const randomCase = getRandomCase();
+                if (randomCase) startCase(randomCase.id);
+            });
+
+            btnBackHome.addEventListener('click', () => {
+                gameScreen.style.display = 'none';
+                homeScreen.style.display = 'block';
+                resultScreen.style.display = 'none';
+                renderCases(currentFilter);
+            });
+
+            btnHomeFromResult.addEventListener('click', () => {
+                resultScreen.style.display = 'none';
+                homeScreen.style.display = 'block';
+                renderCases(currentFilter);
+            });
+
+            btnSend.addEventListener('click', sendQuestion);
+            questionInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendQuestion();
+            });
+
+            btnAccuse.addEventListener('click', handleAccuse);
+            btnHint.addEventListener('click', handleHint);
+            btnReport.addEventListener('click', handleReport);
+
+            btnReplay.addEventListener('click', () => {
+                resultScreen.style.display = 'none';
+                const randomCase = getRandomCase();
+                if (randomCase) startCase(randomCase.id);
+            });
+
+            btnShare.addEventListener('click', () => {
+                const text =
+                    `🕵️ حللت قضية "${currentCase ? currentCase.title : 'غير معروفة'}" في غرفة التحقيق!\n⏱️ الزمن: ${resultTime.textContent}\n⭐ التقييم: ${resultPerformance.textContent}`;
+                if (navigator.share) {
+                    navigator.share({ title: 'غرفة التحقيق', text: text }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(text).then(() => alert('📋 تم نسخ النتيجة!')).catch(() => {});
+                }
+            });
+
+            btnSuspectNotes.addEventListener('click', () => {
+                const s = engine.suspects.find(s => s.name === currentSuspectName);
+                if (!s) return;
+                const notes = prompt(`📝 ملاحظات عن ${s.name}:\n(الحالة: ${s.mood}, الثقة: ${s.trust}%)`);
+                if (notes) {
+                    alert('✅ تم حفظ الملاحظات في دفتر المحقق.');
+                }
+            });
+
+            renderCases('all');
+
+            const savedKey = localStorage.getItem('deepseek_key');
+            if (savedKey) {
+                apiKeyInput.value = savedKey;
+                setTimeout(setupAPI, 500);
+            }
+
+            apiKeyInput.addEventListener('change', () => {
+                localStorage.setItem('deepseek_key', apiKeyInput.value.trim());
+            });
+
+            console.log('✅ تم تشغيل غرفة التحقيق بنجاح');
+        });
+    </script>
 </body>
 </html>
