@@ -445,10 +445,10 @@
     }
     .evidence-item:hover { background: #14110d; border-color: var(--gold); }
 
-    /* دليل وشرح اللعبة */
+    /* دليل وشرح اللعبة الشامل */
     .guide-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
     .guide-card {
@@ -458,7 +458,7 @@
       padding: 20px;
       border-top: 3px solid var(--gold);
     }
-    .guide-card h4 { color: var(--gold); font-size: 15px; margin-bottom: 8px; }
+    .guide-card h4 { color: var(--gold); font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
     .guide-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
 
     /* النوافذ المنبثقة */
@@ -694,22 +694,34 @@
 
       </section>
 
-      <!-- ================= 2. شرح اللعبة ================= -->
+      <!-- ================= 2. شرح اللعبة العام ================= -->
       <section id="guidePage" class="page-section">
         <div class="glass-panel">
-          <h3 style="color:var(--gold); margin-bottom:16px;">📖 دليل المحقق - كيف تستنتج الحل؟</h3>
+          <h3 style="color:var(--gold); margin-bottom:16px;">📖 دليل ونظام اللعبة - كيف تصبح محققاً أسطورياً؟</h3>
           <div class="guide-grid">
             <div class="guide-card">
-              <h4>1. مطابقة الخط الزمني</h4>
-              <p>انقطعت الكهرباء الساعة 11:15 مساءً لـ 10 دقائق في القبو. تحقق من مكان كل مشتبه به في تلك الدقائق بالتحديد.</p>
+              <h4>🔍 1. فحص مسارح الجريمة</h4>
+              <p>في كل قضية جديدة يُعرض مسرح جريمة تفاعلي. حرّك كشافك في الظلام وابحث عن الأرقام والأحراز المخبأة لفحصها ونقلها إلى حقيبة الأدلة.</p>
             </div>
             <div class="guide-card">
-              <h4>2. الدافع الحقيقي</h4>
-              <p>المجني عليه (ماجد) مقاول وجد أوراق تزوير. ابحث عن الشخص الذي كان سيتضرر أكثر من كشف هذه الوثائق.</p>
+              <h4>🗣️ 2. الاستجواب الذكي والحي</h4>
+              <p>المشتبه بهم يملكون ذكاءً اصطناعياً حياً؛ لكل شخصية سر أو تقصير وظيفي تخفيه. اطرح أسئلة دقيقة حول الأوقات والأماكن لكشف التناقضات.</p>
             </div>
             <div class="guide-card">
-              <h4>3. وسيلة القتل والتخدير</h4>
-              <p>استُخدم مهدئ جراحي خاص. هذا يحصر الشبهة فيمن يملك صلاحية الوصول إلى الأدوية المحظورة.</p>
+              <h4>⚔️ 3. المواجهة بالأدلة المادية</h4>
+              <p>عندما تكتشف حرزاً يربط مشتبهاً بالمسرح، انقر عليه في حقيبة الأحراز لتواجهه به مباشرة، مما يرفع توتره ويكسر أكاذيبه.</p>
+            </div>
+            <div class="guide-card">
+              <h4>🤝 4. توجيهات المحقق المساعد</h4>
+              <p>يرافقك مساعد جنائي متخصص في كل قضية، يقرأ لغة الجسد ويحلل سرعة التهرب ويهمس لك بنصائح تكشف الثغرات دون حرق الحل.</p>
+            </div>
+            <div class="guide-card">
+              <h4>⚖️ 5. إحالة النيابة وقرار الاتهام</h4>
+              <p>بعد جمع الخيوط واعتراف القاتل أو اكتمال الأدلة، أصدر مذكرة توقيف رسمية وحدد المتهم لنيل نقاط الخبرة (XP) والترقية الفورية.</p>
+            </div>
+            <div class="guide-card">
+              <h4>⚡ 6. الانتقال التلقائي للقضايا</h4>
+              <p>بمجرد إغلاق أي قضية وإدانة القاتل، يولد النظام قضية جديدة كلياً بمسرح جريمة وضحية ومشتبهين مختلفين لتستمر مسيرتك المهنية.</p>
             </div>
           </div>
         </div>
@@ -718,19 +730,27 @@
       <!-- ================= 3. الرتب ================= -->
       <section id="ranksPage" class="page-section">
         <div class="glass-panel">
-          <h3 style="color:var(--gold); margin-bottom:16px;">🏆 سلم الرتب الجنائية</h3>
+          <h3 style="color:var(--gold); margin-bottom:16px;">🏆 سلم الرتب الجنائية والمميزات المفتوحة</h3>
           <div style="display:flex; flex-direction:column; gap:10px;">
-            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--gold);">
-              <strong>🛡️ محقق متدرب (0 XP)</strong>: استجواب المشتبه بهم وجمع أدلة المسرح.
+            <div style="background:#000; padding:14px; border-radius:8px; border:1px solid var(--gold);">
+              <strong style="color:var(--gold);">🛡️ محقق متدرب (0 XP)</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">صلاحية استجواب المشتبهين، جمع الأدلة الظاهرة، وحل قضايا المبتدئين.</div>
             </div>
-            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-              <strong>🔍 مساعد محقق (150 XP)</strong>: رادار التوتر اللحظي وكشف التناقضات.
+            <div style="background:#000; padding:14px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong style="color:var(--gold);">🔍 مساعد محقق (150 XP)</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">تفعيل رادار التوتر اللحظي، كشف التناقضات السريعة، وفحص البصمات.</div>
             </div>
-            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-              <strong>🔬 محقق ميداني (400 XP)</strong>: تقارير السموم والطب الشرعي الفورية.
+            <div style="background:#000; padding:14px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong style="color:var(--gold);">🔬 محقق ميداني (400 XP)</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">تقارير الطب الشرعي والسموم الفورية، ومضاعفة نقاط الخبرة عند الإدانة الكاملة.</div>
             </div>
-            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-              <strong>💻 محقق أول (800 XP)</strong>: تفتيش السجلات الرقمية وتفريغ الهواتف بإذن النيابة.
+            <div style="background:#000; padding:14px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong style="color:var(--gold);">💻 محقق أول (800 XP)</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">صلاحية تفتيش السجلات الرقمية وتفريغ الهواتف والحسابات البنكية بإذن النيابة.</div>
+            </div>
+            <div style="background:#000; padding:14px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong style="color:var(--gold);">👑 رئيس قسم الجنايات (1500 XP)</strong>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">فتح أرشيف القضايا الباردة فائقة الصعوبة، ونيل شارة الشرف الذهبية الرسمية.</div>
             </div>
           </div>
         </div>
@@ -739,11 +759,11 @@
       <!-- ================= 4. القوانين ================= -->
       <section id="rulesPage" class="page-section">
         <div class="glass-panel">
-          <h3 style="color:var(--gold); margin-bottom:16px;">⚖️ القواعد الجنائية</h3>
+          <h3 style="color:var(--gold); margin-bottom:16px;">⚖️ القواعد الجنائية والتعليمات</h3>
           <p style="font-size:13px; color:var(--text-muted); line-height:1.8;">
-            - لا توجه اتهامات مرسلة بدون دليل مادي يربط المتهم بمسرح الجريمة في القبو.<br>
-            - المشتبه به البريء قد يكذب خوفاً من كشف تقصيره، تأكد من التفريق بين التقصير الوظيفي والقتل العمد.<br>
-            - اعتراف المتهم المنهار يتطلب حرزاً حاسماً مثل فصيلة الدم أو الهاتف لإثبات الإدانة أمام النيابة.
+            - <strong>حظر الاتهام العشوائي:</strong> لن تقبل النيابة العامة أي مذكرة توقيف لا تستند إلى دليل مادي يربط القاتل بمسرح الجريمة.<br>
+            - <strong>التفريق بين التقصير والقتل:</strong> ليس كل من يكذب قاتلاً؛ فالأبرياء يختلقون الأعذار للتغطية على تقصيرهم الوظيفي أو أسرارهم الجانبية.<br>
+            - <strong>الضغط النفسي المنهجي:</strong> عند محاصرة المتهم بأدلة متطابقة مع توقيت الحادثة، يرتفع توتره حتى ينهار ويعترف بالدافع الكامل.
           </p>
         </div>
       </section>
@@ -991,7 +1011,7 @@
       
       const transcript = document.getElementById('transcript');
       transcript.innerHTML = `<div class="msg system">🕵️ بدأت جلسة التحقيق مع ${name} (${role}).</div>`;
-      document.getElementById('partnerText').textContent = `تستجوب الآن ${name}. دقق في أقواله بخصوص تواجده الساعة 11:15 مساءً وقت انقطاع الكهرباء.`;
+      document.getElementById('partnerText').textContent = `تستجوب الآن ${name}. دقق في أقواله بخصوص تواجده وقت الحادثة لكشف أي ثغرة.`;
     }
 
     function inspectEvidence(name, report) {
@@ -1041,17 +1061,17 @@
       let emotionalState = '';
       if (isBroken) {
         emotionalState = currentSuspect.guilty 
-          ? `لقد حاصرك المحقق بالأدلة واعترفت بجريمتك وقتل ماجد بسبب سرك (${currentSuspect.secret})` 
-          : `لقد صرخت ببرائتك التامة من القتل وكشفت سرك (${currentSuspect.secret}) لتثبت أنك لم تقتل ماجد.`;
+          ? `لقد حاصرك المحقق بالأدلة واعترفت بجريمتك وقتل الضحية بسبب دافعك (${currentSuspect.secret})` 
+          : `لقد صرخت ببرائتك التامة من القتل وكشفت سرك (${currentSuspect.secret}) لتثبت أنك لست القاتل.`;
       } else {
         emotionalState = currentSuspect.guilty 
-          ? 'أنت القاتل الفعلي وتتهرب بذكاء وتتوتر كلما اقترب السؤال من القبو أو وقت 11:15' 
-          : 'أنت بريء تماماً ولكن تخاف من كشف سرك وتقصيرك.';
+          ? 'أنت القاتل الفعلي وتتهرب بذكاء وتتوتر كلما واجهك المحقق بدليل مادي أو تناقض في وقت الحادثة' 
+          : 'أنت بريء تماماً ولكن تخاف من كشف سرك وتقصيرك الشخصي.';
       }
 
-      const prompt = `أنت تمثل شخصية "${currentSuspect.name}" (${currentSuspect.role}) في قضية قتل ماجد بن سليمان العتيبي في قبو مستشفى القادسية الساعة 11:15 مساءً أثناء انقطاع الكهرباء.
-سرك: "${currentSuspect.secret}".
-حالتك: ${emotionalState}.
+      const prompt = `أنت تمثل شخصية "${currentSuspect.name}" (${currentSuspect.role}) في قضية قتل جنائية جارية.
+سرك وخلفيتك: "${currentSuspect.secret}".
+حالتك النفسية الحالية: ${emotionalState}.
 سؤال المحقق: "${q}".
 أجب بصيغة JSON حصراً:
 {
@@ -1097,17 +1117,138 @@
       document.getElementById('accuseModal').classList.remove('active');
     }
 
-    function submitIndictment() {
+    // ===== إحالة المتهم والانتقال التلقائي للقضية التالية =====
+    async function submitIndictment() {
       const accused = document.getElementById('accuseSuspectSelect').value;
       closeAccuseModal();
-      if (accused === 'د. فهد') {
+
+      if (accused === currentSuspect.name && currentSuspect.guilty) {
         player.xp += 150;
         updateRankUI();
         if (auth.currentUser) savePlayerData(auth.currentUser.uid);
-        alert('🎉 إدانة قاطعة! تم إثبات أن د. فهد هو من استدرج ماجد للقبو وقام بتخديره وكتم أنفاسه للتغطية على قضايا الفساد المالي. مبروك الترقية (+150 XP)!');
+
+        alert(`🎉 إدانة قاطعة ومثبتة بالأدلة!\nأحسنت سيادة المحقق ${player.name}، تم إغلاق القضية بنجاح وحصلت على +150 XP.\n\nجارٍ الآن توليد وتحويلك إلى ملف القضية التالية...`);
+        
+        await generateNextCaseAutomatically();
       } else {
-        alert('❌ اتهام غير صحيح! الشخص الذي حددته بريء من القتل وسره لا يرقَ لجريمة قتل عمد.');
+        alert('❌ مذكرة توقيف مرفوضة!\nالأدلة غير كافية لإدانة هذا الشخص، والقاتل الحقيقي ما زال طليقاً.');
       }
+    }
+
+    // ===== توليد قضية جديدة بالكامل تلقائياً عبر الذكاء الاصطناعي =====
+    async function generateNextCaseAutomatically() {
+      const transcript = document.getElementById('transcript');
+      transcript.innerHTML = `<div class="msg system">📂 جاري استقبال بلاغ جنائي جديد من غرفة العمليات...</div>`;
+      document.getElementById('partnerText').textContent = 'وصلنا بلاغ جديد للتو، جاري فحص مسرح الجريمة وتجهيز ملفات المشتبهين...';
+
+      const caseIdNum = Math.floor(100 + Math.random() * 900);
+      const prompt = `أنت مصمم ألعاب تحقيق جنائية محترف. ولد ملف قضية قتل بوليسية جديدة وغامضة برقم البلاغ #${caseIdNum}.
+أخرج JSON حصراً بالصيغة التالية:
+{
+  "title": "اسم القضية والموقع (مثال: قصر رجل الأعمال، ميناء الحاويات، فندق الواحة)",
+  "caseId": "#${caseIdNum}",
+  "type": "جنائي / قتل عمد",
+  "victimName": "اسم الضحية وعمره",
+  "victimJob": "مهنته وعلاقته بالمكان",
+  "timeAndPlace": "توقيت ومكان الجريمة بدقة",
+  "autopsy": "سبب الوفاة وأداة الجريمة",
+  "context": "خلفية الجريمة والدافع الأساسي",
+  "suspects": [
+    { "name": "الاسم", "role": "المهنة", "avatar": "👨‍💼", "secret": "سره وخلفيته ودوافعه", "guilty": true },
+    { "name": "الاسم", "role": "المهنة", "avatar": "👩‍💼", "secret": "سره أو تقصيره", "guilty": false },
+    { "name": "الاسم", "role": "المهنة", "avatar": "👷", "secret": "سره أو تقصيره", "guilty": false },
+    { "name": "الاسم", "role": "المهنة", "avatar": "🧑‍🔧", "secret": "سره أو تقصيره", "guilty": false }
+  ],
+  "evidence": [
+    { "icon": "🔪", "name": "اسم الحرز 1", "report": "تقرير المعمل الجنائي بشأنه" },
+    { "icon": "📄", "name": "اسم الحرز 2", "report": "تقرير المعمل الجنائي بشأنه" },
+    { "icon": "🧵", "name": "اسم الحرز 3", "report": "تقرير المعمل الجنائي بشأنه" },
+    { "icon": "🔑", "name": "اسم الحرز 4", "report": "تقرير المعمل الجنائي بشأنه" }
+  ]
+}`;
+
+      try {
+        const res = await fetch(GROQ_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            response_format: { type: 'json_object' }
+          })
+        });
+
+        const data = await res.json();
+        const newCase = JSON.parse(data.choices[0].message.content);
+
+        applyNewCaseToUI(newCase);
+      } catch (err) {
+        console.error(err);
+        transcript.innerHTML += `<div class="msg system">⚠️ تعذر توليد القضية تلقائياً، يمكنك النقر على إعادة الجلسة.</div>`;
+      }
+    }
+
+    // ===== تطبيق بيانات القضية الجديدة على واجهة المستخدم =====
+    function applyNewCaseToUI(newCase) {
+      player.discoveredEvidence = [];
+      renderDiscoveredEvidence();
+      if (auth.currentUser) savePlayerData(auth.currentUser.uid);
+
+      const dossierGrid = document.querySelector('.dossier-grid');
+      dossierGrid.innerHTML = `
+        <div class="dossier-card">
+          <strong>👤 هوية المجني عليه</strong>
+          <div>${newCase.victimName}</div>
+          <div style="font-size:11px; color:var(--text-muted);">${newCase.victimJob}</div>
+        </div>
+        <div class="dossier-card">
+          <strong>⏱️ توقيت ومكان الجريمة</strong>
+          <div>${newCase.timeAndPlace}</div>
+        </div>
+        <div class="dossier-card">
+          <strong>🔬 تقرير الطب الشرعي المبدئي</strong>
+          <div>${newCase.autopsy}</div>
+        </div>
+        <div class="dossier-card">
+          <strong>📌 حيثيات وخلفية الضحية</strong>
+          <div>${newCase.context}</div>
+        </div>
+      `;
+
+      document.querySelector('.glass-panel h2').textContent = `قضية ${newCase.title}`;
+      document.querySelector('.glass-panel div[style*="font-size:12px"]').textContent = `رقم البلاغ: ${newCase.caseId} • التصنيف: ${newCase.type}`;
+
+      const suspectsGrid = document.getElementById('suspectsGrid');
+      suspectsGrid.innerHTML = '';
+      const accuseSelect = document.getElementById('accuseSuspectSelect');
+      accuseSelect.innerHTML = '';
+
+      newCase.suspects.forEach((s, idx) => {
+        const activeClass = idx === 0 ? 'active' : '';
+        if (idx === 0) currentSuspect = { ...s, tension: 10 };
+
+        suspectsGrid.innerHTML += `
+          <div class="suspect-card ${activeClass}" onclick="selectSuspect('${s.name}', '${s.role}', '${s.avatar}', '${s.secret}', ${s.guilty})">
+            <div class="avatar">${s.avatar}</div>
+            <div class="name">${s.name}</div>
+            <div class="role">${s.role}</div>
+            <div class="tension-bar"><div class="fill" style="width:10%;"></div></div>
+          </div>
+        `;
+
+        accuseSelect.innerHTML += `<option value="${s.name}">${s.avatar} ${s.name} (${s.role})</option>`;
+      });
+
+      const hotspots = document.querySelectorAll('.hotspot');
+      newCase.evidence.forEach((ev, idx) => {
+        if (hotspots[idx]) {
+          hotspots[idx].textContent = ev.icon;
+          hotspots[idx].onclick = () => inspectEvidence(ev.name, ev.report);
+        }
+      });
+
+      document.getElementById('transcript').innerHTML = `<div class="msg system">📋 فُتح ملف القضية الجديدة (${newCase.title}). ابدأ بمعاينة المسرح واستجواب المتواجدين.</div>`;
+      document.getElementById('partnerText').textContent = `وصلنا للتو لمسرح جريمة ${newCase.title}. افحص الأدلة واجمع معلوماتك.`;
     }
 
     document.getElementById('questionInput').addEventListener('keypress', (e) => {
