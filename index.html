@@ -198,19 +198,6 @@
       font-size: 13px;
     }
     .main-header .badge-id .rank-name { color: var(--gold); font-weight: 700; }
-    
-    .sound-toggle-btn {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--gold);
-      padding: 2px 10px;
-      border-radius: 6px;
-      font-family: 'Cairo';
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .sound-toggle-btn:hover { border-color: var(--gold); }
     .logout-btn { background: transparent; border: 1px solid #5a3030; color: #cc6666; padding: 2px 10px; border-radius: 6px; font-family: 'Cairo'; font-size: 11px; cursor: pointer; }
 
     /* شريط الرتبة */
@@ -246,7 +233,7 @@
     .case-hero .case-meta span { color: var(--gold); font-weight: 700; }
     .case-hero .case-desc { font-size: 14px; color: #b7a99c; margin-top: 10px; line-height: 1.8; }
 
-    /* ===== مسرح الجريمة السينمائي البصري (Noir Detective Scene) ===== */
+    /* ===== مسرح الجريمة الميداني ===== */
     .crime-scene-container {
       background: #0d0b09;
       border: 1px solid var(--border-color);
@@ -277,7 +264,6 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: inset 0 0 70px rgba(0,0,0,0.95), 0 8px 30px rgba(0,0,0,0.8);
-      cursor: crosshair;
     }
 
     .scene-canvas::before {
@@ -298,13 +284,11 @@
       z-index: 10;
     }
 
-    /* تأثير كشاف المحقق على المسرح */
     .flashlight-overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
       background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 80px, rgba(4, 3, 2, 0.78) 220px);
-      transition: background 0.05s ease-out;
       z-index: 3;
     }
     
@@ -707,7 +691,6 @@
     <header class="main-header">
       <div class="title">🕵️ <span class="highlight">التحقيق</span> الجنائي</div>
       <div class="badge-id">
-        <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleAmbience()">🔊 الموسيقى: مشغلة</button>
         <span id="badgeIcon">🛡️</span>
         <span class="rank-name" id="badgeRank">محقق متدرب</span>
         <span id="badgeDisplayName">/ غير مسجل</span>
@@ -794,109 +777,7 @@
   </main>
 
   <script>
-    // ===== محرك المؤثرات الصوتية والموسيقى المدمج (Web Audio API) =====
-    let audioCtx = null;
-    let isAmbienceActive = false;
-    let ambienceTimer = null;
-
-    function initAudioContext() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    // صوت نقرات مسرح الجريمة والمؤشرات
-    function playClickSound() {
-      try {
-        initAudioContext();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.04);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.04);
-      } catch (e) {}
-    }
-
-    // صوت الآلة الكاتبة وظهور الرسائل
-    function playTypewriterSound() {
-      try {
-        initAudioContext();
-        const bufferSize = audioCtx.sampleRate * 0.03;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
-        }
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.value = 1800;
-        const gain = audioCtx.createGain();
-        gain.gain.value = 0.25;
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-        noise.start();
-      } catch (e) {}
-    }
-
-    // صوت وتر الغموض والتوتر
-    function playTensionTone(freq = 110) {
-      try {
-        initAudioContext();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        osc.frequency.linearRampToValueAtTime(freq - 15, audioCtx.currentTime + 1.8);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 1.8);
-      } catch (e) {}
-    }
-
-    // موسيقى الغموض المحيطية (Atmospheric Noir Loop)
-    function startAmbience() {
-      if (ambienceTimer) clearInterval(ambienceTimer);
-      const notes = [65.41, 77.78, 87.31, 98.00, 116.54, 130.81]; // ترددات نوار مظلمة
-      isAmbienceActive = true;
-      document.getElementById('soundToggleBtn').textContent = '🔊 الموسيقى: مشغلة';
-      
-      ambienceTimer = setInterval(() => {
-        if (!isAmbienceActive) return;
-        const note = notes[Math.floor(Math.random() * notes.length)];
-        playTensionTone(note);
-      }, 3500);
-    }
-
-    function toggleAmbience() {
-      initAudioContext();
-      isAmbienceActive = !isAmbienceActive;
-      const btn = document.getElementById('soundToggleBtn');
-      if (isAmbienceActive) {
-        startAmbience();
-        btn.textContent = '🔊 الموسيقى: مشغلة';
-      } else {
-        if (ambienceTimer) clearInterval(ambienceTimer);
-        btn.textContent = '🔇 الموسيقى: مكتومة';
-      }
-    }
-
-    // تأثير حركة الكشاف بالماوس على مسرح الجريمة
+    // حركة الكشاف في مسرح الجريمة
     document.addEventListener('DOMContentLoaded', () => {
       const canvas = document.getElementById('sceneCanvas');
       if (canvas) {
@@ -924,9 +805,9 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ===== إعدادات Google Gemini Flash المجاني =====
+    // ===== إعدادات Google Gemini API =====
     const GEMINI_API_KEY = 'AQ.Ab8RN6JTfYqCYmGyA8s4rQ3eXrBLgAM2xErjcBOjdobYPLyjgg';
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
 
     async function callGemini(systemInstruction, userContent) {
       const payload = {
@@ -936,7 +817,7 @@
         generationConfig: {
           response_mime_type: "application/json",
           temperature: 0.6,
-          maxOutputTokens: 250
+          maxOutputTokens: 300
         }
       };
 
@@ -1072,14 +953,20 @@
 
     // ===== الحالة العامة للتطبيق =====
     let currentCase = ALL_CASES[0];
-    let player = { name: '', email: '', rank: 1, xp: 0, reputation: 0 };
+    let player = { name: '', email: '', rank: 1, xp: 0, reputation: 0, discoveredEvidenceMap: {} };
     let state = { currentSuspectId: null, history: [], asked: 0, isBusy: false };
-    let discoveredEvidence = [];
     let currentTermTab = 'bank';
+
+    // الحصول على قائمة الأدلة المكتشفة للقضية الحالية
+    function getDiscoveredEvidenceForCurrentCase() {
+      if (!player.discoveredEvidenceMap) player.discoveredEvidenceMap = {};
+      const caseKey = currentCase.id || '#10';
+      if (!player.discoveredEvidenceMap[caseKey]) player.discoveredEvidenceMap[caseKey] = [];
+      return player.discoveredEvidenceMap[caseKey];
+    }
 
     // ===== إدارة المستخدم والمصادقة =====
     function switchAuthTab(tab) {
-      playClickSound();
       document.getElementById('loginTab').classList.toggle('active', tab === 'login');
       document.getElementById('registerTab').classList.toggle('active', tab === 'register');
       document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
@@ -1097,7 +984,6 @@
     }
 
     async function handleLogin() {
-      playClickSound();
       hideError();
       const name = document.getElementById('loginName').value.trim();
       const password = document.getElementById('loginPassword').value;
@@ -1120,7 +1006,6 @@
     }
 
     async function handleRegister() {
-      playClickSound();
       hideError();
       const name = document.getElementById('registerName').value.trim();
       const password = document.getElementById('registerPassword').value;
@@ -1136,7 +1021,7 @@
       try {
         const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        player = { name: name, email: email, rank: 1, xp: 0, reputation: 0 };
+        player = { name: name, email: email, rank: 1, xp: 0, reputation: 0, discoveredEvidenceMap: {} };
         await savePlayerData(userCredential.user.uid);
         enterGame();
       } catch (error) {
@@ -1154,6 +1039,7 @@
           rank: player.rank,
           xp: player.xp,
           reputation: player.reputation,
+          discoveredEvidenceMap: player.discoveredEvidenceMap || {},
           lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
       } catch (e) { console.error('Error saving data:', e); }
@@ -1169,22 +1055,24 @@
             email: data.email,
             rank: data.rank || 1,
             xp: data.xp || 0,
-            reputation: data.reputation || 0
+            reputation: data.reputation || 0,
+            discoveredEvidenceMap: data.discoveredEvidenceMap || {}
           };
+          // فحص وتحديث الرتبة وفق الـ XP المحمل فوراً
+          calculateAccurateRank();
         }
       } catch (e) { console.error('Error loading data:', e); }
     }
 
     function enterGame() {
       document.getElementById('authOverlay').classList.add('hidden');
+      calculateAccurateRank();
       updateHeader();
       loadCaseData(currentCase);
       addLog('system', `مرحباً بك سيادة المحقق ${player.name}! تم تحميل ملفك بنجاح.`);
-      startAmbience();
     }
 
     async function handleLogout() {
-      playClickSound();
       if (confirm('هل تريد تسجيل الخروج؟')) {
         if (auth.currentUser) await savePlayerData(auth.currentUser.uid);
         await auth.signOut();
@@ -1192,8 +1080,31 @@
       }
     }
 
-    // ===== تحديث واجهة المستخدم والرتبة =====
+    // ===== حساب وتحديث الرتبة الصحيحة دائماً =====
+    function calculateAccurateRank() {
+      let matchedRank = 1;
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (player.xp >= RANKS[i].xpRequired) {
+          matchedRank = RANKS[i].level;
+          break;
+        }
+      }
+      player.rank = matchedRank;
+    }
+
+    function checkRankPromotion(previousRank) {
+      calculateAccurateRank();
+      if (player.rank > previousRank) {
+        const currentRankObj = RANKS[player.rank - 1];
+        document.getElementById('levelUpBadge').textContent = currentRankObj.badge;
+        document.getElementById('levelUpRankTitle').textContent = `${currentRankObj.title} (المستوى ${currentRankObj.level})`;
+        document.getElementById('levelUpPerksList').innerHTML = currentRankObj.perks.map(p => `<li>✨ ${p}</li>`).join('');
+        document.getElementById('levelUpOverlay').classList.add('active');
+      }
+    }
+
     function updateHeader() {
+      calculateAccurateRank();
       const rankData = RANKS[player.rank - 1] || RANKS[0];
       document.getElementById('badgeDisplayName').textContent = `/ ${player.name}`;
       document.getElementById('badgeRank').textContent = rankData.title;
@@ -1205,32 +1116,15 @@
       const nextRank = RANKS[player.rank];
       const nextXP = nextRank ? nextRank.xpRequired : player.xp + 100;
       document.getElementById('xpNext').textContent = nextXP;
-      const pct = nextRank ? Math.min(100, (player.xp / nextXP) * 100) : 100;
+      
+      const currentRankBaseXP = rankData.xpRequired;
+      const progressXP = player.xp - currentRankBaseXP;
+      const requiredXP = nextXP - currentRankBaseXP;
+      const pct = nextRank ? Math.min(100, Math.max(0, (progressXP / requiredXP) * 100)) : 100;
       document.getElementById('xpBar').style.width = pct + '%';
     }
 
-    function checkRankPromotion(previousRank) {
-      let newRankLevel = 1;
-      for (let i = RANKS.length - 1; i >= 0; i--) {
-        if (player.xp >= RANKS[i].xpRequired) {
-          newRankLevel = RANKS[i].level;
-          break;
-        }
-      }
-
-      if (newRankLevel > previousRank) {
-        player.rank = newRankLevel;
-        const currentRankObj = RANKS[newRankLevel - 1];
-        document.getElementById('levelUpBadge').textContent = currentRankObj.badge;
-        document.getElementById('levelUpRankTitle').textContent = `${currentRankObj.title} (المستوى ${currentRankObj.level})`;
-        document.getElementById('levelUpPerksList').innerHTML = currentRankObj.perks.map(p => `<li>✨ ${p}</li>`).join('');
-        document.getElementById('levelUpOverlay').classList.add('active');
-        playTensionTone(300);
-      }
-    }
-
     function closeLevelUpModal() {
-      playClickSound();
       document.getElementById('levelUpOverlay').classList.remove('active');
     }
 
@@ -1254,7 +1148,6 @@
       if (c.sceneEvidence && c.sceneEvidence.length > 0) {
         SCENE_EVIDENCE = [...c.sceneEvidence];
       }
-      discoveredEvidence = [];
 
       renderSuspects();
       renderGallery();
@@ -1268,14 +1161,14 @@
       document.getElementById('confrontBtn').disabled = true;
     }
 
-    // ===== مسرح الجريمة والأدلة الميدانية =====
+    // ===== مسرح الجريمة والأدلة الميدانية المحمية من التكرار =====
     function renderCrimeScene() {
       const canvas = document.getElementById('sceneCanvas');
-      // الاحتفاظ بـ flashlight overlay
       canvas.innerHTML = '<div class="flashlight-overlay"></div>';
+      const discovered = getDiscoveredEvidenceForCurrentCase();
       
       SCENE_EVIDENCE.forEach((item, index) => {
-        const isFound = discoveredEvidence.some(e => e.id === item.id);
+        const isFound = discovered.some(e => e.name === item.name);
         const spot = document.createElement('div');
         spot.className = `hotspot ${isFound ? 'discovered' : ''}`;
         spot.style.top = item.top || '50%';
@@ -1289,12 +1182,22 @@
     }
 
     function inspectEvidence(item) {
-      playClickSound();
-      const alreadyFound = discoveredEvidence.some(e => e.id === item.id);
+      const discovered = getDiscoveredEvidenceForCurrentCase();
+      const alreadyFound = discovered.some(e => e.name === item.name);
+
       if (!alreadyFound) {
-        discoveredEvidence.push(item);
+        // إضافة الحرز لمصفوفة الحفظ السحابي
+        discovered.push({
+          id: item.id || ('ev_' + Date.now()),
+          name: item.name,
+          icon: item.icon,
+          report: item.report,
+          relatedSuspects: item.relatedSuspects || []
+        });
+
+        const prevRank = player.rank;
         player.xp += 15;
-        playTensionTone(220);
+        checkRankPromotion(prevRank);
         updateHeader();
         if (auth.currentUser) savePlayerData(auth.currentUser.uid);
       }
@@ -1308,20 +1211,20 @@
     }
 
     function closeEvidenceModal() {
-      playClickSound();
       document.getElementById('evidenceModal').classList.remove('active');
     }
 
     function renderDiscoveredEvidenceList() {
       const list = document.getElementById('evidenceList');
-      document.getElementById('clueCount').textContent = `${discoveredEvidence.length}/${SCENE_EVIDENCE.length}`;
+      const discovered = getDiscoveredEvidenceForCurrentCase();
+      document.getElementById('clueCount').textContent = `${discovered.length}/${SCENE_EVIDENCE.length}`;
 
-      if (discoveredEvidence.length === 0) {
+      if (discovered.length === 0) {
         list.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px;">افحص مسرح الجريمة لجمع الأدلة.</div>`;
         return;
       }
 
-      list.innerHTML = discoveredEvidence.map(ev => `
+      list.innerHTML = discovered.map(ev => `
         <div class="clue-item" onclick="confrontWithClue('${ev.name}')">
           ${ev.icon} ${ev.name}
         </div>
@@ -1366,7 +1269,6 @@
     }
 
     function selectSuspect(id) {
-      playClickSound();
       state.currentSuspectId = id;
       state.history = [];
       const s = currentCase.suspects.find(x => x.id === id);
@@ -1385,7 +1287,6 @@
       div.textContent = type === 'player' ? `[المحقق ${player.name}]: ${text}` : text;
       box.appendChild(div);
       box.scrollTop = box.scrollHeight;
-      playTypewriterSound();
     }
 
     // ===== محرك الاستجواب الذكي عبر Gemini =====
@@ -1454,7 +1355,6 @@
       const isDirectlyLinked = evidenceObj.relatedSuspects && evidenceObj.relatedSuspects.includes(suspect.name);
 
       state.isBusy = true;
-      playTensionTone(160);
       addLog('player', `⚖️ [مواجهة بالدليل]: أضع أمامك (${clueName})! التقرير: "${evidenceObj.report}". ما تفسيرك؟`);
       addLog('system', `⏳ جاري رصد ردة فعل ${suspect.name}...`);
 
@@ -1504,7 +1404,7 @@
 
     // ===== منظومة التحريات الرقمية والمالية =====
     function openCyberForensics() {
-      playClickSound();
+      calculateAccurateRank();
       if (player.rank < 4) {
         return addLog('system', '🚫 [إذن النيابة مرفوض]: تفتيش السجلات الرقمية يتطلب رتبة "محقق أول" (المستوى 4) فما فوق.');
       }
@@ -1514,12 +1414,10 @@
     }
 
     function closeCyberForensics() {
-      playClickSound();
       document.getElementById('cyberTerminalOverlay').classList.remove('active');
     }
 
     function switchTermTab(tab) {
-      playClickSound();
       currentTermTab = tab;
       document.getElementById('tabBank').classList.toggle('active', tab === 'bank');
       document.getElementById('tabTelecom').classList.toggle('active', tab === 'telecom');
@@ -1556,11 +1454,18 @@
     }
 
     function extractDigitalEvidence(name, report, target) {
-      playClickSound();
-      if (!SCENE_EVIDENCE.some(e => e.name === name)) {
+      const discovered = getDiscoveredEvidenceForCurrentCase();
+      if (!discovered.some(e => e.name === name)) {
         const newEv = { id: 'dig_' + Date.now(), name: name, icon: '💾', report: report, relatedSuspects: [target] };
         SCENE_EVIDENCE.push(newEv);
-        discoveredEvidence.push(newEv);
+        discovered.push(newEv);
+        
+        const prevRank = player.rank;
+        player.xp += 15;
+        checkRankPromotion(prevRank);
+        updateHeader();
+        if (auth.currentUser) savePlayerData(auth.currentUser.uid);
+
         renderDiscoveredEvidenceList();
         addLog('clue', `💾 [أثر رقمي]: تم استخراج "${name}" وإضافته للأحراز.`);
       }
@@ -1569,25 +1474,23 @@
 
     // ===== توجيه الاتهام النهائي =====
     function openAccusationModal() {
-      playClickSound();
-      if (discoveredEvidence.length === 0) return addLog('system', '⚠️ اجمع دليلاً واحداً على الأقل قبل إحالة القضية.');
+      const discovered = getDiscoveredEvidenceForCurrentCase();
+      if (discovered.length === 0) return addLog('system', '⚠️ اجمع دليلاً واحداً على الأقل قبل إحالة القضية.');
       
       const sSelect = document.getElementById('accusedSuspectSelect');
       sSelect.innerHTML = currentCase.suspects.map(s => `<option value="${s.name}">${s.avatar} ${s.name} (${s.role})</option>`).join('');
 
       const cSelect = document.getElementById('accusedClueSelect');
-      cSelect.innerHTML = discoveredEvidence.map(e => `<option value="${e.name}">${e.icon} ${e.name}</option>`).join('');
+      cSelect.innerHTML = discovered.map(e => `<option value="${e.name}">${e.icon} ${e.name}</option>`).join('');
 
       document.getElementById('accuseModal').classList.add('active');
     }
 
     function closeAccusationModal() {
-      playClickSound();
       document.getElementById('accuseModal').classList.remove('active');
     }
 
     function submitFinalIndictment() {
-      playClickSound();
       const suspect = document.getElementById('accusedSuspectSelect').value;
       const clue = document.getElementById('accusedClueSelect').value;
       closeAccusationModal();
@@ -1602,15 +1505,12 @@
       if (isKillerCorrect && isClueLinked) {
         earnedXP = (currentCase.rewards ? currentCase.rewards.xp : 120) + 50;
         status = '✅ إدانة قاطعة مع دليل إثبات دامغ';
-        playTensionTone(440);
       } else if (isKillerCorrect) {
         earnedXP = 60;
         status = '⚠️ إدانة صحيحة مع ضعف في الدليل';
-        playTensionTone(220);
       } else {
         earnedXP = 15;
         status = '❌ اتهام باطل لبريء';
-        playTensionTone(90);
       }
 
       const prevRank = player.rank;
@@ -1625,6 +1525,7 @@
         <div class="stat-row"><span>الدليل المقدم:</span><strong>${clue}</strong></div>
         <div class="stat-row"><span>الحكم:</span><strong style="color:${isKillerCorrect ? 'var(--green)' : 'var(--red)'}">${status}</strong></div>
         <div class="stat-row"><span>الخبرة المكتسبة:</span><strong style="color:var(--gold);">+${earnedXP} XP</strong></div>
+        <div class="stat-row"><span>الرتبة الحالية:</span><strong>${RANKS[player.rank - 1].title}</strong></div>
       `;
       document.getElementById('reportOverlay').classList.add('active');
     }
@@ -1632,13 +1533,13 @@
     // ===== توليد القضايا الإجرائي عبر Gemini =====
     async function generateNewProceduralCase() {
       if (state.isBusy) return;
-      playClickSound();
       const btn = document.getElementById('generateCaseBtn');
       btn.disabled = true;
       btn.textContent = '⏳ جاري التوليد...';
 
       addLog('system', '📂 [الأرشيف الجنائي]: جاري فتح ملف بلاغ جديد بواسطة Gemini Flash...');
 
+      calculateAccurateRank();
       const suspectsCount = Math.min(8, 4 + (player.rank || 1));
       const caseNumber = '#' + Math.floor(100 + Math.random() * 900);
 
@@ -1684,12 +1585,12 @@
     });
 
     document.getElementById('confrontBtn').addEventListener('click', () => {
-      if (discoveredEvidence.length > 0) confrontWithClue(discoveredEvidence[0].name);
+      const discovered = getDiscoveredEvidenceForCurrentCase();
+      if (discovered.length > 0) confrontWithClue(discovered[0].name);
       else addLog('system', '⚠️ افحص مسرح الجريمة لجمع الأدلة أولاً.');
     });
 
     document.getElementById('hintBtn').addEventListener('click', () => {
-      playClickSound();
       if (player.xp >= 20) {
         player.xp -= 20;
         const randomClue = SCENE_EVIDENCE[Math.floor(Math.random() * SCENE_EVIDENCE.length)];
@@ -1702,13 +1603,11 @@
     });
 
     document.getElementById('closeReportBtn').addEventListener('click', () => {
-      playClickSound();
       document.getElementById('reportOverlay').classList.remove('active');
       loadCaseData(currentCase);
     });
 
     document.getElementById('resetBtn').addEventListener('click', () => {
-      playClickSound();
       loadCaseData(currentCase);
     });
 
