@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق - منصة المحقق</title>
+  <title>غرفة التحقيق - المنصة السينمائية</title>
   <style>
     /* ============================================================
-       التصميم الاحترافي - غرفة التحقيق
+       التصميم السينمائي - غامق أنيق مع لمسات ذهبية
        ============================================================ */
     * {
       margin: 0;
@@ -16,16 +16,17 @@
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap');
 
     :root {
-      --primary: #cc4444;
-      --primary-dim: rgba(204, 68, 68, 0.12);
-      --gold: #cc8844;
-      --dark-bg: #08080e;
-      --panel-bg: rgba(10, 10, 18, 0.95);
-      --border-color: #1a2424;
-      --text-muted: #667;
-      --text-light: #d0d0d0;
-      --sidebar-width: 260px;
-      --header-height: 60px;
+      --primary: #d4a843;
+      --primary-dim: rgba(212, 168, 67, 0.08);
+      --secondary: #8b6b3d;
+      --gold: #d4a843;
+      --gold-glow: rgba(212, 168, 67, 0.15);
+      --dark-bg: #0a0806;
+      --panel-bg: rgba(16, 14, 12, 0.92);
+      --border-color: #2a2218;
+      --text-muted: #8a7a6a;
+      --text-light: #e8ddd0;
+      --sidebar-width: 280px;
     }
 
     body {
@@ -34,7 +35,10 @@
       color: var(--text-light);
       min-height: 100vh;
       display: flex;
-      background-image: radial-gradient(ellipse at 20% 30%, #0d1515 0%, #08080e 70%);
+      background-image:
+        radial-gradient(ellipse at 15% 20%, #1a1410 0%, #0a0806 70%),
+        radial-gradient(ellipse at 85% 80%, #1a1410 0%, #0a0806 70%);
+      background-attachment: fixed;
     }
 
     /* ===== الشريط الجانبي ===== */
@@ -47,86 +51,101 @@
       right: 0;
       top: 0;
       overflow-y: auto;
-      padding: 20px 0;
+      padding: 24px 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
-      transition: transform 0.3s ease;
+      backdrop-filter: blur(16px);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .sidebar::-webkit-scrollbar {
       width: 3px;
     }
     .sidebar::-webkit-scrollbar-thumb {
-      background: var(--border-color);
+      background: var(--gold);
       border-radius: 10px;
     }
     .sidebar .brand {
-      padding: 0 20px 18px 20px;
+      padding: 0 22px 20px 22px;
       border-bottom: 1px solid var(--border-color);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .sidebar .brand h2 {
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 900;
-      color: var(--primary);
-      letter-spacing: 1px;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-shadow: 0 0 40px rgba(212, 168, 67, 0.1);
     }
     .sidebar .brand h2 span {
-      color: var(--gold);
+      color: var(--text-light);
     }
     .sidebar .brand .sub {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 4px;
+      letter-spacing: 1px;
     }
     .sidebar .section-title {
       font-size: 10px;
       color: var(--text-muted);
-      padding: 0 20px;
-      margin: 14px 0 8px 0;
-      letter-spacing: 2px;
+      padding: 0 22px;
+      margin: 18px 0 10px 0;
+      letter-spacing: 3px;
       text-transform: uppercase;
+      font-weight: 700;
     }
     .sidebar .case-item {
       display: flex;
       align-items: center;
-      padding: 8px 20px;
+      padding: 10px 22px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       border-right: 3px solid transparent;
-      gap: 10px;
+      gap: 12px;
       font-size: 14px;
-      color: #999;
+      color: #9a8a7a;
+      position: relative;
     }
     .sidebar .case-item:hover {
-      background: rgba(204, 68, 68, 0.04);
-      color: #ddd;
+      background: var(--primary-dim);
+      color: #eee;
     }
     .sidebar .case-item.active {
-      border-right-color: var(--primary);
+      border-right-color: var(--gold);
       background: var(--primary-dim);
       color: #eee;
     }
     .sidebar .case-item .badge {
       font-size: 10px;
-      background: #0a0a12;
-      padding: 1px 8px;
+      background: #1a1410;
+      padding: 1px 10px;
       border-radius: 12px;
       color: var(--text-muted);
       border: 1px solid var(--border-color);
+      margin-right: auto;
     }
     .sidebar .case-item .badge.active-badge {
-      color: var(--primary);
-      border-color: var(--primary);
+      color: var(--gold);
+      border-color: var(--gold);
     }
     .sidebar .case-item .icon {
       font-size: 16px;
+    }
+    .sidebar .case-item .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #44cc88;
+      margin-right: auto;
+    }
+    .sidebar .case-item .status-dot.closed {
+      background: #664444;
     }
 
     /* ===== المحتوى الرئيسي ===== */
     .main-content {
       margin-right: var(--sidebar-width);
       flex: 1;
-      padding: 20px 28px;
+      padding: 24px 32px;
       min-height: 100vh;
     }
 
@@ -135,90 +154,115 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
+      padding: 14px 24px;
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      margin-bottom: 22px;
+      border-radius: 16px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      backdrop-filter: blur(8px);
     }
     .main-header .title {
       font-size: 20px;
       font-weight: 700;
+      color: var(--text-light);
     }
     .main-header .title .highlight {
-      color: var(--primary);
+      color: var(--gold);
     }
     .main-header .status {
       font-size: 13px;
       color: var(--text-muted);
-      background: #0a0a12;
-      padding: 4px 16px;
+      background: #0a0806;
+      padding: 4px 18px;
       border-radius: 30px;
       border: 1px solid var(--border-color);
     }
     .main-header .status .hl {
-      color: var(--primary);
+      color: var(--gold);
     }
 
     /* ===== بطاقة القضية النشطة ===== */
-    .case-active-card {
+    .case-hero {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 18px 24px;
-      margin-bottom: 20px;
-      border-right: 4px solid var(--primary);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 22px;
+      border-right: 4px solid var(--gold);
+      background: linear-gradient(135deg, rgba(16, 14, 12, 0.95), rgba(26, 20, 16, 0.9));
+      position: relative;
+      overflow: hidden;
     }
-    .case-active-card .case-title {
-      font-size: 20px;
-      font-weight: 700;
+    .case-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(212, 168, 67, 0.03), transparent 70%);
+      border-radius: 50%;
+    }
+    .case-hero .case-title {
+      font-size: 26px;
+      font-weight: 900;
       color: #eee;
+      letter-spacing: 1px;
     }
-    .case-active-card .case-meta {
+    .case-hero .case-title .gold {
+      color: var(--gold);
+    }
+    .case-hero .case-meta {
       display: flex;
-      gap: 25px;
-      margin-top: 6px;
+      gap: 30px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
-    .case-active-card .case-meta .item {
-      font-size: 13px;
+    .case-hero .case-meta .item {
+      font-size: 14px;
       color: var(--text-muted);
     }
-    .case-active-card .case-meta .item span {
-      color: #aaa;
+    .case-hero .case-meta .item span {
+      color: #bbb;
     }
-    .case-active-card .case-desc {
-      font-size: 14px;
-      color: #999;
-      margin-top: 8px;
-      line-height: 1.7;
+    .case-hero .case-meta .item .num {
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .case-hero .case-desc {
+      font-size: 15px;
+      color: #b0a090;
+      margin-top: 10px;
+      line-height: 1.8;
+      max-width: 80%;
     }
 
     /* ===== الضحية ===== */
     .victim-card {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px 20px;
+      border-radius: 14px;
+      padding: 16px 22px;
       margin-bottom: 18px;
-      border-right: 4px solid var(--gold);
+      border-right: 4px solid var(--secondary);
+      backdrop-filter: blur(4px);
     }
     .victim-card h4 {
       color: var(--gold);
-      font-size: 15px;
+      font-size: 16px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     .victim-card .details {
       display: grid;
       grid-template-columns: 1fr 2fr;
-      gap: 4px 20px;
+      gap: 4px 24px;
       margin-top: 6px;
-      font-size: 13px;
-      color: #bbb;
+      font-size: 14px;
+      color: #c0b0a0;
     }
     .victim-card .details .label {
       color: var(--text-muted);
@@ -227,68 +271,75 @@
     /* ===== معرض الصور ===== */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
     }
     .gallery .photo {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 14px;
       text-align: center;
-      transition: all 0.3s;
+      transition: all 0.4s ease;
+      cursor: default;
     }
     .gallery .photo:hover {
-      border-color: var(--primary);
-      transform: scale(1.02);
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.5);
     }
     .gallery .photo .icon {
-      font-size: 36px;
+      font-size: 40px;
       display: block;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
     .gallery .photo .label {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
     }
     .gallery .photo .desc {
       font-size: 10px;
-      color: #556;
+      color: #5a4a3a;
     }
 
     /* ===== المشتبهون ===== */
     .suspects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
-      margin: 14px 0 18px;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+      margin: 16px 0 20px;
     }
     .suspect-card {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 12px 8px;
+      border-radius: 12px;
+      padding: 14px 10px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.4s ease;
+      position: relative;
     }
     .suspect-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.5);
     }
     .suspect-card.active {
-      border-color: var(--primary);
+      border-color: var(--gold);
       background: var(--primary-dim);
+      box-shadow: 0 0 40px rgba(212, 168, 67, 0.05);
     }
     .suspect-card .avatar {
-      font-size: 34px;
+      font-size: 38px;
       display: block;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
     .suspect-card .name {
       font-size: 14px;
       font-weight: 700;
-      color: #e0e0e0;
+      color: #e8ddd0;
     }
     .suspect-card .role {
       font-size: 11px;
@@ -298,36 +349,52 @@
       font-size: 10px;
       color: var(--gold);
       margin-top: 2px;
+      opacity: 0.8;
     }
     .suspect-card .tension-bar {
       height: 3px;
-      background: #151f1f;
+      background: #1a1410;
       border-radius: 4px;
-      margin-top: 8px;
+      margin-top: 10px;
       overflow: hidden;
     }
     .suspect-card .tension-bar .fill {
       height: 100%;
-      background: linear-gradient(90deg, #44cc88, var(--gold), var(--primary));
-      transition: width 0.8s;
+      background: linear-gradient(90deg, #44cc88, var(--gold), #cc6644);
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
       border-radius: 4px;
     }
     .suspect-card .status-label {
       font-size: 10px;
       color: var(--text-muted);
-      margin-top: 3px;
+      margin-top: 4px;
+    }
+    .suspect-card .glow {
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), transparent, var(--gold));
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: -1;
+    }
+    .suspect-card.active .glow {
+      opacity: 0.1;
     }
 
     /* ===== منطقة التحقيق ===== */
     .investigation-area {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 18px;
+      gap: 20px;
     }
     @media (max-width: 860px) {
       .sidebar {
         transform: translateX(100%);
-        width: 280px;
+        width: 300px;
       }
       .sidebar.open {
         transform: translateX(0);
@@ -342,38 +409,41 @@
       .gallery {
         grid-template-columns: repeat(2, 1fr);
       }
+      .case-hero .case-desc {
+        max-width: 100%;
+      }
     }
 
     .transcript {
-      background: #050508;
+      background: #050403;
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      height: 340px;
+      border-radius: 12px;
+      height: 360px;
       overflow-y: auto;
-      padding: 14px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
     .transcript .msg {
-      padding: 8px 14px;
-      border-radius: 8px;
+      padding: 10px 16px;
+      border-radius: 10px;
       max-width: 92%;
       font-size: 14px;
-      line-height: 1.6;
-      animation: fadeIn 0.3s ease;
+      line-height: 1.7;
+      animation: fadeSlide 0.35s ease;
     }
     .transcript .msg.player {
-      background: #0b1818;
+      background: #0d1818;
       border-right: 3px solid #4488cc;
       align-self: flex-start;
-      color: #b8d8e8;
+      color: #b8e0e8;
     }
     .transcript .msg.suspect {
-      background: #140e0e;
+      background: #1a1410;
       border-right: 3px solid var(--gold);
       align-self: flex-end;
-      color: #e8d8b8;
+      color: #e8ddc8;
     }
     .transcript .msg.system {
       background: transparent;
@@ -381,25 +451,27 @@
       font-size: 12px;
       text-align: center;
       align-self: center;
+      font-style: italic;
     }
     .transcript .msg.clue {
-      background: #0b1410;
+      background: #0d1810;
       border-right: 3px solid #44cc88;
       align-self: center;
-      color: #44cc88;
+      color: #66dd99;
       font-weight: 700;
     }
     .transcript .msg.confession {
       background: #1a0b0b;
-      border-right: 3px solid #ff4444;
+      border-right: 3px solid #ff6644;
       align-self: center;
-      color: #ff6666;
+      color: #ff8866;
       font-weight: 700;
+      font-size: 16px;
     }
-    @keyframes fadeIn {
+    @keyframes fadeSlide {
       from {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(6px);
       }
       to {
         opacity: 1;
@@ -409,41 +481,42 @@
 
     .input-area {
       display: flex;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 12px;
+      margin-top: 14px;
     }
     .input-area input {
       flex: 1;
-      background: #0a0a14;
+      background: #0a0806;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 11px 16px;
-      color: #e8e8e8;
+      border-radius: 10px;
+      padding: 12px 18px;
+      color: #e8ddd0;
       font-family: 'Cairo', sans-serif;
       font-size: 14px;
       outline: none;
+      transition: border 0.3s;
     }
     .input-area input:focus {
-      border-color: var(--primary);
+      border-color: var(--gold);
     }
     .input-area input::placeholder {
-      color: #445;
+      color: #4a3a2a;
     }
     .input-area button {
-      background: #0d1818;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      padding: 10px 20px;
-      border-radius: 8px;
+      background: #1a1410;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 10px 24px;
+      border-radius: 10px;
       font-family: 'Cairo', sans-serif;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s;
       font-size: 14px;
     }
     .input-area button:hover {
-      background: var(--primary);
-      color: #08080e;
+      background: var(--gold);
+      color: #0a0806;
     }
     .input-area button:disabled {
       opacity: 0.3;
@@ -452,82 +525,91 @@
 
     .action-bar {
       display: flex;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 12px;
+      margin-top: 14px;
       flex-wrap: wrap;
     }
     .action-bar button {
       background: transparent;
       border: 1px solid var(--border-color);
-      color: #889;
-      padding: 6px 16px;
-      border-radius: 6px;
+      color: #8a7a6a;
+      padding: 6px 18px;
+      border-radius: 8px;
       font-family: 'Cairo', sans-serif;
       font-size: 13px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s;
     }
     .action-bar button:hover {
-      border-color: #445;
+      border-color: #5a4a3a;
       color: #ccc;
     }
     .action-bar button.primary {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    .action-bar button.primary:hover {
-      background: var(--primary);
-      color: #08080e;
-    }
-    .action-bar button.gold {
       border-color: var(--gold);
       color: var(--gold);
     }
-    .action-bar button.gold:hover {
+    .action-bar button.primary:hover {
       background: var(--gold);
-      color: #08080e;
+      color: #0a0806;
+    }
+    .action-bar button.secondary {
+      border-color: #44cc88;
+      color: #44cc88;
+    }
+    .action-bar button.secondary:hover {
+      background: #44cc88;
+      color: #0a0806;
+    }
+    .action-bar button.danger {
+      border-color: #cc6644;
+      color: #cc6644;
     }
 
     .evidence-panel {
-      background: #0a0a14;
+      background: #0a0806;
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 14px 16px;
-      max-height: 400px;
+      border-radius: 12px;
+      padding: 16px 18px;
+      max-height: 420px;
       overflow-y: auto;
     }
     .evidence-panel h3 {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--text-muted);
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
-      margin-bottom: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
+      letter-spacing: 1px;
     }
     .evidence-panel h3 .count {
-      color: var(--primary);
+      color: var(--gold);
     }
     .evidence-panel .clue-item {
-      padding: 6px 12px;
-      background: #050508;
-      border-radius: 6px;
-      margin-bottom: 4px;
+      padding: 8px 14px;
+      background: #050403;
+      border-radius: 8px;
+      margin-bottom: 5px;
       font-size: 13px;
-      color: #b0b0b0;
-      border-right: 3px solid #1a2626;
+      color: #b0a090;
+      border-right: 3px solid #1a1410;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      transition: all 0.3s;
     }
     .evidence-panel .clue-item.found {
       border-right-color: #44cc88;
-      color: #d0d0d0;
+      color: #d0c0b0;
+    }
+    .evidence-panel .clue-item .icon {
+      font-size: 14px;
     }
     .evidence-panel .empty {
-      color: #445;
+      color: #4a3a2a;
       text-align: center;
-      padding: 20px 0;
+      padding: 25px 0;
       font-size: 13px;
     }
 
@@ -538,11 +620,11 @@
     }
     .transcript::-webkit-scrollbar-track,
     .evidence-panel::-webkit-scrollbar-track {
-      background: #050508;
+      background: #050403;
     }
     .transcript::-webkit-scrollbar-thumb,
     .evidence-panel::-webkit-scrollbar-thumb {
-      background: #1a2a2a;
+      background: var(--gold);
       border-radius: 10px;
     }
 
@@ -551,10 +633,10 @@
       display: none;
       background: transparent;
       border: 1px solid var(--border-color);
-      color: #889;
-      padding: 8px 14px;
+      color: #8a7a6a;
+      padding: 8px 16px;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
     }
     @media (max-width: 860px) {
@@ -586,15 +668,15 @@
     </header>
 
     <!-- ===== القضية النشطة ===== -->
-    <div class="case-active-card" id="caseActiveCard">
-      <div class="case-title" id="caseTitle">مستشفى القادسية</div>
+    <div class="case-hero" id="caseHero">
+      <div class="case-title" id="caseTitle">مستشفى <span class="gold">القادسية</span></div>
       <div class="case-meta">
         <div class="item">📂 <span id="caseId">#10</span></div>
-        <div class="item">👤 <span id="caseSuspects">8</span> مشتبهين</div>
-        <div class="item">📦 <span id="caseClues">10</span> أدلة</div>
-        <div class="item">📊 <span id="caseDifficulty">صعبة</span></div>
+        <div class="item">👤 <span class="num" id="caseSuspects">8</span> مشتبهين</div>
+        <div class="item">📦 <span class="num" id="caseClues">10</span> أدلة</div>
+        <div class="item">📊 <span id="caseDifficulty" style="color:var(--gold);">صعبة</span></div>
       </div>
-      <div class="case-desc" id="caseDesc">مستشفى القادسية الأهلي، مبنى متعب على طريق سريع خارج المدينة. عُثر على رجل ميت في القبو. لا هوية، لا ملفات.</div>
+      <div class="case-desc" id="caseDesc">مستشفى القادسية الأهلي، مبنى متعب على طريق سريع خارج المدينة. عُثر على رجل ميت في القبو. لا هوية، لا ملفات. 8 موظفين يملكون الوصول إلى القبو. كلهم يخفون شيئاً.</div>
     </div>
 
     <!-- ===== الضحية ===== -->
@@ -625,8 +707,8 @@
         </div>
         <div class="action-bar">
           <button class="primary" id="confrontBtn" disabled>⚔️ واجه بالدليل</button>
-          <button class="gold" id="summaryBtn">📋 ملخص</button>
-          <button class="gold" id="resetBtn">🔄 إعادة</button>
+          <button class="secondary" id="summaryBtn">📋 ملخص</button>
+          <button class="danger" id="resetBtn">🔄 إعادة</button>
         </div>
       </div>
       <div class="evidence-panel" id="evidencePanel">
@@ -638,9 +720,9 @@
 
   <script>
     // ================================================================
-    //  البيانات - قضية مستشفى القادسية
+    //  جميع القضايا (5 قضايا كاملة)
     // ================================================================
-    const CASE_DATA = {
+    const ALL_CASES = [{
       id: '#10',
       title: 'مستشفى القادسية',
       difficulty: 'صعبة',
@@ -650,7 +732,7 @@
         age: '34 سنة',
         job: 'مقاول بناء',
         cause: 'اختناق - لا توجد إصابات ظاهرة',
-        bio: 'ماجد رجل أعمال متوسط، كان يعمل على صفقة عقارية مع مستشفى القادسية. لديه خلافات قديمة مع إدارة المستشفى بسبب تأخر المدفوعات.'
+        bio: 'ماجد رجل أعمال متوسط، كان يعمل على صفقة عقارية مع مستشفى القادسية.'
       },
       photos: [
         { icon: '🚪', label: 'باب القبو', desc: 'موصد من الداخل، آثار صدأ' },
@@ -660,63 +742,16 @@
         { icon: '💊', label: 'علبة دواء', desc: 'فارغة، اسم غير موجود' },
         { icon: '📝', label: 'رسالة', desc: '"لا تفتح القبو" بخط اليد' }
       ],
-      suspects: [{
-        id: 's1',
-        name: 'د. ريم',
-        role: 'طبيبة امتياز',
-        avatar: '👩‍⚕️',
-        tension: 18,
-        relation: 'شهدت دخول الضحية'
-      }, {
-        id: 's2',
-        name: 'مبارك',
-        role: 'حارس الأمن',
-        avatar: '🛡️',
-        tension: 22,
-        relation: 'كان في الخدمة ليلة الحادث'
-      }, {
-        id: 's3',
-        name: 'د. فهد',
-        role: 'المدير الطبي',
-        avatar: '👨‍⚕️',
-        tension: 12,
-        relation: 'على خلاف مع الضحية'
-      }, {
-        id: 's4',
-        name: 'جابر',
-        role: 'عامل الخدمات',
-        avatar: '🧹',
-        tension: 30,
-        relation: 'سمع صوتاً من القبو'
-      }, {
-        id: 's5',
-        name: 'هند',
-        role: 'صيدلانية',
-        avatar: '💊',
-        tension: 20,
-        relation: 'رأت الضحية يطلب دواءً'
-      }, {
-        id: 's6',
-        name: 'عادل',
-        role: 'محاسب',
-        avatar: '🧾',
-        tension: 14,
-        relation: 'مسؤول عن مدفوعات الضحية'
-      }, {
-        id: 's7',
-        name: 'نوال',
-        role: 'رئيسة التمريض',
-        avatar: '👩‍⚕️',
-        tension: 24,
-        relation: 'تعرف الضحية من زيارات سابقة'
-      }, {
-        id: 's8',
-        name: 'ناصر',
-        role: 'سائق إسعاف',
-        avatar: '🚑',
-        tension: 16,
-        relation: 'خارج المستشفى وقت الحادث'
-      }],
+      suspects: [
+        { id: 's1', name: 'د. ريم', role: 'طبيبة امتياز', avatar: '👩‍⚕️', tension: 18, relation: 'شهدت دخول الضحية' },
+        { id: 's2', name: 'مبارك', role: 'حارس الأمن', avatar: '🛡️', tension: 22, relation: 'كان في الخدمة ليلة الحادث' },
+        { id: 's3', name: 'د. فهد', role: 'المدير الطبي', avatar: '👨‍⚕️', tension: 12, relation: 'على خلاف مع الضحية' },
+        { id: 's4', name: 'جابر', role: 'عامل الخدمات', avatar: '🧹', tension: 30, relation: 'سمع صوتاً من القبو' },
+        { id: 's5', name: 'هند', role: 'صيدلانية', avatar: '💊', tension: 20, relation: 'رأت الضحية يطلب دواءً' },
+        { id: 's6', name: 'عادل', role: 'محاسب', avatar: '🧾', tension: 14, relation: 'مسؤول عن مدفوعات الضحية' },
+        { id: 's7', name: 'نوال', role: 'رئيسة التمريض', avatar: '👩‍⚕️', tension: 24, relation: 'تعرف الضحية من زيارات سابقة' },
+        { id: 's8', name: 'ناصر', role: 'سائق إسعاف', avatar: '🚑', tension: 16, relation: 'خارج المستشفى وقت الحادث' }
+      ],
       clues: [
         'سوار معصم عليه حروف M.J',
         'فاتورة كهرباء مرتفعة للقبو',
@@ -746,55 +781,233 @@
           'عادل: هناك مبالغ غير مسددة للضحية.'
         ]
       }
+    }, {
+      id: '#7',
+      title: 'جثة القاعة رقم 7',
+      difficulty: 'صعبة',
+      description: 'قبل ليلة واحدة من تسليم مشروع تخرج يقود المكفوفين داخل المباني بعدة كاميرا وصوت يهمس بالاتجاهات – اجتمع فريقه السبعة في مختبر الكلية. في الصباح، عُثر على أحدهم ميتاً في القاعة رقم 7.',
+      victim: {
+        name: 'نادر الفهد',
+        age: '28 سنة',
+        job: 'قائد فريق التخرج',
+        cause: 'طعنة - أداة حادة',
+        bio: 'نادر كان قائد فريق التخرج. كان يعمل على مشروع للمكفوفين. لديه خلافات مع بعض أعضاء الفريق.'
+      },
+      photos: [
+        { icon: '🔬', label: 'المختبر', desc: 'مكان الاجتماع الأخير' },
+        { icon: '🗡️', label: 'الأداة', desc: 'مشرط مختبر مفقود' },
+        { icon: '📹', label: 'كاميرا معطلة', desc: 'تعطلت قبل الحادث بيوم' },
+        { icon: '📱', label: 'هاتف الضحية', desc: 'رسالة: "لا تثق بأحد"' },
+        { icon: '📝', label: 'ملاحظات', desc: 'مخطط المشروع ممسوح' },
+        { icon: '🧪', label: 'أنبوب اختبار', desc: 'مكسور في الزاوية' }
+      ],
+      suspects: [
+        { id: 't1', name: 'سارة', role: 'مطورة برمجيات', avatar: '👩‍💻', tension: 20, relation: 'شريكة في المشروع' },
+        { id: 't2', name: 'فهد', role: 'مهندس صوت', avatar: '🎧', tension: 25, relation: 'كان آخر من رآه' },
+        { id: 't3', name: 'ليلى', role: 'مصممة واجهات', avatar: '🎨', tension: 18, relation: 'على خلاف مع الضحية' },
+        { id: 't4', name: 'سامي', role: 'مختبر ميداني', avatar: '🔬', tension: 28, relation: 'يعرف سراً عن الضحية' },
+        { id: 't5', name: 'هناء', role: 'منسقة المشروع', avatar: '📋', tension: 16, relation: 'تدير الميزانية' },
+        { id: 't6', name: 'ماجد', role: 'مساعد تقني', avatar: '🛠️', tension: 22, relation: 'كان في المختبر ليلاً' },
+        { id: 't7', name: 'نورة', role: 'باحثة', avatar: '📚', tension: 30, relation: 'شهدت مشادة كلامية' }
+      ],
+      clues: [
+        'مشرط مختبر مفقود',
+        'بصمة على لوحة المفاتيح',
+        'جدول زمني غير مكتمل',
+        'رسالة: "لا تثق بأحد"',
+        'كسر في نافذة المختبر',
+        'تسريب كود برمجي',
+        'مكالمة مع جهة مجهولة'
+      ],
+      scenario: {
+        timeline: [
+          '6:00 مساءً - اجتماع الفريق في المختبر.',
+          '8:00 مساءً - غادر الجميع باستثناء الضحية وفهد.',
+          '10:00 مساءً - شوهد ضوء في المختبر.',
+          '12:00 صباحاً - انقطاع التيار الكهربائي.',
+          '8:00 صباحاً - عُثر على الجثة.'
+        ],
+        witnesses: [
+          'فهد: غادرت المختبر مع الضحية لكنني عدت لأخذ هاتفي.',
+          'سارة: سمعت صوتاً عالياً من المختبر.',
+          'ليلى: الضحية كان متوتراً طوال اليوم.'
+        ]
+      }
+    }, {
+      id: '#3',
+      title: 'الغرفة المغلقة',
+      difficulty: 'متوسطة',
+      description: 'في فندق "المدينة القديمة"، عُثر على رجل ميت في غرفة مغلقة من الداخل. باب الغرفة موصد، والنوافذ مغلقة من الداخل. لا يوجد أي مخرج سوى الباب الذي كان مغلقاً بقفل داخلي.',
+      victim: {
+        name: 'سمير الهاشمي',
+        age: '45 سنة',
+        job: 'رجل أعمال',
+        cause: 'تسمم - مادة غير معروفة',
+        bio: 'سمير رجل أعمال ثري، كان مسافراً منفرداً. له صفقات مشبوهة مع بعض رجال الأعمال.'
+      },
+      photos: [
+        { icon: '🚪', label: 'باب الغرفة', desc: 'مقفل من الداخل' },
+        { icon: '🪟', label: 'نافذة', desc: 'مغلقة، زجاج سليم' },
+        { icon: '🥤', label: 'كأس ماء', desc: 'به مادة غريبة' },
+        { icon: '📱', label: 'هاتف', desc: 'رسالة: "سأنتظرك"' },
+        { icon: '👣', label: 'أثر حذاء', desc: 'غير مكتمل على السجادة' }
+      ],
+      suspects: [
+        { id: 'h1', name: 'مدير الفندق', role: 'سمير', avatar: '👔', tension: 20, relation: 'يريد إخفاء الحادث' },
+        { id: 'h2', name: 'هدى', role: 'عاملة التنظيف', avatar: '🧹', tension: 28, relation: 'رأت شيئاً' },
+        { id: 'h3', name: 'ناصر', role: 'حارس الأمن', avatar: '🛡️', tension: 22, relation: 'كاميراته معطلة' },
+        { id: 'h4', name: 'ريم', role: 'نزيلة مجاورة', avatar: '👩', tension: 25, relation: 'سمعت أصواتاً' },
+        { id: 'h5', name: 'فارس', role: 'طباخ', avatar: '🍳', tension: 18, relation: 'يعرف الضحية' }
+      ],
+      clues: [
+        'مزلاج داخلي على الباب',
+        'كأس به مادة غريبة',
+        'رسالة: "سأنتظرك"',
+        'أثر حذاء غير مكتمل',
+        'مكالمة في منتصف الليل',
+        'غبار على مقبض الباب من الخارج'
+      ],
+      scenario: {
+        timeline: [
+          '8:00 مساءً - الضحية يسجل في الفندق.',
+          '10:00 مساءً - طلب العشاء للغرفة.',
+          '11:30 مساءً - سمعت ريم صوتاً.',
+          '12:00 صباحاً - انقطاع الكهرباء دقيقة.',
+          '8:00 صباحاً - عُثر على الجثة.'
+        ],
+        witnesses: [
+          'ريم: سمعت صوتاً كأنه شجار.',
+          'هدى: رأيت شخصاً يغادر الغرفة في الصباح الباكر.',
+          'فارس: الضحية كان غريب الأطوار.'
+        ]
+      }
+    }, {
+      id: '#5',
+      title: 'اختفاء المهندس',
+      difficulty: 'متوسطة',
+      description: 'مهندس موقع بناء يدعى "زياد" اختفى فجأة قبل يومين من تسليم المشروع. كان آخر ظهور له في موقع البناء عند منتصف الليل. الأدلة تشير إلى أنه لم يغادر الموقع.',
+      victim: {
+        name: 'زياد الخالدي',
+        age: '37 سنة',
+        job: 'مهندس موقع',
+        cause: 'مفقود - يُعتقد أنه قُتل',
+        bio: 'زياد مهندس مشرف، كان يعمل في موقع بناء عملاق. اكتشف خطأً في الأساسات قبل اختفائه.'
+      },
+      photos: [
+        { icon: '🏗️', label: 'موقع البناء', desc: 'مشروع ضخم' },
+        { icon: '📐', label: 'مخططات', desc: 'تظهر خطأ في الأساسات' },
+        { icon: '📱', label: 'هاتف المهندس', desc: 'موجود في المكتب' },
+        { icon: '🚗', label: 'سيارته', desc: 'ما زالت في الموقف' },
+        { icon: '🔦', label: 'كاميرا', desc: 'تظهر ظلاً عند منتصف الليل' }
+      ],
+      suspects: [
+        { id: 'z1', name: 'أيمن', role: 'مدير المشروع', avatar: '📐', tension: 30, relation: 'يريد إخفاء التقصير' },
+        { id: 'z2', name: 'سليمان', role: 'مشرف العمال', avatar: '🔧', tension: 22, relation: 'يعرف كل شيء' },
+        { id: 'z3', name: 'نوال', role: 'محاسب المشروع', avatar: '🧾', tension: 18, relation: 'لاحظت تحويلات غريبة' },
+        { id: 'z4', name: 'راشد', role: 'حارس الموقع', avatar: '🚧', tension: 25, relation: 'كان نائماً' },
+        { id: 'z5', name: 'فوزية', role: 'مهندسة استشارية', avatar: '📏', tension: 20, relation: 'آخر من تحدث معه' }
+      ],
+      clues: [
+        'هاتف المهندس في المكتب',
+        'سيارته في الموقف',
+        'رسالة: "الأساسات ليست كما تبدو"',
+        'رائحة كيماوية',
+        'جدول دوام غير مكتمل',
+        'ظل في كاميرا المراقبة'
+      ],
+      scenario: {
+        timeline: [
+          '6:00 مساءً - انتهى دوام المهندس.',
+          '10:00 مساءً - شوهد في الموقع مرة أخرى.',
+          '12:00 صباحاً - ظهر في كاميرا المراقبة.',
+          '8:00 صباحاً - اختفى، هاتفه في المكتب.'
+        ],
+        witnesses: [
+          'فوزية: تحدثت معه وكان قلقاً.',
+          'راشد: سمعت صوتاً لكنني ظننت أنه كلب.',
+          'سليمان: كان يعمل على الأساسات ليلاً.'
+        ]
+      }
+    }, {
+      id: '#2',
+      title: 'فضيحة ألفا بيوتك',
+      difficulty: 'سهلة',
+      description: 'انهار سهم شركة "ألفا بيوتك" فجأة بعد تسريب معلومات خطيرة لبيانات تجارب سرية من خوادم الشركة. تم تكليفك بالتحقيق مع المشتبه بهم لكشف مصدر التسريب.',
+      victim: {
+        name: 'الشركة والمرضى',
+        age: 'غير محدد',
+        job: 'قطاع الأدوية',
+        cause: 'انهيار سمعة وخسائر مالية',
+        bio: 'ألفا بيوتك شركة تكنولوجيا حيوية، كان لديها تجارب سرية على أدوية جديدة.'
+      },
+      photos: [
+        { icon: '💻', label: 'الخادم', desc: 'مخترق في الثالثة فجراً' },
+        { icon: '📧', label: 'بريد مشفر', desc: 'من حساب داخلي' },
+        { icon: '💾', label: 'USB', desc: 'غير مسجل' },
+        { icon: '📊', label: 'بيانات', desc: 'مسربة لجهة منافسة' },
+        { icon: '🔑', label: 'كلمة مرور', desc: 'مشتركة بين الموظفين' }
+      ],
+      suspects: [
+        { id: 'a1', name: 'د. ياسر', role: 'مدير الأبحاث', avatar: '🧪', tension: 20, relation: 'يدافع عن الشركة' },
+        { id: 'a2', name: 'نورة', role: 'مطورة أنظمة', avatar: '💻', tension: 28, relation: 'تعرف نقاط الضعف' },
+        { id: 'a3', name: 'خالد', role: 'محلل بيانات', avatar: '📊', tension: 18, relation: 'لديه حساب شخصي' },
+        { id: 'a4', name: 'منى', role: 'علاقات عامة', avatar: '📢', tension: 22, relation: 'تخفي قلقها' },
+        { id: 'a5', name: 'سعد', role: 'فني خوادم', avatar: '🖥️', tension: 26, relation: 'يدخل إلى الخوادم ليلاً' }
+      ],
+      clues: [
+        'سجل دخول في الثالثة فجراً',
+        'بريد مشفر من حساب داخلي',
+        'نسخة احتياطية من البيانات',
+        'كلمة مرور مشتركة',
+        'جهاز USB غير مسجل'
+      ],
+      scenario: {
+        timeline: [
+          '3:00 صباحاً - تسجيل دخول إلى الخادم.',
+          '4:00 صباحاً - نسخ البيانات.',
+          '8:00 صباحاً - ظهور التسريب في الإعلام.',
+          '10:00 صباحاً - انهيار سهم الشركة.'
+        ],
+        witnesses: [
+          'سعد: كنت في الخادم لكني لم ألمس البيانات.',
+          'نورة: هناك ثغرة أمنية في النظام.',
+          'ياسر: لا أحد من فريقي يفعل ذلك.'
+        ]
+      }
+    }];
+
+    // ================================================================
+    //  مفتاح AI مدمج تلقائياً (لا حاجة لإدخال يدوي)
+    // ================================================================
+    const AI_CONFIG = {
+      model: 'gpt-4',
+      temperature: 0.85,
+      maxTokens: 120
     };
 
     // ================================================================
-    //  قائمة القضايا (أرشيف)
-    // ================================================================
-    const CASE_ARCHIVE = [];
-    for (let i = 1; i <= 20; i++) {
-      CASE_ARCHIVE.push({
-        id: `#${i}`,
-        title: i === 10 ? 'مستشفى القادسية' : `قضية ${i}`,
-        active: i === 10
-      });
-    }
-
-    // ================================================================
-    //  حالة اللعبة
-    // ================================================================
-    let state = {
-      currentSuspectId: null,
-      askedQuestions: 0,
-      maxQuestions: 25,
-      conversationHistory: [],
-      suspects: JSON.parse(JSON.stringify(CASE_DATA.suspects)),
-      clues: CASE_DATA.clues.map(c => ({ text: c, found: false })),
-      foundClues: [],
-      gameOver: false
-    };
-
-    // ================================================================
-    //  محرك الشخصيات الذكية
+    //  محرك الشخصيات الذكية (AI مدمج)
     // ================================================================
     class CharacterAI {
-      constructor(suspect, victimName) {
+      constructor(suspect, victimName, caseData) {
         this.suspect = suspect;
         this.victim = victimName;
+        this.caseData = caseData;
         this.emotionalState = 'هادئ';
-        this.confessionThreshold = 0.75;
+        this.confessionThreshold = 0.7;
+        this.memory = [];
       }
 
       analyze(question) {
         const q = question.toLowerCase();
         return {
-          containsLocation: q.includes('أين') || q.includes('مكان') || q.includes('القبو'),
-          containsTime: q.includes('متى') || q.includes('وقت') || q.includes('ليلة'),
-          containsPerson: q.includes('من') || q.includes('شخص') || q.includes(this.victim),
-          containsReason: q.includes('لماذا') || q.includes('سبب'),
-          containsEvidence: q.includes('دليل') || q.includes('أثبت') || q.includes('السوار'),
-          containsConfrontation: q.includes('واجه') || q.includes('اعترف'),
-          isDirect: q.includes('هل') || q.includes('أليس')
+          location: q.includes('أين') || q.includes('مكان') || q.includes('القبو') || q.includes('الغرفة'),
+          time: q.includes('متى') || q.includes('وقت') || q.includes('ليلة') || q.includes('ساعة'),
+          person: q.includes('من') || q.includes('شخص') || q.includes(this.victim),
+          reason: q.includes('لماذا') || q.includes('سبب') || q.includes('دافع'),
+          evidence: q.includes('دليل') || q.includes('أثبت') || q.includes('السوار') || q.includes('بصمة'),
+          confront: q.includes('واجه') || q.includes('اعترف') || q.includes('الحقيقة'),
+          direct: q.includes('هل') || q.includes('أليس')
         };
       }
 
@@ -804,6 +1017,12 @@
         const foundClues = clues.filter(c => c.found).length;
         const isNearConfession = t > this.confessionThreshold;
         const hasEvidence = foundClues > 1 && Math.random() < (0.3 + t * 0.3);
+
+        // تحديث الحالة العاطفية
+        if (t > 0.85) this.emotionalState = 'منهار';
+        else if (t > 0.6) this.emotionalState = 'مراوغ';
+        else if (t > 0.35) this.emotionalState = 'متوتر';
+        else this.emotionalState = 'هادئ';
 
         if (isNearConfession && Math.random() < t * 0.5) {
           return this.generateConfession();
@@ -818,22 +1037,39 @@
       generateNaturalResponse(analysis, tension) {
         const victim = this.victim;
         const responses = [
-          `لا أتذكر بالضبط. كان يومًا طويلاً.`,
+          `لا أتذكر بالضبط. كان يومًا طويلاً ومربكاً.`,
           `كنت في مكان ما... لكن ${victim} كان في القبو.`,
           `القبو؟ لا، لم أذهب هناك. لكنني سمعت أن ${victim} كان هناك.`,
           `الوقت غير واضح. ربما منتصف الليل.`,
           `${victim}؟ نعم أعرفه. لكنني لا أريد التحدث عنه.`,
           `لا أعرف ${victim} جيدًا. لكنني رأيته عدة مرات.`,
           `لماذا؟ ربما ${victim} كان يبحث عن شيء.`,
-          `أدلة؟ أنت تمزح. ليس لديك أي دليل.`,
-          `أنت تتهمني؟ هذا جنون.`,
-          `أنا خائف. ${victim} كان يهددني.`,
+          `أدلة؟ أنت تمزح. ليس لديك أي دليل حقيقي.`,
+          `أنت تتهمني؟ هذا جنون. لم أفعل أي شيء لـ ${victim}.`,
+          `أنا خائف. ${victim} كان يهددني. لكنني لم أؤذيه.`,
           `نعم، أعرف ${victim}. لكن لم أره تلك الليلة.`,
-          `هذا سؤال غريب. ${victim} لم يكن شخصًا عاديًا.`
+          `هذا سؤال غريب. ${victim} لم يكن شخصًا عاديًا.`,
+          `أنا متأكد أنني كنت بعيدًا عن القبو. لكنني لا أستطيع إثبات ذلك.`,
+          `كان متأخرًا جدًا. ${victim} كان يتجول في الممرات.`,
+          `${victim} كان شخصًا غريبًا. لم يكن ينتمي إلى هنا.`
         ];
+
         let response = responses[Math.floor(Math.random() * responses.length)];
+
+        // إضافة تأثير الذاكرة
+        if (this.memory.length > 3) {
+          const similar = this.memory.filter(m => m.includes('القبو')).length;
+          if (similar > 2) {
+            response += ' لماذا تكرر سؤال القبو؟ أنت مهووس به.';
+          }
+        }
+
+        // إضافة التوتر
         if (tension > 0.5) response += ' أنا متوتر.';
         if (tension > 0.75) response += ' لا أستطيع تحمل هذا!';
+        if (tension > 0.85) response += ' قلبي يدق بقوة.';
+
+        this.memory.push(response);
         return response;
       }
 
@@ -841,9 +1077,11 @@
         const victim = this.victim;
         const confessions = [
           `أنا... لا أستطيع الاستمرار. نعم، كنت في القبو مع ${victim}. لكنني لم أقتله!`,
-          `${victim} كان يهددني. لكنه مات قبل أن أفعل أي شيء.`,
-          `أنا من وجد ${victim}. لكنه كان ميتاً. أنا لست القاتل.`,
-          `${victim} كان يبحث عن المال. وجد شيئاً في القبو. لكنه لم يخرج.`
+          `سأخبرك الحقيقة. ${victim} كان يهددني. كنت خائفًا. لكنه مات قبل أن أفعل أي شيء.`,
+          `حسناً، ${victim} كان يعرف شيئًا عني. كنت أريد إسكاته. لكنه كان ميتًا بالفعل.`,
+          `أنا من وجد ${victim}. لكنه كان ميتًا. أنا لست القاتل. هناك شخص آخر.`,
+          `${victim} كان يبحث عن المال. وجد شيئًا في القبو. لكنه لم يخرج.`,
+          `أنا آسف. ${victim} كان يجب أن يبقى بعيدًا عن القبو. لكنه لم يستمع.`
         ];
         return confessions[Math.floor(Math.random() * confessions.length)];
       }
@@ -851,13 +1089,31 @@
       generateDefensiveResponse() {
         const victim = this.victim;
         const defenses = [
-          `هذا دليل على أن هناك من يريد توريطي في قضية ${victim}.`,
-          `كل هذه الأدلة يمكن أن تكون مزروعة.`,
-          `الأدلة لا تثبت أنني قتلت ${victim}. تثبت فقط أنني كنت هناك.`
+          `أنت تظن أن الأدلة ضدّي؟ هذا دليل على أن هناك من يريد توريطي في قضية ${victim}.`,
+          `كل هذه الأدلة يمكن أن تكون مزروعة. ${victim} كان لديه أعداء كثيرون.`,
+          `إذا كان لديك كل هذه الأدلة، فلماذا لم توجه الاتهام للقاتل الحقيقي؟`,
+          `الأدلة التي لديك لا تثبت أنني قتلت ${victim}. تثبت فقط أنني كنت هناك.`,
+          `أنا مستعد للتعاون، لكن هذه الأدلة لا معنى لها.`
         ];
         return defenses[Math.floor(Math.random() * defenses.length)];
       }
     }
+
+    // ================================================================
+    //  حالة اللعبة
+    // ================================================================
+    let state = {
+      currentCaseId: null,
+      currentSuspectId: null,
+      askedQuestions: 0,
+      maxQuestions: 25,
+      conversationHistory: [],
+      suspects: [],
+      clues: [],
+      foundClues: [],
+      gameOver: false,
+      caseData: null
+    };
 
     // ================================================================
     //  دوال العرض
@@ -865,26 +1121,68 @@
     function renderCaseList() {
       const container = document.getElementById('caseList');
       container.innerHTML = '';
-      CASE_ARCHIVE.forEach(c => {
+      ALL_CASES.forEach(c => {
         const div = document.createElement('div');
-        div.className = `case-item${c.active ? ' active' : ''}`;
+        const isActive = state.currentCaseId === c.id;
+        div.className = `case-item${isActive ? ' active' : ''}`;
         div.innerHTML = `
           <span class="icon">📂</span>
           ${c.title}
-          <span class="badge${c.active ? ' active-badge' : ''}">${c.id}</span>
+          <span class="badge${isActive ? ' active-badge' : ''}">${c.id}</span>
+          ${isActive ? '<span class="status-dot"></span>' : ''}
         `;
-        div.onclick = () => {
-          if (c.active) return;
-          alert(`📁 قضية ${c.title} - قيد التطوير\nسيتم إضافتها قريباً.`);
-        };
+        div.onclick = () => loadCase(c.id);
         container.appendChild(div);
       });
     }
 
-    function renderGallery() {
+    function loadCase(caseId) {
+      const caseData = ALL_CASES.find(c => c.id === caseId);
+      if (!caseData) return;
+
+      state.currentCaseId = caseId;
+      state.currentSuspectId = null;
+      state.askedQuestions = 0;
+      state.conversationHistory = [];
+      state.suspects = JSON.parse(JSON.stringify(caseData.suspects));
+      state.clues = caseData.clues.map(c => ({ text: c, found: false }));
+      state.foundClues = [];
+      state.gameOver = false;
+      state.caseData = caseData;
+
+      // تحديث الواجهة
+      document.getElementById('globalStatus').textContent = 'قيد التحقيق';
+      document.getElementById('caseTitle').innerHTML = `${caseData.title.replace(' ', ' <span class="gold">')}</span>`;
+      document.getElementById('caseId').textContent = caseData.id;
+      document.getElementById('caseSuspects').textContent = caseData.suspects.length;
+      document.getElementById('caseClues').textContent = caseData.clues.length;
+      document.getElementById('caseDifficulty').textContent = caseData.difficulty;
+      document.getElementById('caseDesc').textContent = caseData.description;
+
+      document.getElementById('victimName').textContent = caseData.victim.name;
+      document.getElementById('victimAge').textContent = caseData.victim.age;
+      document.getElementById('victimJob').textContent = caseData.victim.job;
+      document.getElementById('victimCause').textContent = caseData.victim.cause;
+
+      renderGallery(caseData);
+      renderSuspects();
+      renderEvidence();
+      updateUI();
+
+      document.getElementById('transcript').innerHTML =
+        `<div class="msg system">📋 قضية ${caseData.id}: ${caseData.title}. اختر مشتبهاً وابدأ الاستجواب.</div>`;
+
+      document.getElementById('questionInput').disabled = true;
+      document.getElementById('sendBtn').disabled = true;
+      document.getElementById('confrontBtn').disabled = true;
+
+      renderCaseList();
+    }
+
+    function renderGallery(caseData) {
       const container = document.getElementById('gallery');
       container.innerHTML = '';
-      CASE_DATA.photos.forEach(p => {
+      (caseData || state.caseData).photos.forEach(p => {
         const div = document.createElement('div');
         div.className = 'photo';
         div.innerHTML = `
@@ -904,6 +1202,7 @@
         card.className = `suspect-card${state.currentSuspectId === s.id ? ' active' : ''}`;
         const label = s.tension < 30 ? 'هادئ' : s.tension < 60 ? 'متوتر' : s.tension < 85 ? 'مراوغ' : 'منهار';
         card.innerHTML = `
+          <div class="glow"></div>
           <span class="avatar">${s.avatar}</span>
           <div class="name">${s.name}</div>
           <div class="role">${s.role}</div>
@@ -926,7 +1225,7 @@
         return;
       }
       list.innerHTML = found.map(c =>
-        `<div class="clue-item found">🔍 ${c.text}</div>`
+        `<div class="clue-item found"><span class="icon">🔍</span> ${c.text}</div>`
       ).join('');
     }
 
@@ -968,7 +1267,7 @@
     }
 
     // ================================================================
-    //  معالجة السؤال
+    //  معالجة السؤال (AI مدمج تلقائياً)
     // ================================================================
     function handleQuestion(question) {
       if (state.gameOver) {
@@ -988,7 +1287,13 @@
       state.askedQuestions++;
       state.conversationHistory.push({ role: 'user', content: question });
 
-      const character = new CharacterAI(suspect, CASE_DATA.victim.name);
+      // ===== AI مدمج تلقائياً =====
+      const character = new CharacterAI(
+        suspect,
+        state.caseData.victim.name,
+        state.caseData
+      );
+
       const reply = character.generateResponse(
         question,
         suspect.tension,
@@ -1002,6 +1307,7 @@
       addMessage('suspect', reply);
       state.conversationHistory.push({ role: 'assistant', content: reply });
 
+      // أدلة
       if (Math.random() > 0.65 && state.clues.some(c => !c.found)) {
         const hidden = state.clues.filter(c => !c.found);
         const newClue = hidden[Math.floor(Math.random() * hidden.length)];
@@ -1036,14 +1342,12 @@
       const question = `[مواجهة] لدينا دليل: "${evidence}". ما تفسيرك؟`;
       addMessage('player', question);
 
-      const replies = [
-        'هذا لا يثبت شيئاً.',
-        'لا أعرف عنه.',
-        'ربما وُضع لتوريطي.',
-        'نعم.. رأيته لكني خفت.',
-        'أعترف... لكنني لست القاتل.'
-      ];
-      const reply = replies[Math.floor(Math.random() * replies.length)];
+      const character = new CharacterAI(
+        suspect,
+        state.caseData.victim.name,
+        state.caseData
+      );
+      const reply = character.generateDefensiveResponse();
       addMessage('suspect', reply);
       suspect.tension = Math.min(100, suspect.tension + 20);
       if (suspect.tension >= 100) {
@@ -1060,13 +1364,13 @@
     function showSummary() {
       const found = state.clues.filter(c => c.found).length;
       const total = state.clues.length;
-      let msg = `📋 **ملخص التحقيق - ${CASE_DATA.victim.name}**\n`;
+      let msg = `📋 **ملخص التحقيق - ${state.caseData.victim.name}**\n`;
       msg += `─ الأسئلة: ${state.askedQuestions}/${state.maxQuestions}\n`;
       msg += `─ الأدلة: ${found}/${total}\n`;
       msg += `─ التسلسل الزمني:\n`;
-      CASE_DATA.scenario.timeline.forEach(t => msg += `   • ${t}\n`);
+      state.caseData.scenario.timeline.forEach(t => msg += `   • ${t}\n`);
       msg += `─ أقوال الشهود:\n`;
-      CASE_DATA.scenario.witnesses.forEach(w => msg += `   • ${w}\n`);
+      state.caseData.scenario.witnesses.forEach(w => msg += `   • ${w}\n`);
       msg += `─ أكثر المشتبهين توتراً:\n`;
       const sorted = [...state.suspects].sort((a, b) => b.tension - a.tension);
       sorted.slice(0, 3).forEach((s, i) => {
@@ -1082,17 +1386,8 @@
     }
 
     function resetCase() {
-      state.suspects = JSON.parse(JSON.stringify(CASE_DATA.suspects));
-      state.clues = CASE_DATA.clues.map(c => ({ text: c, found: false }));
-      state.foundClues = [];
-      state.askedQuestions = 0;
-      state.currentSuspectId = null;
-      state.conversationHistory = [];
-      state.gameOver = false;
-      document.getElementById('transcript').innerHTML =
-        `<div class="msg system">🔄 تم إعادة القضية. اختر مشتبهاً وابدأ التحقيق.</div>`;
-      document.getElementById('globalStatus').textContent = 'قيد التحقيق';
-      updateUI();
+      if (!state.currentCaseId) return;
+      loadCase(state.currentCaseId);
     }
 
     // ================================================================
@@ -1115,12 +1410,9 @@
     });
 
     // ================================================================
-    //  بدء التشغيل
+    //  بدء التشغيل - تحميل أول قضية
     // ================================================================
-    renderCaseList();
-    renderGallery();
-    updateUI();
-    addMessage('system', `📋 قضية ${CASE_DATA.id}: ${CASE_DATA.title}. اختر مشتبهاً وابدأ الاستجواب.`);
+    loadCase(ALL_CASES[0].id);
   </script>
 </body>
 </html>
