@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق الجنائي - Gemini Flash</title>
+  <title>غرفة التحقيق الجنائي</title>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -347,14 +347,14 @@
       font-size: 13px;
     }
     .victim-card h4 { color: var(--gold); font-size: 16px; margin-bottom: 8px; }
-    .victim-card .details-grid {
+    .details-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 8px 18px;
       color: #c4b5a6;
       margin-bottom: 12px;
     }
-    .victim-card .story-box {
+    .story-box {
       background: #090807;
       border: 1px solid var(--border-color);
       padding: 12px 14px;
@@ -805,34 +805,29 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // ===== إعدادات Google Gemini API المعتمدة =====
-    const GEMINI_API_KEY = 'AQ.Ab8RN6JTfYqCYmGyA8s4rQ3eXrBLgAM2xErjcBOjdobYPLyjgg';
-    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+    // ===== إعدادات Groq API المعتمدة والمجانية =====
+    const GROQ_API_KEY = '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';
+    const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-    async function callGemini(systemInstruction, userContent) {
-      const payload = {
-        contents: [
-          { role: 'user', parts: [{ text: `${systemInstruction}\n\nالسياق الحالي: ${userContent}` }] }
-        ],
-        generationConfig: {
-          response_mime_type: "application/json",
-          temperature: 0.6,
-          maxOutputTokens: 300
-        }
-      };
-
-      const res = await fetch(GEMINI_API_URL, {
+    async function callAI(messages, jsonMode = true) {
+      const res = await fetch(GROQ_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-goog-api-key': GEMINI_API_KEY
+          'Authorization': `Bearer ${GROQ_API_KEY}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: messages,
+          response_format: jsonMode ? { type: 'json_object' } : undefined,
+          temperature: 0.6,
+          max_tokens: 350
+        })
       });
 
       const data = await res.json();
-      if (data.error) throw new Error(data.error.message || 'Gemini API Error');
-      return JSON.parse(data.candidates[0].content.parts[0].text);
+      if (data.error) throw new Error(data.error.message || 'Groq API Error');
+      return JSON.parse(data.choices[0].message.content);
     }
 
     // ===== نظام الرتب والصلاحيات =====
@@ -960,7 +955,6 @@
     let state = { currentSuspectId: null, history: [], asked: 0, isBusy: false };
     let currentTermTab = 'bank';
 
-    // الحصول على قائمة الأدلة المكتشفة للقضية الحالية
     function getDiscoveredEvidenceForCurrentCase() {
       if (!player.discoveredEvidenceMap) player.discoveredEvidenceMap = {};
       const caseKey = currentCase.id || '#10';
@@ -1082,7 +1076,7 @@
       }
     }
 
-    // ===== حساب وتحديث الرتبة الصحيحة دائماً =====
+    // ===== حساب وتحديث الرتبة =====
     function calculateAccurateRank() {
       let matchedRank = 1;
       for (let i = RANKS.length - 1; i >= 0; i--) {
@@ -1163,7 +1157,7 @@
       document.getElementById('confrontBtn').disabled = true;
     }
 
-    // ===== مسرح الجريمة والأدلة الميدانية المحمية من التكرار =====
+    // ===== مسرح الجريمة الميداني =====
     function renderCrimeScene() {
       const canvas = document.getElementById('sceneCanvas');
       canvas.innerHTML = '<div class="flashlight-overlay"></div>';
@@ -1290,7 +1284,7 @@
       box.scrollTop = box.scrollHeight;
     }
 
-    // ===== محرك الاستجواب الذكي عبر Gemini =====
+    // ===== محرك الاستجواب عبر Groq =====
     async function askAI(question) {
       if (!state.currentSuspectId || state.isBusy) return;
       const suspect = currentCase.suspects.find(x => x.id === state.currentSuspectId);
@@ -1305,14 +1299,20 @@
 سرك: "${suspect.personality.secret}".
 حالتك: ${suspect.personality.guilty ? 'القاتل الفعلي وتتهرب بذكاء' : 'بريء تماماً من القتل'}.
 المحقق يوجه لك سؤالاً.
-أجب بصيغة JSON حصراً بهذا الشكل:
+أجب بصيغة JSON حصراً:
 {
-  "reply": "(حركة الجسد) الرد الكلامي المباشر بجملة واحدة أو جملتين",
+  "reply": "(حركة الجسد) الرد الكلامي المباشر بجملة أو جملتين",
   "tensionDelta": رقم بين -5 إلى 15
 }`;
 
       try {
-        const parsed = await callGemini(systemPrompt, `سؤال المحقق: ${question}`);
+        const messages = [
+          { role: 'system', content: systemPrompt },
+          ...state.history.slice(-2),
+          { role: 'user', content: question }
+        ];
+
+        const parsed = await callAI(messages, true);
 
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري تحليل')) {
@@ -1334,7 +1334,7 @@
           }
         }
       } catch (err) {
-        console.error('Gemini Error:', err);
+        console.error('Groq Error:', err);
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري تحليل')) {
           box.removeChild(box.lastElementChild);
@@ -1375,7 +1375,13 @@
 }`;
 
       try {
-        const result = await callGemini(systemPrompt, `المواجهة بالدليل: ${clueName}`);
+        const messages = [
+          { role: 'system', content: systemPrompt },
+          ...state.history.slice(-2),
+          { role: 'user', content: `المواجهة بالدليل: ${clueName}` }
+        ];
+
+        const result = await callAI(messages, true);
 
         const box = document.getElementById('transcript');
         if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري رصد')) {
@@ -1531,14 +1537,14 @@
       document.getElementById('reportOverlay').classList.add('active');
     }
 
-    // ===== توليد القضايا الإجرائي عبر Gemini =====
+    // ===== توليد القضايا الإجرائي عبر Groq =====
     async function generateNewProceduralCase() {
       if (state.isBusy) return;
       const btn = document.getElementById('generateCaseBtn');
       btn.disabled = true;
       btn.textContent = '⏳ جاري التوليد...';
 
-      addLog('system', '📂 [الأرشيف الجنائي]: جاري فتح ملف بلاغ جديد بواسطة Gemini Flash...');
+      addLog('system', '📂 [الأرشيف الجنائي]: جاري فتح ملف بلاغ جديد بالذكاء الاصطناعي...');
 
       calculateAccurateRank();
       const suspectsCount = Math.min(8, 4 + (player.rank || 1));
@@ -1563,7 +1569,7 @@
 }`;
 
       try {
-        const genCase = await callGemini(prompt, "توليد ملف قضية كامل");
+        const genCase = await callAI([{ role: 'user', content: prompt }], true);
         ALL_CASES.unshift(genCase);
         loadCaseData(genCase);
         addLog('system', `✨ تم توليد قضية (${genCase.title}) بنجاح!`);
