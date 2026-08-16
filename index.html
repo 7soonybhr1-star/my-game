@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غرفة التحقيق – الإصدار الاحترافي</title>
+    <link rel="stylesheet" href="style-final.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- ========== الصفحة الرئيسية ========== -->
+        <section id="home-screen">
+            <header id="main-header">
+                <div class="logo">
+                    <span class="logo-icon">🔍</span>
+                    <h1>غرفة التحقيق</h1>
+                    <span class="version">v3.0</span>
+                </div>
+                <div class="header-stats">
+                    <div class="stat">
+                        <span class="stat-icon">📋</span>
+                        <span class="stat-value" id="total-cases">0</span>
+                        <span class="stat-label">قضية</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">✅</span>
+                        <span class="stat-value" id="solved-cases">0</span>
+                        <span class="stat-label">محلولة</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">⭐</span>
+                        <span class="stat-value" id="rating">4.8</span>
+                        <span class="stat-label">التقييم</span>
+                    </div>
+                </div>
+                <button id="btn-new-random" class="primary-btn">🔄 قضية عشوائية</button>
+            </header>
+
+            <!-- إعدادات API -->
+            <div id="api-settings" style="display: flex; gap: 10px; padding: 15px 20px; background: var(--bg-card); border-radius: 12px; margin-bottom: 25px; flex-wrap: wrap; align-items: center; border: 1px solid var(--border);">
+                <label style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 700;">🔑 مفتاح API:</label>
+                <input type="password" id="api-key-input" placeholder="ضع مفتاح DeepSeek هنا" style="flex:1; min-width:200px; background: var(--bg-primary); border:1px solid var(--border); color: var(--text-primary); padding:10px 18px; border-radius:30px; font-size:0.9rem;">
+                <select id="api-provider" style="background: var(--bg-primary); border:1px solid var(--border); color: var(--text-primary); padding:10px 18px; border-radius:30px; font-size:0.9rem;">
+                    <option value="deepseek">DeepSeek (مفضل)</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="local">محاكاة محلية (بدون API)</option>
+                </select>
+                <button id="btn-save-api" class="secondary-btn" style="padding:10px 25px;">💾 حفظ</button>
+                <span id="api-status" style="color: var(--text-muted); font-size:0.85rem;">⚠️ لم يتم الإعداد</span>
+            </div>
+
+            <div id="cases-filter">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="قتل">جرائم قتل</button>
+                <button class="filter-btn" data-filter="سرقة">سرقات</button>
+                <button class="filter-btn" data-filter="اختطاف">اختطاف</button>
+                <button class="filter-btn" data-filter="غموض">قضايا غامضة</button>
+            </div>
+
+            <div id="cases-grid">
+                <!-- سيتم توليد البطاقات ديناميكياً -->
+            </div>
+        </section>
+
+        <!-- ========== شاشة اللعبة ========== -->
+        <section id="game-screen" style="display:none;">
+            <!-- شريط التنقل -->
+            <nav id="game-nav">
+                <button id="btn-back-home" class="secondary-btn">← العودة للقائمة</button>
+                <span id="game-case-title">قضية: <span id="case-id-display"></span></span>
+                <span id="game-progress">التقدم: <span id="progress-bar">0%</span></span>
+            </nav>
+
+            <div id="game-layout">
+                <!-- العمود الأيسر: مسرح الجريمة والأدلة -->
+                <div id="left-game-panel">
+                    <div id="crime-scene-panel">
+                        <h3>🏚️ مسرح الجريمة</h3>
+                        <div id="scene-image-container">
+                            <img id="scene-img" src="" alt="مسرح الجريمة">
+                        </div>
+                        <div id="scene-description"></div>
+                        
+                        <!-- صورة الجثة -->
+                        <div id="body-image-container" style="display:none;">
+                            <h4>⚠️ موقع الجثة</h4>
+                            <img id="body-img" src="" alt="موقع الجثة">
+                        </div>
+                    </div>
+
+                    <div id="clues-panel">
+                        <h4>📌 الأدلة المكتشفة</h4>
+                        <div id="clues-list"></div>
+                    </div>
+                </div>
+
+                <!-- العمود الأوسط: الاستجواب -->
+                <div id="center-game-panel">
+                    <div id="suspects-header">
+                        <div id="suspects-tabs"></div>
+                    </div>
+                    
+                    <div id="interrogation-room">
+                        <div id="chat-header">
+                            <div id="suspect-profile">
+                                <img id="suspect-avatar" src="" alt="المشتبه به">
+                                <div>
+                                    <span id="suspect-name">المشتبه به</span>
+                                    <span id="suspect-job">المهنة</span>
+                                </div>
+                            </div>
+                            <div id="suspect-state">
+                                <span id="suspect-mood">😐 محايد</span>
+                                <span id="suspect-trust">الثقة: 50%</span>
+                            </div>
+                        </div>
+                        
+                        <div id="chat-window">
+                            <div id="messages"></div>
+                        </div>
+                        
+                        <div id="input-area">
+                            <input type="text" id="question-input" placeholder="اسأل المشتبه به... (اسأل بحرية)">
+                            <button id="btn-send" class="primary-btn">➤ إرسال</button>
+                            <button id="btn-suspect-notes" class="secondary-btn">📝</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- العمود الأيمن: لوحة التحقيق -->
+                <div id="right-game-panel">
+                    <div id="investigation-board">
+                        <h4>📋 لوحة التحقيق</h4>
+                        <div id="timeline">
+                            <h5>⏳ الجدول الزمني</h5>
+                            <div id="timeline-events"></div>
+                        </div>
+                        <div id="evidence-board">
+                            <h5>🔍 الأدلة المثبتة</h5>
+                            <div id="proof-list"></div>
+                        </div>
+                        <div id="suspects-relations">
+                            <h5>🔗 العلاقات</h5>
+                            <div id="relations-map"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="action-buttons">
+                        <button id="btn-accuse" class="danger-btn">⚖️ اتهام الفاعل</button>
+                        <button id="btn-report" class="secondary-btn">📄 تقرير نهائي</button>
+                        <button id="btn-hint" class="secondary-btn">💡 تلميحة</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== شاشة النتيجة ========== -->
+        <section id="result-screen" style="display:none;">
+            <div class="result-container">
+                <div id="result-header">
+                    <span id="result-icon">✅</span>
+                    <h2 id="result-title">القضية محلولة</h2>
+                </div>
+                <div id="result-details">
+                    <div id="result-summary"></div>
+                    <div id="result-evidence-list">
+                        <h4>📌 الأدلة الحاسمة</h4>
+                        <ul id="result-proofs"></ul>
+                    </div>
+                    <div id="result-stats">
+                        <div class="result-stat">
+                            <span>⏱️ وقت التحقيق</span>
+                            <span id="result-time">0 دقيقة</span>
+                        </div>
+                        <div class="result-stat">
+                            <span>📝 أسئلة مطروحة</span>
+                            <span id="result-questions">0</span>
+                        </div>
+                        <div class="result-stat">
+                            <span>⭐ تقييم الأداء</span>
+                            <span id="result-performance">ممتاز</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="result-actions">
+                    <button id="btn-replay" class="primary-btn">🔄 قضية جديدة</button>
+                    <button id="btn-share" class="secondary-btn">📤 مشاركة النتيجة</button>
+                    <button id="btn-home-from-result" class="secondary-btn">🏠 الصفحة الرئيسية</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="cases-data.js"></script>
+    <script src="engine-final.js"></script>
+    <script src="script-final.js"></script>
+</body>
+</html>
