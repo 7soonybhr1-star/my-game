@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق الجنائي</title>
+  <title>غرفة التحقيق الجنائي - Detective HQ</title>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -20,17 +20,20 @@
 
     :root {
       --gold: #d4a843;
-      --gold-glow: rgba(212, 168, 67, 0.25);
-      --dark-bg: #090807;
-      --panel-bg: rgba(18, 15, 12, 0.95);
-      --card-bg: #14110e;
-      --border-color: #2b231a;
+      --gold-glow: rgba(212, 168, 67, 0.35);
+      --dark-bg: #070605;
+      --panel-bg: #0d0b08;
+      --card-bg: #120f0c;
+      --sidebar-bg: #090806;
+      --border-color: #261e15;
+      --border-highlight: #453724;
       --text-muted: #8d7d6f;
       --text-light: #ece3d8;
-      --sidebar-width: 290px;
       --cyan: #00ffcc;
-      --red: #cc4444;
-      --green: #44cc88;
+      --cyan-glow: rgba(0, 255, 204, 0.25);
+      --red: #e63946;
+      --green: #2a9d8f;
+      --sidebar-width: 250px;
     }
 
     body {
@@ -39,217 +42,126 @@
       color: var(--text-light);
       min-height: 100vh;
       display: flex;
-      background-image:
-        radial-gradient(circle at 10% 20%, #1c150f 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, #19120c 0%, transparent 50%);
-      background-attachment: fixed;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* ===== نافذة تسجيل الدخول ===== */
-    .auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(4, 3, 2, 0.94);
-      z-index: 2000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      backdrop-filter: blur(14px);
-    }
-    .auth-overlay.hidden { display: none; }
-
-    .auth-card {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 36px 32px;
-      max-width: 440px;
-      width: 100%;
-      text-align: center;
-      border-right: 4px solid var(--gold);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 30px var(--gold-glow);
-    }
-    .auth-card .badge-icon { font-size: 54px; margin-bottom: 8px; }
-    .auth-card h2 { color: var(--gold); font-size: 24px; font-weight: 900; }
-    .auth-card p { color: var(--text-muted); font-size: 13px; margin: 6px 0 20px; }
-
-    .auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-    .auth-tab {
-      flex: 1;
-      padding: 10px;
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      font-family: 'Cairo', sans-serif;
-      font-size: 14px;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.3s;
-    }
-    .auth-tab.active {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: rgba(212, 168, 67, 0.1);
-    }
-
-    .auth-input-group { text-align: right; margin-bottom: 12px; }
-    .auth-input-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; }
-    .auth-input-group input {
-      width: 100%;
-      background: #0d0b09;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 10px 14px;
-      color: var(--text-light);
-      font-family: 'Cairo', sans-serif;
-      font-size: 14px;
-      outline: none;
-    }
-    .auth-input-group input:focus { border-color: var(--gold); }
-
-    .auth-btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--gold), #9b741c);
-      color: #0a0806;
-      border: none;
-      padding: 11px;
-      border-radius: 10px;
-      font-family: 'Cairo', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 6px;
-      transition: transform 0.2s;
-    }
-    .auth-btn:hover { transform: translateY(-2px); }
-    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .error-msg { color: #cc6666; font-size: 12px; margin-top: 10px; display: none; }
-    .error-msg.show { display: block; }
-
-    /* ===== الشريط الجانبي ===== */
-    .sidebar {
-      width: var(--sidebar-width);
-      height: 100vh;
-      background: var(--panel-bg);
-      border-left: 1px solid var(--border-color);
-      position: fixed;
-      right: 0;
-      top: 0;
-      overflow-y: auto;
-      padding: 24px 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-    }
-    .sidebar .brand { padding: 0 22px 18px; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; }
-    .sidebar .brand h2 { font-size: 22px; font-weight: 900; color: var(--gold); }
-    .sidebar .brand h2 span { color: var(--text-light); }
-    .sidebar .brand .sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-    .sidebar .section-title { font-size: 10px; color: var(--text-muted); padding: 0 22px; margin: 16px 0 8px; letter-spacing: 2px; }
-    .sidebar .case-item {
+    /* ===== الشريط العلوي الفاخر (Top Brand Bar) ===== */
+    .top-navbar {
+      height: 60px;
+      background: linear-gradient(180deg, #15110c 0%, #0a0806 100%);
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      padding: 10px 18px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border-right: 3px solid transparent;
-      gap: 12px;
-      font-size: 14px;
-      color: var(--text-muted);
-      border: 1px solid rgba(212, 168, 67, 0.05);
-      border-radius: 8px;
-      margin: 4px 12px;
-    }
-    .sidebar .case-item:hover { border-color: var(--gold); color: #fff; background: rgba(212, 168, 67, 0.06); }
-    .sidebar .case-item.active { border-right-color: var(--gold); border-color: rgba(212, 168, 67, 0.3); background: rgba(212, 168, 67, 0.1); color: #fff; }
-    .sidebar .case-item .badge { font-size: 10px; background: #0c0a08; padding: 2px 8px; border-radius: 12px; color: var(--gold); border: 1px solid var(--border-color); margin-right: auto; }
-
-    /* ===== المحتوى الرئيسي ===== */
-    .main-content {
-      margin-right: var(--sidebar-width);
-      flex: 1;
-      padding: 22px 30px;
-      min-height: 100vh;
-    }
-
-    .main-header {
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      margin-bottom: 20px;
-      gap: 12px;
-      flex-wrap: wrap;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     }
-    .main-header .title { font-size: 18px; font-weight: 700; color: var(--text-light); }
-    .main-header .title .highlight { color: var(--gold); }
-    .main-header .badge-id {
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--gold);
       display: flex;
       align-items: center;
       gap: 10px;
-      background: #0a0806;
-      padding: 4px 14px;
-      border-radius: 30px;
-      border: 1px solid var(--border-color);
+      letter-spacing: 1px;
+    }
+    .brand-title span { color: #fff; }
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
       font-size: 13px;
     }
-    .main-header .badge-id .rank-name { color: var(--gold); font-weight: 700; }
-    .logout-btn { background: transparent; border: 1px solid #5a3030; color: #cc6666; padding: 2px 10px; border-radius: 6px; font-family: 'Cairo'; font-size: 11px; cursor: pointer; }
-
-    /* شريط الرتبة */
-    .rank-bar {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 12px 20px;
-      margin-bottom: 18px;
+    .officer-badge {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border-right: 4px solid var(--gold);
-      flex-wrap: wrap;
       gap: 10px;
+      background: rgba(212, 168, 67, 0.08);
+      border: 1px solid var(--border-highlight);
+      padding: 4px 14px;
+      border-radius: 30px;
     }
-    .rank-bar .rank-title { font-size: 16px; font-weight: 700; color: var(--gold); }
-    .rank-bar .rank-sub { font-size: 12px; color: var(--text-muted); }
-    .rank-bar .xp-bar { width: 160px; height: 5px; background: #14110e; border-radius: 4px; overflow: hidden; margin-top: 4px; }
-    .rank-bar .xp-bar .fill { height: 100%; background: linear-gradient(90deg, var(--gold), #ffdf88); width: 0%; transition: width 0.6s; }
 
-    /* بطاقة القضية */
-    .case-hero {
+    /* ===== الهيكل الرئيسي والتنقل (Layout & Sidebar) ===== */
+    .app-container {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 60px);
+    }
+
+    .main-sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border-right: 3px solid transparent;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(212, 168, 67, 0.05);
+    }
+    .nav-item.active {
+      color: var(--gold);
+      background: linear-gradient(90deg, rgba(212, 168, 67, 0.15) 0%, transparent 100%);
+      border-right-color: var(--gold);
+    }
+    .nav-item .icon { font-size: 18px; }
+
+    .content-area {
+      flex: 1;
+      padding: 24px 30px;
+      overflow-y: auto;
+      background: radial-gradient(circle at 80% 20%, #15100a 0%, transparent 60%);
+    }
+
+    /* الصفحات الثانوية والتبديل */
+    .page-section { display: none; }
+    .page-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== كروت ولوحات التصميم المشترك ===== */
+    .glass-panel {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
       border-radius: 14px;
-      padding: 22px 26px;
-      margin-bottom: 16px;
-      border-right: 4px solid var(--gold);
-    }
-    .case-hero .case-title { font-size: 24px; font-weight: 900; }
-    .case-hero .case-meta { display: flex; gap: 24px; margin-top: 6px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
-    .case-hero .case-meta span { color: var(--gold); font-weight: 700; }
-    .case-hero .case-desc { font-size: 14px; color: #b7a99c; margin-top: 10px; line-height: 1.8; }
-
-    /* ===== مسرح الجريمة الميداني ===== */
-    .crime-scene-container {
-      background: #0d0b09;
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       margin-bottom: 20px;
-      position: relative;
     }
-    .crime-scene-header {
+    .panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
     }
-    .crime-scene-header h3 { font-size: 16px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
-    
+    .panel-header h3 { font-size: 17px; color: var(--gold); display: flex; align-items: center; gap: 8px; font-weight: 800; }
+
+    /* ===== صفحة مسرح الجريمة وغرفة التحقيق (Main Game) ===== */
     .scene-canvas {
       position: relative;
       width: 100%;
@@ -264,8 +176,8 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: inset 0 0 70px rgba(0,0,0,0.95), 0 8px 30px rgba(0,0,0,0.8);
+      margin-bottom: 20px;
     }
-
     .scene-canvas::before {
       content: "CRIME SCENE - DO NOT CROSS • مسرح جريمة مغلق";
       position: absolute;
@@ -279,11 +191,9 @@
       transform: rotate(-25deg);
       box-shadow: 0 4px 15px rgba(0,0,0,0.8);
       opacity: 0.9;
-      letter-spacing: 1px;
       pointer-events: none;
       z-index: 10;
     }
-
     .flashlight-overlay {
       position: absolute;
       inset: 0;
@@ -291,7 +201,6 @@
       background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 80px, rgba(4, 3, 2, 0.78) 220px);
       z-index: 3;
     }
-    
     .hotspot {
       position: absolute;
       width: 48px;
@@ -300,16 +209,16 @@
       border: 2px solid var(--gold);
       border-radius: 10px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       font-size: 18px;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.85), 0 0 15px rgba(212, 168, 67, 0.3);
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.85);
       z-index: 5;
-      backdrop-filter: blur(4px);
     }
+    .hotspot:hover { transform: scale(1.2) translateY(-4px); border-color: #fff; }
+    .hotspot.discovered { border-color: var(--green); background: rgba(14, 30, 20, 0.92); }
     .hotspot::after {
       content: attr(data-index);
       position: absolute;
@@ -325,50 +234,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid #000;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
     }
-    .hotspot:hover {
-      transform: scale(1.2) translateY(-4px);
-      border-color: #fff;
-      box-shadow: 0 10px 25px rgba(212, 168, 67, 0.6);
-    }
-    .hotspot.discovered { border-color: var(--green); background: rgba(14, 30, 20, 0.92); }
-    .hotspot.discovered::after { background: var(--green); color: #fff; }
 
-    /* بطاقة الضحية */
-    .victim-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 18px 22px;
-      margin-bottom: 16px;
-      border-right: 4px solid #8d6b38;
-      font-size: 13px;
-    }
-    .victim-card h4 { color: var(--gold); font-size: 16px; margin-bottom: 8px; }
-    .details-grid {
+    /* شبكة المشتبه بهم */
+    .suspects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 8px 18px;
-      color: #c4b5a6;
-      margin-bottom: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .story-box {
-      background: #090807;
-      border: 1px solid var(--border-color);
-      padding: 12px 14px;
-      border-radius: 8px;
-      color: #d1c4b6;
-      line-height: 1.7;
-    }
-
-    /* شبكة الأدلة والمشتبهين */
-    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
-    .gallery .photo { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; font-size: 12px; color: var(--text-muted); }
-    .gallery .photo .icon { font-size: 32px; margin-bottom: 2px; }
-
-    .suspects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 18px; }
     .suspect-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -377,39 +251,43 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
+      position: relative;
     }
     .suspect-card:hover { border-color: var(--gold); transform: translateY(-3px); }
     .suspect-card.active { border-color: var(--gold); background: rgba(212, 168, 67, 0.08); box-shadow: 0 0 15px var(--gold-glow); }
-    .suspect-card .avatar { font-size: 34px; }
-    .suspect-card .name { font-size: 13px; font-weight: 700; color: #f0e6dc; }
+    .suspect-card .avatar { font-size: 34px; margin-bottom: 4px; }
+    .suspect-card .name { font-size: 13px; font-weight: 700; }
     .suspect-card .role { font-size: 11px; color: var(--text-muted); }
-    .suspect-card .tension-bar { height: 4px; background: #0c0a08; border-radius: 4px; margin-top: 8px; overflow: hidden; }
-    .suspect-card .tension-bar .fill { height: 100%; background: linear-gradient(90deg, #44cc88, var(--gold), #cc4444); transition: width 0.6s; }
+    .tension-bar { height: 4px; background: #000; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .tension-bar .fill { height: 100%; background: linear-gradient(90deg, #44cc88, var(--gold), #cc4444); width: 0%; transition: width 0.6s; }
 
-    /* منطقة التحقيق */
-    .investigation-area { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+    /* منطقة الاستجواب */
+    .investigation-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
     .transcript {
-      background: #070605;
+      background: #060504;
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      height: 380px;
+      height: 360px;
       overflow-y: auto;
-      padding: 14px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
     .transcript .msg { padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; max-width: 90%; }
-    .transcript .msg.player { background: #0f1a24; border-right: 3px solid #4a9eff; align-self: flex-start; color: #cbe5ff; }
-    .transcript .msg.suspect { background: #1a1510; border-right: 3px solid var(--gold); align-self: flex-end; color: #ede0d0; }
+    .transcript .msg.player { background: #0d1b2a; border-right: 3px solid #4a9eff; align-self: flex-start; color: #d0e6ff; }
+    .transcript .msg.suspect { background: #16120d; border-right: 3px solid var(--gold); align-self: flex-end; color: #f0e6dc; }
     .transcript .msg.system { background: transparent; color: var(--text-muted); font-size: 12px; align-self: center; font-style: italic; }
-    .transcript .msg.clue { background: #0e1e14; border-right: 3px solid #44cc88; align-self: center; color: #7cedaf; }
-    .transcript .msg.hint { background: #1a1a0e; border-right: 3px solid #cccc44; align-self: center; color: #e6e67c; }
+    .transcript .msg.clue { background: #0c1f15; border-right: 3px solid #44cc88; align-self: center; color: #80eec0; }
 
-    .input-area { display: flex; gap: 10px; margin-top: 12px; }
+    .input-area { display: flex; gap: 10px; margin-top: 10px; }
     .input-area input {
       flex: 1;
-      background: #0d0b09;
+      background: #090807;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 10px 14px;
@@ -418,9 +296,9 @@
       outline: none;
     }
     .input-area input:focus { border-color: var(--gold); }
-    .input-area button {
-      background: var(--gold);
-      color: #090807;
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #a17822);
+      color: #000;
       border: none;
       padding: 0 20px;
       border-radius: 8px;
@@ -428,63 +306,128 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .input-area button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-gold:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    .action-bar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .action-bar button {
-      background: transparent;
+    /* همسات المساعد الجنائي */
+    .partner-box {
+      background: rgba(0, 255, 204, 0.05);
+      border: 1px solid rgba(0, 255, 204, 0.25);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #80cbc4;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* حقيبة الأحراز */
+    .evidence-list { display: flex; flex-direction: column; gap: 8px; }
+    .evidence-item {
+      background: #0b0907;
       border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-family: 'Cairo';
+      border-right: 3px solid var(--green);
+      padding: 10px 12px;
+      border-radius: 8px;
       font-size: 12px;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .action-bar button:hover { border-color: var(--gold); color: var(--gold); }
-    .action-bar button.primary { border-color: var(--gold); color: var(--gold); }
-    .action-bar button.hint-btn { border-color: #cccc44; color: #cccc44; }
+    .evidence-item:hover { background: #14110d; border-color: var(--gold); }
 
-    .evidence-panel {
-      background: #070605;
+    /* ===== صفحة شرح اللعبة (Guide Cards) ===== */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .guide-card {
+      background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 14px;
-      max-height: 440px;
-      overflow-y: auto;
+      padding: 20px;
+      border-top: 3px solid var(--gold);
+      position: relative;
     }
-    .evidence-panel h3 { font-size: 13px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; }
-    .evidence-panel .clue-item {
-      padding: 8px 10px;
-      background: #110e0b;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: #c9bcaf;
-      border-right: 3px solid #44cc88;
-      cursor: pointer;
-      transition: all 0.2s;
+    .guide-card .step-num {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 24px;
+      font-weight: 900;
+      color: rgba(212, 168, 67, 0.15);
     }
-    .evidence-panel .clue-item:hover { background: #1a1510; }
+    .guide-card h4 { color: var(--gold); font-size: 15px; margin-bottom: 8px; }
+    .guide-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
 
-    /* ===== النوافذ المنبثقة ===== */
-    .evidence-modal, .terminal-overlay, .accuse-overlay, .level-up-overlay, .report-overlay {
+    /* ===== صفحة نظام الرتب والمميزات (Ranks System Page) ===== */
+    .ranks-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px 24px;
+      transition: all 0.3s;
+    }
+    .rank-row.current-rank {
+      border-color: var(--gold);
+      background: linear-gradient(90deg, rgba(212, 168, 67, 0.1) 0%, var(--card-bg) 100%);
+      box-shadow: 0 0 20px var(--gold-glow);
+    }
+    .rank-badge-lg { font-size: 40px; }
+    .rank-info { flex: 1; }
+    .rank-info h4 { font-size: 16px; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+    .rank-info .xp-req { font-size: 12px; color: var(--gold); font-weight: 700; }
+    .rank-perks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .perk-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-highlight);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #c0b2a3;
+    }
+
+    /* ===== صفحة التعليمات والقواعد الأساسية (Rules Page) ===== */
+    .rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rule-item {
+      display: flex;
+      gap: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .rule-item .rule-icon { color: var(--gold); font-size: 18px; }
+
+    /* النوافذ المنبثقة */
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 3, 2, 0.94);
+      background: rgba(3, 2, 2, 0.94);
       backdrop-filter: blur(10px);
-      z-index: 2100;
+      z-index: 2000;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .evidence-modal.active, .terminal-overlay.active, .accuse-overlay.active, .level-up-overlay.active, .report-overlay.active {
-      display: flex;
-    }
-
-    .evidence-card, .report-card, .accuse-card, .level-up-card {
+    .modal-overlay.active { display: flex; }
+    .modal-card {
       background: var(--panel-bg);
       border: 1px solid var(--gold);
       border-radius: 16px;
@@ -494,289 +437,336 @@
       text-align: right;
       box-shadow: 0 10px 40px rgba(0,0,0,0.8);
     }
-    .report-card { text-align: center; }
-    .report-card h2 { color: var(--gold); font-size: 20px; margin-bottom: 14px; }
-    .report-card .stat-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-    .report-card .close-btn { margin-top: 18px; background: var(--gold); color: #000; border: none; padding: 8px 24px; border-radius: 8px; font-family: 'Cairo'; font-weight: 700; cursor: pointer; }
 
-    /* التفتيش الرقمي */
-    .terminal-card {
-      background: #0b0907;
-      border: 1px solid var(--cyan);
-      border-radius: 16px;
-      max-width: 650px;
-      width: 100%;
-      padding: 24px;
-      box-shadow: 0 0 30px rgba(0, 255, 204, 0.15);
-      color: #e0f2f1;
-    }
-    .terminal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 255, 204, 0.2); padding-bottom: 12px; margin-bottom: 16px; }
-    .terminal-tabs { display: flex; gap: 10px; margin-bottom: 16px; }
-    .term-tab { flex: 1; background: rgba(0, 255, 204, 0.05); border: 1px solid rgba(0, 255, 204, 0.2); color: #80cbc4; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 13px; }
-    .term-tab.active { background: rgba(0, 255, 204, 0.2); border-color: var(--cyan); color: #fff; font-weight: 700; }
-    .terminal-content-box { background: #050403; border: 1px solid #1a2926; border-radius: 10px; padding: 14px; min-height: 180px; max-height: 260px; overflow-y: auto; }
-    .data-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 255, 204, 0.1); border-radius: 6px; margin-bottom: 8px; }
-    .tag-suspicious { background: rgba(255, 82, 82, 0.2); color: #ff5252; border: 1px solid #ff5252; }
-    .tag-verified { background: rgba(0, 255, 204, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
-    .extract-btn { background: var(--cyan); color: #050403; border: none; padding: 4px 10px; border-radius: 6px; font-family: 'Cairo'; font-size: 11px; font-weight: 700; cursor: pointer; }
-
-    /* الاتهام النهائي */
-    .accuse-card { border-color: var(--red); box-shadow: 0 0 40px rgba(204, 68, 68, 0.25); }
-    .accuse-header { border-bottom: 1px solid rgba(204, 68, 68, 0.3); padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
-    .accuse-form-group { margin-bottom: 14px; }
-    .accuse-form-group label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
-    .accuse-select { width: 100%; background: #070605; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 12px; color: #fff; font-family: 'Cairo'; font-size: 13px; outline: none; }
-    .btn-indict { flex: 2; background: linear-gradient(135deg, #cc3333, #881111); color: #fff; border: none; padding: 10px; border-radius: 8px; font-family: 'Cairo'; font-weight: 900; font-size: 14px; cursor: pointer; }
-
-    /* احتفالية الترقية */
-    .level-up-card { text-align: center; border-width: 2px; }
-    .level-up-card .badge-anim { font-size: 64px; margin-bottom: 8px; }
-    .perks-box { background: #080605; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; text-align: right; margin-bottom: 16px; }
-    .perks-box ul { list-style: none; padding: 0; font-size: 12px; color: #c9bcaf; line-height: 1.8; }
-
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main-content { margin-right: 0; padding: 10px; }
-      .investigation-area { grid-template-columns: 1fr; }
-      .main-header { flex-direction: column; align-items: stretch; }
+    @media (max-width: 900px) {
+      .app-container { flex-direction: column; }
+      .main-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; }
+      .nav-item { padding: 8px 14px; border-right: none; border-bottom: 3px solid transparent; font-size: 12px; }
+      .nav-item.active { border-bottom-color: var(--gold); }
+      .investigation-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- شاشة الدخول -->
-  <div class="auth-overlay" id="authOverlay">
-    <div class="auth-card">
-      <div class="badge-icon">🛡️</div>
-      <h2>غرفة التحقيق الجنائي</h2>
-      <p>سجّل دخولك لحفظ مسيرتك المهنية سحابياً</p>
-
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">دخول</button>
-        <button class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">تسجيل جديد</button>
-      </div>
-
-      <div id="loginForm">
-        <div class="auth-input-group">
-          <label>اسم المحقق</label>
-          <input type="text" id="loginName" placeholder="أدخل اسمك">
-        </div>
-        <div class="auth-input-group">
-          <label>كلمة السر</label>
-          <input type="password" id="loginPassword" placeholder="••••••••">
-        </div>
-        <button class="auth-btn" id="loginBtn" onclick="handleLogin()">دخول الميدان</button>
-      </div>
-
-      <div id="registerForm" style="display:none;">
-        <div class="auth-input-group">
-          <label>اسم المحقق</label>
-          <input type="text" id="registerName" placeholder="اختر اسمك">
-        </div>
-        <div class="auth-input-group">
-          <label>كلمة السر</label>
-          <input type="password" id="registerPassword" placeholder="6 أحرف على الأقل">
-        </div>
-        <div class="auth-input-group">
-          <label>تأكيد كلمة السر</label>
-          <input type="password" id="registerPasswordConfirm" placeholder="أعد كتابة كلمة السر">
-        </div>
-        <button class="auth-btn" id="registerBtn" onclick="handleRegister()">إنشاء الحساب</button>
-      </div>
-
-      <div class="error-msg" id="errorMsg"></div>
+  <!-- الشريط العلوي الفاخر -->
+  <header class="top-navbar">
+    <div class="brand-title">
+      <span>🛡️</span> غرفة <span>التحقيق الجنائي</span>
     </div>
+    <div class="top-meta">
+      <div class="officer-badge">
+        <span id="topBadgeIcon">🛡️</span>
+        <span id="topOfficerRank" style="color:var(--gold); font-weight:700;">متدرب</span>
+        <span id="topOfficerName">/ المحقق حسين</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- الهيكل والتنقل الرئيسي -->
+  <div class="app-container">
+    
+    <!-- القائمة الجانبية للتنقل بين الصفحات -->
+    <aside class="main-sidebar">
+      <div class="nav-item active" onclick="switchPage('gamePage')">
+        <span class="icon">🔍</span> مسرح التحقيق
+      </div>
+      <div class="nav-item" onclick="switchPage('guidePage')">
+        <span class="icon">📖</span> شرح اللعبة
+      </div>
+      <div class="nav-item" onclick="switchPage('ranksPage')">
+        <span class="icon">🏆</span> نظام الرتب والمميزات
+      </div>
+      <div class="nav-item" onclick="switchPage('rulesPage')">
+        <span class="icon">⚖️</span> التعليمات والقوانين
+      </div>
+      <div class="nav-item" onclick="switchPage('archivePage')">
+        <span class="icon">📁</span> أرشيف القضايا
+      </div>
+    </aside>
+
+    <!-- منطقة المحتوى التفاعلي -->
+    <main class="content-area">
+
+      <!-- ================= 1. صفحة اللعبة الميدانية ================= -->
+      <section id="gamePage" class="page-section active">
+        
+        <!-- معلومات القضية الحالية -->
+        <div class="glass-panel" style="padding: 16px 22px; border-right: 4px solid var(--gold);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2 style="font-size:20px; font-weight:900; color:var(--gold);" id="caseTitleDisplay">مستشفى القادسية</h2>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">البلاغ: #10 • التصنيف: جنائي / قتل عمد</div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-gold" style="font-size:12px; padding:6px 14px;" onclick="openAccusationModal()">⚖️ توجيه الاتهام النهائي</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- مسرح الجريمة التفاعلي -->
+        <div class="scene-canvas" id="sceneCanvas">
+          <div class="flashlight-overlay"></div>
+          <!-- أحراز مسرح الجريمة -->
+          <div class="hotspot" style="top:32%; left:22%;" data-index="1" onclick="inspectEvidence('قفازات طبية ممزقة', 'عُثر عليها ملقاة قرب سلة المهملات، ممزقة من الإبهام الأيمن.')">🧤</div>
+          <div class="hotspot" style="top:46%; left:78%;" data-index="2" onclick="inspectEvidence('بصمة دم على المقبض', 'مسحة دم على المزلاج الداخلي تطابق فصيلة دم نادرة.')">🩸</div>
+          <div class="hotspot" style="top:68%; left:48%;" data-index="3" onclick="inspectEvidence('هاتف الضحية المتصدع', 'آخر مكالمة كانت مع د. فهد قبل الحادث بدقائق.')">📱</div>
+          <div class="hotspot" style="top:26%; left:62%;" data-index="4" onclick="inspectEvidence('علبة دواء مهدئ فارغة', 'عقار مهدئ للعمليات الجراحية مختوم برقم تشغيلة الصيدلية.')">💊</div>
+        </div>
+
+        <!-- شبكة المشتبه بهم -->
+        <div class="panel-header" style="margin-bottom:12px; border:none; padding:0;">
+          <h3 style="font-size:15px; color:var(--gold);">👥 المشتبه بهم في المسرح (اختر للاستجواب):</h3>
+        </div>
+        <div class="suspects-grid" id="suspectsGrid">
+          <div class="suspect-card active" onclick="selectSuspect('د. فهد', 'المدير الطبي', '👨‍⚕️', 'تلاعب بمستندات التراخيص والأدوية', true)">
+            <div class="avatar">👨‍⚕️</div>
+            <div class="name">د. فهد</div>
+            <div class="role">المدير الطبي</div>
+            <div class="tension-bar"><div class="fill" style="width:10%;"></div></div>
+          </div>
+          <div class="suspect-card" onclick="selectSuspect('جابر', 'عامل الخدمات', '🧹', 'يسرق أدوات ومعدات قديمة', false)">
+            <div class="avatar">🧹</div>
+            <div class="name">جابر</div>
+            <div class="role">عامل الخدمات</div>
+            <div class="tension-bar"><div class="fill" style="width:25%;"></div></div>
+          </div>
+          <div class="suspect-card" onclick="selectSuspect('مبارك', 'حارس الأمن', '🛡️', 'نام وقت انقطاع الكهرباء', false)">
+            <div class="avatar">🛡️</div>
+            <div class="name">مبارك</div>
+            <div class="role">حارس الأمن</div>
+            <div class="tension-bar"><div class="fill" style="width:20%;"></div></div>
+          </div>
+          <div class="suspect-card" onclick="selectSuspect('هند', 'صيدلانية', '💊', 'اكتشفت نقصاً في المهدئات وسكتت', false)">
+            <div class="avatar">💊</div>
+            <div class="name">هند</div>
+            <div class="role">صيدلانية</div>
+            <div class="tension-bar"><div class="fill" style="width:15%;"></div></div>
+          </div>
+        </div>
+
+        <!-- منطقة الاستجواب والمساعد -->
+        <div class="investigation-grid">
+          <div>
+            <!-- همسة المساعد -->
+            <div class="partner-box" id="partnerBox">
+              <span>🤝 المحقق المساعد:</span>
+              <span id="partnerText">راقب ردود أفعال المشتبه به عند سؤاله عن موقعه وقت الحادث.</span>
+            </div>
+
+            <!-- سجل الحوار -->
+            <div class="transcript" id="transcript">
+              <div class="msg system">📋 بدأت الجلسة. وجّه أسئلتك للمشتبه به بحرية بناءً على معطيات القضية.</div>
+            </div>
+
+            <div class="input-area">
+              <input type="text" id="questionInput" placeholder="✍️ اكتب سؤالك للمشتبه به هنا...">
+              <button class="btn-gold" id="sendBtn" onclick="handleSendQuestion()">استجواب</button>
+            </div>
+          </div>
+
+          <!-- الأحراز المكتشفة -->
+          <div class="glass-panel" style="margin:0;">
+            <div class="panel-header">
+              <h3>📦 حقيبة الأحراز <span id="clueCount" style="color:var(--gold); font-size:12px;">(0/4)</span></h3>
+            </div>
+            <div class="evidence-list" id="evidenceList">
+              <div style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">
+                انقر على النقاط المشبوهة في مسرح الجريمة بالأعلى لجمع الأحراز.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= 2. صفحة شرح اللعبة ================= -->
+      <section id="guidePage" class="page-section">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3>📖 دليل المحقق المحترف - كيف تلعب؟</h3>
+          </div>
+          <div class="guide-grid">
+            <div class="guide-card">
+              <div class="step-num">01</div>
+              <h4>🔍 مسرح الجريمة التفاعلي</h4>
+              <p>حرّك الكشاف في مسرح الجريمة وابحث عن النقاط المشبوهة. انقر عليها لفحصها مخبرياً وإضافتها لحقيبة الأحراز.</p>
+            </div>
+            <div class="guide-card">
+              <div class="step-num">02</div>
+              <h4>🗣️ الاستجواب الذكي</h4>
+              <p>اختر أحد المشتبهين ووجه أسئلة ذكية ومباشرة. الذكاء الاصطناعي يتقمص شخصياتهم ولديهم أسرار وأكاذيب يدافعون عنها.</p>
+            </div>
+            <div class="guide-card">
+              <div class="step-num">03</div>
+              <h4>🤝 همسات المحقق المساعد</h4>
+              <p>يراقب مساعدك لغة جسد المشتبهين والتناقضات في أقوالهم ويهمس لك بنصائح تكتيكية في الوقت الفعلي.</p>
+            </div>
+            <div class="guide-card">
+              <div class="step-num">04</div>
+              <h4>⚖️ الاتهام النهائي والترقية</h4>
+              <p>عندما تكتمل خيوط القضية، قدم مذكرتك للنيابة العامة وحدد القاتل والدليل القاطع لتربح نقاط الخبرة وتترقى لرتب أعلى.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. صفحة نظام الرتب والمميزات ================= -->
+      <section id="ranksPage" class="page-section">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3>🏆 نظام الرتب والمسيرة المهنية</h3>
+            <span style="font-size:12px; color:var(--gold);">كل رتبة تفتح لك صلاحيات وأدوات تحقيق حصرية</span>
+          </div>
+
+          <div class="ranks-timeline">
+            <!-- الرتبة 1 -->
+            <div class="rank-row current-rank">
+              <div class="rank-badge-lg">🛡️</div>
+              <div class="rank-info">
+                <h4>محقق متدرب <span style="font-size:11px; background:var(--gold); color:#000; padding:2px 8px; border-radius:10px; font-weight:900;">رتبتك الحالية</span></h4>
+                <div class="xp-req">0 XP المطلوب</div>
+                <div class="rank-perks">
+                  <span class="perk-tag">✓ استجواب المشتبه بهم</span>
+                  <span class="perk-tag">✓ فحص الأحراز الظاهرة في مسرح الجريمة</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- الرتبة 2 -->
+            <div class="rank-row">
+              <div class="rank-badge-lg">🔍</div>
+              <div class="rank-info">
+                <h4>مساعد محقق</h4>
+                <div class="xp-req">150 XP المطلوب</div>
+                <div class="rank-perks">
+                  <span class="perk-tag">✓ رادار كشف التوتر اللحظي</span>
+                  <span class="perk-tag">✓ فحص البصمات الجنائية المتقدمة</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- الرتبة 3 -->
+            <div class="rank-row">
+              <div class="rank-badge-lg">🔬</div>
+              <div class="rank-info">
+                <h4>محقق ميداني</h4>
+                <div class="xp-req">400 XP المطلوب</div>
+                <div class="rank-perks">
+                  <span class="perk-tag">✓ تقارير الطب الشرعي التلقائية</span>
+                  <span class="perk-tag">✓ مضاعفة نقاط الخبرة عند الإدانة الكاملة</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- الرتبة 4 -->
+            <div class="rank-row">
+              <div class="rank-badge-lg">💻</div>
+              <div class="rank-info">
+                <h4>محقق أول (صلاحيات النيابة)</h4>
+                <div class="xp-req">800 XP المطلوب</div>
+                <div class="rank-perks">
+                  <span class="perk-tag">✓ وحدة التحريات الرقمية (تفريغ الهواتف)</span>
+                  <span class="perk-tag">✓ كشف الحسابات والتحويلات المالية المشبوهة</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- الرتبة 5 -->
+            <div class="rank-row">
+              <div class="rank-badge-lg">👑</div>
+              <div class="rank-info">
+                <h4>رئيس قسم الجنايات</h4>
+                <div class="xp-req">1500 XP المطلوب</div>
+                <div class="rank-perks">
+                  <span class="perk-tag">✓ فتح أرشيف القضايا الباردة فائقة الغموض</span>
+                  <span class="perk-tag">✓ شارة الشرف الذهبية الرسمية</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. صفحة التعليمات والقوانين ================= -->
+      <section id="rulesPage" class="page-section">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3>⚖️ التعليمات والقواعد الجنائية الأساسية</h3>
+          </div>
+          <div class="rules-list">
+            <div class="rule-item">
+              <div class="rule-icon">⚠️</div>
+              <div><strong>تجنب الأسئلة العشوائية:</strong> توجيه اتهامات بدون أدلة يجعل المشتبه به يفقد صبره ويطلب محاميه، مما يعطل جلسة الاستجواب.</div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-icon">🩸</div>
+              <div><strong>الدليل القاطع (Smoking Gun):</strong> النيابة العامة لن تقبل إحالة المتهم إلا بربطه بدليل مادي حاسم يثبت تواجده أو دافعه لارتكاب الجريمة.</div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-icon">💡</div>
+              <div><strong>استشارة المساعد الجنائي:</strong> في حال تعقد الخيوط، راقب همسات مساعدك في الأعلى أو استعن بالتلميحات التكتيكية لكشف التناقض.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. صفحة أرشيف القضايا ================= -->
+      <section id="archivePage" class="page-section">
+        <div class="glass-panel">
+          <div class="panel-header">
+            <h3>📁 الأرشيف الجنائي العام</h3>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="background:var(--card-bg); border:1px solid var(--gold); padding:14px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="color:var(--gold);">مستشفى القادسية (#10)</strong>
+                <div style="font-size:12px; color:var(--text-muted);">قضية قتل في القبو أثناء انقطاع الكهرباء • [مفتوحة حالياً]</div>
+              </div>
+              <button class="btn-gold" style="font-size:12px; padding:6px 14px;" onclick="switchPage('gamePage')">متابعة التحقيق</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-  <!-- تقرير النيابة -->
-  <div class="report-overlay" id="reportOverlay">
-    <div class="report-card">
-      <h2>📋 محضر إحالة النيابة العامة</h2>
-      <div id="reportContent"></div>
-      <button class="close-btn" id="closeReportBtn">متابعة المسيرة المهنية</button>
-    </div>
-  </div>
-
-  <!-- فحص الحرز الجنائي الميداني -->
-  <div class="evidence-modal" id="evidenceModal">
-    <div class="evidence-card">
-      <div style="display:inline-block; background:rgba(68,204,136,0.15); color:#44cc88; padding:3px 8px; border-radius:6px; font-size:11px; margin-bottom:8px;">🔬 تقرير المعمل الجنائي</div>
-      <h3 id="modalEvidenceTitle" style="color:var(--gold); margin-bottom:8px;"></h3>
-      <p id="modalEvidenceDesc" style="font-size:13px; color:#d1c4b6; line-height:1.7; margin-bottom:16px;"></p>
-      <button class="auth-btn" style="padding:6px 20px;" onclick="closeEvidenceModal()">إضافة إلى حقيبة الأحراز</button>
-    </div>
-  </div>
-
-  <!-- التفتيش الرقمي والمالي -->
-  <div class="terminal-overlay" id="cyberTerminalOverlay">
-    <div class="terminal-card">
-      <div class="terminal-header">
-        <h3 style="color:var(--cyan);">💻 وحدة التحريات الرقمية وإذن النيابة</h3>
-        <span style="font-size:12px; color:#80cbc4;">مصرح لـ: <strong id="termOfficerName">محقق أول</strong></span>
-      </div>
-      <div class="terminal-tabs">
-        <button class="term-tab active" id="tabBank" onclick="switchTermTab('bank')">💳 الحسابات والتحويلات المالية</button>
-        <button class="term-tab" id="tabTelecom" onclick="switchTermTab('telecom')">📱 تفريغ الأجهزة وأبراج الاتصال</button>
-      </div>
-      <div class="terminal-content-box" id="terminalDataBox"></div>
-      <button class="auth-btn" style="margin-top:14px; background:transparent; border:1px solid var(--cyan); color:var(--cyan);" onclick="closeCyberForensics()">إغلاق المنظومة الرقمية</button>
-    </div>
-  </div>
-
-  <!-- الاتهام النهائي -->
-  <div class="accuse-overlay" id="accuseModal">
-    <div class="accuse-card">
-      <div class="accuse-header">
-        <h2 style="color:#ff5555;">⚖️ مذكرة إحالة المتهم للنيابة العامة</h2>
-        <span style="font-size:12px; color:#ff7777;">قرار غير قابل للرجوع</span>
-      </div>
-      <div class="accuse-form-group">
-        <label>1. تحديد المتهم الرئيسي بالقتل:</label>
-        <select id="accusedSuspectSelect" class="accuse-select"></select>
-      </div>
-      <div class="accuse-form-group">
-        <label>2. الدليل المادي الحاسم (The Smoking Gun):</label>
-        <select id="accusedClueSelect" class="accuse-select"></select>
-      </div>
-      <div class="accuse-form-group">
-        <label>3. الدافع الجنائي:</label>
-        <select id="accusedMotiveSelect" class="accuse-select">
-          <option value="financial">طمع مالي أو تستر على اختلاس وتزوير</option>
-          <option value="revenge">انتقام شخصي وخلافات مهنية قديمة</option>
-          <option value="silence">إسكات الضحية لمنع كشف وثائق خطيرة</option>
-          <option value="accidental">شجار مفاجئ تحول إلى قتل غير مدبر</option>
+  <!-- نافذة الاتهام النهائي -->
+  <div class="modal-overlay" id="accuseModal">
+    <div class="modal-card">
+      <h3 style="color:var(--red); margin-bottom:12px;">⚖️ مذكرة إحالة المتهم للنيابة العامة</h3>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px; color:var(--text-muted);">اختر المتهم الرئيسي:</label>
+        <select id="accuseSuspectSelect" style="width:100%; background:#000; border:1px solid var(--border-color); color:#fff; padding:8px; border-radius:6px; font-family:'Cairo'; margin-top:4px;">
+          <option value="د. فهد">👨‍⚕️ د. فهد (المدير الطبي)</option>
+          <option value="جابر">🧹 جابر (عامل الخدمات)</option>
+          <option value="مبارك">🛡️ مبارك (حارس الأمن)</option>
+          <option value="هند">💊 هند (صيدلانية)</option>
         </select>
       </div>
       <div style="display:flex; gap:10px; margin-top:16px;">
-        <button class="btn-indict" onclick="submitFinalIndictment()">🔨 إصدار أمر القبض والإحالة</button>
-        <button class="auth-btn" style="flex:1; background:transparent; border:1px solid var(--border-color); color:var(--text-muted);" onclick="closeAccusationModal()">تراجع</button>
+        <button class="btn-gold" style="background:var(--red); color:#fff; flex:2;" onclick="submitIndictment()">إصدار أمر القبض</button>
+        <button class="btn-gold" style="background:transparent; border:1px solid var(--border-color); color:#fff; flex:1;" onclick="closeAccuseModal()">تراجع</button>
       </div>
     </div>
   </div>
-
-  <!-- احتفالية الترقية -->
-  <div class="level-up-overlay" id="levelUpOverlay">
-    <div class="level-up-card">
-      <div class="badge-anim" id="levelUpBadge">🛡️</div>
-      <h2 style="color:var(--gold);">ترقية رسمية!</h2>
-      <div id="levelUpRankTitle" style="display:inline-block; background:rgba(212,168,67,0.15); color:var(--gold); border:1px solid var(--gold); padding:3px 14px; border-radius:20px; font-size:13px; font-weight:700; margin-bottom:14px;">محقق ميداني</div>
-      <div class="perks-box">
-        <h4 style="color:#44cc88; font-size:13px; margin-bottom:8px;">🎁 الصلاحيات المفتوحة حديثاً:</h4>
-        <ul id="levelUpPerksList"></ul>
-      </div>
-      <button class="auth-btn" onclick="closeLevelUpModal()">استلام الشارة ومتابعة المهام</button>
-    </div>
-  </div>
-
-  <!-- الشريط الجانبي -->
-  <aside class="sidebar">
-    <div class="brand">
-      <h2>📁 <span>غرفة</span> التحقيق</h2>
-      <div class="sub">الحقيقة لا تخفى — تنتظر من يكتشفها</div>
-    </div>
-    
-    <!-- زر توليد قضية جديدة -->
-    <div style="padding: 0 14px; margin-bottom: 12px;">
-      <button id="generateCaseBtn" class="auth-btn" style="background: linear-gradient(135deg, #44cc88, #237a4e); font-size: 13px; padding: 8px;" onclick="generateNewProceduralCase()">
-        ⚡ فتح ملف قضية عشوائية
-      </button>
-    </div>
-
-    <div class="section-title">أرشيف القضايا الجنائية</div>
-    <div id="caseList"></div>
-  </aside>
-
-  <!-- المحتوى الرئيسي -->
-  <main class="main-content">
-    <header class="main-header">
-      <div class="title">🕵️ <span class="highlight">التحقيق</span> الجنائي</div>
-      <div class="badge-id">
-        <span id="badgeIcon">🛡️</span>
-        <span class="rank-name" id="badgeRank">محقق متدرب</span>
-        <span id="badgeDisplayName">/ غير مسجل</span>
-        <button class="logout-btn" id="logoutBtn" onclick="handleLogout()">خروج</button>
-      </div>
-    </header>
-
-    <!-- شريط الرتبة -->
-    <div class="rank-bar">
-      <div>
-        <div class="rank-title" id="rankTitle">محقق متدرب</div>
-        <div class="rank-sub" id="rankSub">المستوى 1 • قضايا أولية</div>
-      </div>
-      <div>
-        <div style="font-size:12px;color:var(--text-muted);">الخبرة: <span id="xpCurrent" style="color:var(--gold)">0</span> / <span id="xpNext">150</span></div>
-        <div class="xp-bar"><div class="fill" id="xpBar"></div></div>
-      </div>
-    </div>
-
-    <!-- بطاقة مسرح الجريمة -->
-    <div class="case-hero">
-      <div class="case-title" id="caseTitle">مستشفى القادسية</div>
-      <div class="case-meta">
-        <div>رقم البلاغ: <span id="caseId">#10</span></div>
-        <div>المشتبهين: <span id="caseSuspectsCount">8</span></div>
-        <div>التصنيف: <span id="caseType">جنائي / قتل عمد</span></div>
-      </div>
-      <div class="case-desc" id="caseDesc"></div>
-    </div>
-
-    <!-- مسرح الجريمة التفاعلي والسينمائي -->
-    <div class="crime-scene-container">
-      <div class="crime-scene-header">
-        <h3>🔍 مسرح الجريمة الميداني</h3>
-        <span style="font-size:12px; color:var(--text-muted);">حرّك الكشاف وانقر على الأحراز لفحصها</span>
-      </div>
-      <div class="scene-canvas" id="sceneCanvas">
-        <div class="flashlight-overlay"></div>
-      </div>
-    </div>
-
-    <!-- بطاقة الضحية -->
-    <div class="victim-card">
-      <h4>🕯️ ملف المجني عليه وحيثيات تواجده</h4>
-      <div class="details-grid">
-        <div><strong>الاسم الكامل:</strong> <span id="victimName"></span></div>
-        <div><strong>العمر:</strong> <span id="victimAge"></span></div>
-        <div><strong>الصفة الرسمية:</strong> <span id="victimJob"></span></div>
-        <div><strong>سبب الوفاة المبدئي:</strong> <span id="victimCause"></span></div>
-      </div>
-      <div class="story-box" id="victimStory"></div>
-    </div>
-
-    <!-- شبكة الأدلة المصورة -->
-    <div class="gallery" id="gallery"></div>
-
-    <!-- شبكة المشتبه بهم -->
-    <div class="suspects-grid" id="suspectsGrid"></div>
-
-    <!-- منطقة الاستجواب -->
-    <div class="investigation-area">
-      <div>
-        <div class="transcript" id="transcript">
-          <div class="msg system">📋 اختر أحد المشتبهين من الأعلى لبدء جلسة الاستجواب أو افحص مسرح الجريمة لجمع الأدلة.</div>
-        </div>
-        <div class="input-area">
-          <input type="text" id="questionInput" placeholder="✍️ وجّه سؤالك للمشتبه به بحرية..." disabled>
-          <button id="sendBtn" disabled>استجواب</button>
-        </div>
-        <div class="action-bar">
-          <button class="primary" id="confrontBtn" disabled>⚔️ مواجهة بالدليل</button>
-          <button class="primary" id="cyberAuditBtn" onclick="openCyberForensics()" style="border-color:var(--cyan); color:var(--cyan);">💻 تفتيش السجلات والرقميات</button>
-          <button class="primary" onclick="openAccusationModal()" style="border-color:var(--red); color:#ff6666; font-weight:700;">⚖️ توجيه الاتهام النهائي</button>
-          <button class="hint-btn" id="hintBtn">💡 تلميح (20 XP)</button>
-          <button id="resetBtn">🔄 إعادة الجلسة</button>
-        </div>
-      </div>
-
-      <div class="evidence-panel">
-        <h3>📦 حقيبة الأحراز <span id="clueCount" style="color:var(--gold);">0/0</span></h3>
-        <div id="evidenceList"></div>
-      </div>
-    </div>
-  </main>
 
   <script>
+    // ===== التنقل بين الصفحات =====
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) targetPage.classList.add('active');
+
+      const navIndex = { 'gamePage': 0, 'guidePage': 1, 'ranksPage': 2, 'rulesPage': 3, 'archivePage': 4 }[pageId];
+      if (navIndex !== undefined) {
+        document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+      }
+    }
+
     // حركة الكشاف في مسرح الجريمة
     document.addEventListener('DOMContentLoaded', () => {
       const canvas = document.getElementById('sceneCanvas');
@@ -791,841 +781,110 @@
       }
     });
 
-    // ===== إعدادات Firebase =====
-    const firebaseConfig = {
-      apiKey: "AIzaSyDnl3yV7W_NOS5RydRQiBg1N0WdWfjxf9w",
-      authDomain: "detective-game-1e8be.firebaseapp.com",
-      projectId: "detective-game-1e8be",
-      storageBucket: "detective-game-1e8be.firebasestorage.app",
-      messagingSenderId: "166723378551",
-      appId: "1:166723378551:web:6f4db36d588f28cf0b5572"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // ===== إعدادات Groq API المعتمدة والمجانية =====
+    // ===== إعدادات الذكاء الاصطناعي (Groq) =====
     const GROQ_API_KEY = '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';
     const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-    async function callAI(messages, jsonMode = true) {
-      const res = await fetch(GROQ_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROQ_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: messages,
-          response_format: jsonMode ? { type: 'json_object' } : undefined,
-          temperature: 0.6,
-          max_tokens: 350
-        })
-      });
+    let currentSuspect = { name: 'د. فهد', role: 'المدير الطبي', secret: 'تلاعب بمستندات التراخيص والأدوية', guilty: true, tension: 10 };
+    let discoveredClues = [];
 
-      const data = await res.json();
-      if (data.error) throw new Error(data.error.message || 'Groq API Error');
-      return JSON.parse(data.choices[0].message.content);
-    }
-
-    // ===== نظام الرتب والصلاحيات =====
-    const RANKS = [
-      {
-        level: 1,
-        title: 'محقق متدرب',
-        badge: '🛡️',
-        xpRequired: 0,
-        sub: 'المستوى 1 • قضايا أولية',
-        perks: ['استجواب المشتبه بهم', 'جمع الأدلة الظاهرة في مسرح الجريمة']
-      },
-      {
-        level: 2,
-        title: 'مساعد محقق',
-        badge: '🔍',
-        xpRequired: 150,
-        sub: 'المستوى 2 • قضايا سرقة واحتيال',
-        perks: ['تفعيل رادار قياس التوتر اللحظي', 'كشف التناقضات المبدئية في الأقوال']
-      },
-      {
-        level: 3,
-        title: 'محقق ميداني',
-        badge: '🔬',
-        xpRequired: 400,
-        sub: 'المستوى 3 • وفيات مشبوهة وجنايات',
-        perks: ['تقرير الطب الشرعي الفوري المتقدم', 'مكافآت XP مضاعفة عند كشف القاتل بدقة']
-      },
-      {
-        level: 4,
-        title: 'محقق أول',
-        badge: '⚖️',
-        xpRequired: 800,
-        sub: 'المستوى 4 • جرائم قتل كبرى',
-        perks: ['صلاحية تفتيش الهواتف والسجلات المالية الرقمية', 'طلب استدعاء جبري للمشتبهين المتهربين']
-      },
-      {
-        level: 5,
-        title: 'رئيس قسم التحقيقات',
-        badge: '👑',
-        xpRequired: 1500,
-        sub: 'المستوى 5 • قضايا النخبة والملفات الباردة',
-        perks: ['فتح أرشيف القضايا الباردة فائقة الغموض', 'شارة الشرف الذهبية الرسمية']
-      }
-    ];
-
-    // ===== أدلة مسرح الجريمة الافتراضية =====
-    let SCENE_EVIDENCE = [
-      {
-        id: 'e1',
-        name: 'قفازات طبية ممزقة',
-        icon: '🧤',
-        top: '32%',
-        left: '22%',
-        report: 'عُثر عليها ملقاة قرب سلة المهملات، تحمل آثار لمس حديثة وممزقة من جهة الإبهام الأيمن.',
-        relatedSuspects: ['د. فهد', 'جابر']
-      },
-      {
-        id: 'e2',
-        name: 'بصمة دم على المقبض',
-        icon: '🩸',
-        top: '46%',
-        left: '78%',
-        report: 'مسحة دم على المزلاج الداخلي للباب تطابق فصيلة دم نادرة لأحد المتواجدين أثناء انقطاع الكهرباء.',
-        relatedSuspects: ['مبارك', 'ناصر']
-      },
-      {
-        id: 'e3',
-        name: 'هاتف الضحية المتصدع',
-        icon: '📱',
-        top: '68%',
-        left: '48%',
-        report: 'آخر سجل مكالمات يوضح اتصالاً مدته 4 دقائق مع المدير الطبي د. فهد قبل الحادث بدقائق.',
-        relatedSuspects: ['د. فهد']
-      },
-      {
-        id: 'e4',
-        name: 'علبة دواء مهدئ فارغة',
-        icon: '💊',
-        top: '26%',
-        left: '62%',
-        report: 'عقار مهدئ شديد المفعول مخصص للعمليات الجراحية مختوم برقم تشغيلة من صيدلية المستشفى.',
-        relatedSuspects: ['هند', 'د. فهد']
-      }
-    ];
-
-    // ===== قاعدة بيانات القضايا =====
-    const ALL_CASES = [
-      {
-        id: '#10',
-        title: 'مستشفى القادسية',
-        type: 'قتل عمد',
-        description: 'مستشفى قديم يقع على طريق سريع خارج النطاق العمراني. تم العثور على جثة داخل قبو المستشفى المعزول مع انقطاع مشبوه في التيار الكهربائي دام 10 دقائق.',
-        victim: {
-          name: 'ماجد بن سليمان العتيبي',
-          age: '34 سنة',
-          job: 'مقاول بناء وترميم (متعاقد خارجي لتجديد القبو)',
-          cause: 'اختناق حاد ناتج عن كتم أنفاس أو استنشاق مادة سامة',
-          story: '📌 ماجد هو صاحب مؤسسة مقاولات، عثر أثناء أعمال الحفر على وثائق تدين المدير الطبي بخصوص أدوية منتهية الصلاحية، وكان على موعد معه قبل ساعات من مقتله.'
-        },
-        photos: [
-          { icon: '🚪', label: 'باب القبو', desc: 'مقفل بمزلاج من الداخل' },
-          { icon: '🩸', label: 'بصمة دم', desc: 'على المقبض الخلفي' },
-          { icon: '🧤', label: 'قفازات طبية', desc: 'ممزقة في سلة المهملات' },
-          { icon: '📱', label: 'هاتف الضحية', desc: 'آخر مكالمة مع د. فهد 11:15' }
-        ],
-        suspects: [
-          { id: 's1', name: 'د. فهد', role: 'المدير الطبي', avatar: '👨‍⚕️', tension: 10, personality: { secret: 'تلاعب بمستندات التراخيص والأدوية', guilty: true } },
-          { id: 's2', name: 'د. ريم', role: 'طبيبة امتياز', avatar: '👩‍⚕️', tension: 15, personality: { secret: 'تتستر على أخطاء د. فهد خوفاً على وظيفتها', guilty: false } },
-          { id: 's3', name: 'جابر', role: 'عامل الخدمات', avatar: '🧹', tension: 28, personality: { secret: 'يسرق أدوات ومعدات قديمة', guilty: false } },
-          { id: 's4', name: 'مبارك', role: 'حارس الأمن', avatar: '🛡️', tension: 20, personality: { secret: 'نام وقت انقطاع الكهرباء', guilty: false } },
-          { id: 's5', name: 'هند', role: 'صيدلانية', avatar: '💊', tension: 18, personality: { secret: 'اكتشفت نقصاً في المهدئات وسكتت', guilty: false } },
-          { id: 's6', name: 'عادل', role: 'محاسب', avatar: '🧾', tension: 14, personality: { secret: 'عطّل مستحقات المقاول', guilty: false } },
-          { id: 's7', name: 'نوال', role: 'رئيسة التمريض', avatar: '👩‍⚕️', tension: 22, personality: { secret: 'علمت بالخلاف بين الضحية والمدير', guilty: false } },
-          { id: 's8', name: 'ناصر', role: 'سائق الإسعاف', avatar: '🚑', tension: 16, personality: { secret: 'خرج بدون إذن رسمي', guilty: false } }
-        ],
-        trueKiller: 'د. فهد',
-        rewards: { xp: 150, reputation: 20 }
-      }
-    ];
-
-    // ===== الحالة العامة للتطبيق =====
-    let currentCase = ALL_CASES[0];
-    let player = { name: '', email: '', rank: 1, xp: 0, reputation: 0, discoveredEvidenceMap: {} };
-    let state = { currentSuspectId: null, history: [], asked: 0, isBusy: false };
-    let currentTermTab = 'bank';
-
-    function getDiscoveredEvidenceForCurrentCase() {
-      if (!player.discoveredEvidenceMap) player.discoveredEvidenceMap = {};
-      const caseKey = currentCase.id || '#10';
-      if (!player.discoveredEvidenceMap[caseKey]) player.discoveredEvidenceMap[caseKey] = [];
-      return player.discoveredEvidenceMap[caseKey];
-    }
-
-    // ===== إدارة المستخدم والمصادقة =====
-    function switchAuthTab(tab) {
-      document.getElementById('loginTab').classList.toggle('active', tab === 'login');
-      document.getElementById('registerTab').classList.toggle('active', tab === 'register');
-      document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
-      document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
-      hideError();
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('errorMsg');
-      el.textContent = msg;
-      el.classList.add('show');
-    }
-    function hideError() {
-      document.getElementById('errorMsg').classList.remove('show');
-    }
-
-    async function handleLogin() {
-      hideError();
-      const name = document.getElementById('loginName').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      if (!name || !password) return showError('يرجى إدخال الاسم وكلمة السر');
-
-      const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.textContent = 'جاري الدخول...';
-
-      try {
-        const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
-        await auth.signInWithEmailAndPassword(email, password);
-        await loadPlayerData(auth.currentUser.uid);
-        enterGame();
-      } catch (error) {
-        showError('فشل الدخول: ' + error.message);
-        btn.disabled = false;
-        btn.textContent = 'دخول الميدان';
-      }
-    }
-
-    async function handleRegister() {
-      hideError();
-      const name = document.getElementById('registerName').value.trim();
-      const password = document.getElementById('registerPassword').value;
-      const confirm = document.getElementById('registerPasswordConfirm').value;
-      if (!name || !password) return showError('يرجى إدخال البيانات كاملة');
-      if (password.length < 6) return showError('كلمة السر يجب أن تكون 6 أحرف على الأقل');
-      if (password !== confirm) return showError('كلمتا السر غير متطابقتين');
-
-      const btn = document.getElementById('registerBtn');
-      btn.disabled = true;
-      btn.textContent = 'جاري الإنشاء...';
-
-      try {
-        const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        player = { name: name, email: email, rank: 1, xp: 0, reputation: 0, discoveredEvidenceMap: {} };
-        await savePlayerData(userCredential.user.uid);
-        enterGame();
-      } catch (error) {
-        showError('فشل التسجيل: ' + error.message);
-        btn.disabled = false;
-        btn.textContent = 'إنشاء الحساب';
-      }
-    }
-
-    async function savePlayerData(uid) {
-      try {
-        await db.collection('players').doc(uid).set({
-          name: player.name,
-          email: player.email,
-          rank: player.rank,
-          xp: player.xp,
-          reputation: player.reputation,
-          discoveredEvidenceMap: player.discoveredEvidenceMap || {},
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-      } catch (e) { console.error('Error saving data:', e); }
-    }
-
-    async function loadPlayerData(uid) {
-      try {
-        const doc = await db.collection('players').doc(uid).get();
-        if (doc.exists) {
-          const data = doc.data();
-          player = {
-            name: data.name,
-            email: data.email,
-            rank: data.rank || 1,
-            xp: data.xp || 0,
-            reputation: data.reputation || 0,
-            discoveredEvidenceMap: data.discoveredEvidenceMap || {}
-          };
-          calculateAccurateRank();
-        }
-      } catch (e) { console.error('Error loading data:', e); }
-    }
-
-    function enterGame() {
-      document.getElementById('authOverlay').classList.add('hidden');
-      calculateAccurateRank();
-      updateHeader();
-      loadCaseData(currentCase);
-      addLog('system', `مرحباً بك سيادة المحقق ${player.name}! تم تحميل ملفك بنجاح.`);
-    }
-
-    async function handleLogout() {
-      if (confirm('هل تريد تسجيل الخروج؟')) {
-        if (auth.currentUser) await savePlayerData(auth.currentUser.uid);
-        await auth.signOut();
-        location.reload();
-      }
-    }
-
-    // ===== حساب وتحديث الرتبة =====
-    function calculateAccurateRank() {
-      let matchedRank = 1;
-      for (let i = RANKS.length - 1; i >= 0; i--) {
-        if (player.xp >= RANKS[i].xpRequired) {
-          matchedRank = RANKS[i].level;
-          break;
-        }
-      }
-      player.rank = matchedRank;
-    }
-
-    function checkRankPromotion(previousRank) {
-      calculateAccurateRank();
-      if (player.rank > previousRank) {
-        const currentRankObj = RANKS[player.rank - 1];
-        document.getElementById('levelUpBadge').textContent = currentRankObj.badge;
-        document.getElementById('levelUpRankTitle').textContent = `${currentRankObj.title} (المستوى ${currentRankObj.level})`;
-        document.getElementById('levelUpPerksList').innerHTML = currentRankObj.perks.map(p => `<li>✨ ${p}</li>`).join('');
-        document.getElementById('levelUpOverlay').classList.add('active');
-      }
-    }
-
-    function updateHeader() {
-      calculateAccurateRank();
-      const rankData = RANKS[player.rank - 1] || RANKS[0];
-      document.getElementById('badgeDisplayName').textContent = `/ ${player.name}`;
-      document.getElementById('badgeRank').textContent = rankData.title;
-      document.getElementById('badgeIcon').textContent = rankData.badge;
-      document.getElementById('rankTitle').textContent = rankData.title;
-      document.getElementById('rankSub').textContent = rankData.sub;
-      document.getElementById('xpCurrent').textContent = player.xp;
+    function selectSuspect(name, role, avatar, secret, guilty) {
+      currentSuspect = { name, role, secret, guilty, tension: 10 };
+      document.querySelectorAll('.suspect-card').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
       
-      const nextRank = RANKS[player.rank];
-      const nextXP = nextRank ? nextRank.xpRequired : player.xp + 100;
-      document.getElementById('xpNext').textContent = nextXP;
-      
-      const currentRankBaseXP = rankData.xpRequired;
-      const progressXP = player.xp - currentRankBaseXP;
-      const requiredXP = nextXP - currentRankBaseXP;
-      const pct = nextRank ? Math.min(100, Math.max(0, (progressXP / requiredXP) * 100)) : 100;
-      document.getElementById('xpBar').style.width = pct + '%';
+      const transcript = document.getElementById('transcript');
+      transcript.innerHTML = `<div class="msg system">🕵️ بدأت جلسة التحقيق مع ${name} (${role}).</div>`;
+      document.getElementById('partnerText').textContent = `أنت الآن تستجوب ${name}. ابحث عن أي ثغرة في إجابته.`;
     }
 
-    function closeLevelUpModal() {
-      document.getElementById('levelUpOverlay').classList.remove('active');
-    }
-
-    // ===== تحميل بيانات القضية =====
-    function loadCaseData(c) {
-      currentCase = c;
-      state = { currentSuspectId: null, history: [], asked: 0, isBusy: false };
-
-      document.getElementById('caseTitle').textContent = c.title;
-      document.getElementById('caseId').textContent = c.id;
-      document.getElementById('caseType').textContent = c.type;
-      document.getElementById('caseDesc').textContent = c.description;
-      document.getElementById('caseSuspectsCount').textContent = c.suspects.length;
-
-      document.getElementById('victimName').textContent = c.victim.name;
-      document.getElementById('victimAge').textContent = c.victim.age;
-      document.getElementById('victimJob').textContent = c.victim.job;
-      document.getElementById('victimCause').textContent = c.victim.cause;
-      document.getElementById('victimStory').textContent = c.victim.story;
-
-      if (c.sceneEvidence && c.sceneEvidence.length > 0) {
-        SCENE_EVIDENCE = [...c.sceneEvidence];
-      }
-
-      renderSuspects();
-      renderGallery();
-      renderCaseList();
-      renderCrimeScene();
-      renderDiscoveredEvidenceList();
-
-      document.getElementById('transcript').innerHTML = '<div class="msg system">📋 اختر أحد المشتبهين من الأعلى لبدء جلسة الاستجواب أو افحص مسرح الجريمة لجمع الأدلة.</div>';
-      document.getElementById('questionInput').disabled = true;
-      document.getElementById('sendBtn').disabled = true;
-      document.getElementById('confrontBtn').disabled = true;
-    }
-
-    // ===== مسرح الجريمة الميداني =====
-    function renderCrimeScene() {
-      const canvas = document.getElementById('sceneCanvas');
-      canvas.innerHTML = '<div class="flashlight-overlay"></div>';
-      const discovered = getDiscoveredEvidenceForCurrentCase();
-      
-      SCENE_EVIDENCE.forEach((item, index) => {
-        const isFound = discovered.some(e => e.name === item.name);
-        const spot = document.createElement('div');
-        spot.className = `hotspot ${isFound ? 'discovered' : ''}`;
-        spot.style.top = item.top || '50%';
-        spot.style.left = item.left || '50%';
-        spot.setAttribute('data-index', index + 1);
-        spot.innerHTML = `<span>${item.icon}</span>`;
-        spot.title = isFound ? `${item.name} (تم الفحص)` : `حرز جنائي رقم #${index + 1} - انقر للفحص`;
-        spot.onclick = () => inspectEvidence(item);
-        canvas.appendChild(spot);
-      });
-    }
-
-    function inspectEvidence(item) {
-      const discovered = getDiscoveredEvidenceForCurrentCase();
-      const alreadyFound = discovered.some(e => e.name === item.name);
-
-      if (!alreadyFound) {
-        discovered.push({
-          id: item.id || ('ev_' + Date.now()),
-          name: item.name,
-          icon: item.icon,
-          report: item.report,
-          relatedSuspects: item.relatedSuspects || []
-        });
-
-        const prevRank = player.rank;
-        player.xp += 15;
-        checkRankPromotion(prevRank);
-        updateHeader();
-        if (auth.currentUser) savePlayerData(auth.currentUser.uid);
-      }
-
-      document.getElementById('modalEvidenceTitle').textContent = `${item.icon} ${item.name}`;
-      document.getElementById('modalEvidenceDesc').textContent = item.report;
-      document.getElementById('evidenceModal').classList.add('active');
-
-      renderCrimeScene();
-      renderDiscoveredEvidenceList();
-    }
-
-    function closeEvidenceModal() {
-      document.getElementById('evidenceModal').classList.remove('active');
-    }
-
-    function renderDiscoveredEvidenceList() {
-      const list = document.getElementById('evidenceList');
-      const discovered = getDiscoveredEvidenceForCurrentCase();
-      document.getElementById('clueCount').textContent = `${discovered.length}/${SCENE_EVIDENCE.length}`;
-
-      if (discovered.length === 0) {
-        list.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px;">افحص مسرح الجريمة لجمع الأدلة.</div>`;
-        return;
-      }
-
-      list.innerHTML = discovered.map(ev => `
-        <div class="clue-item" onclick="confrontWithClue('${ev.name}')">
-          ${ev.icon} ${ev.name}
-        </div>
-      `).join('');
-    }
-
-    function renderSuspects() {
-      const grid = document.getElementById('suspectsGrid');
-      grid.innerHTML = '';
-      currentCase.suspects.forEach(s => {
-        const d = document.createElement('div');
-        d.className = `suspect-card ${state.currentSuspectId === s.id ? 'active' : ''}`;
-        d.innerHTML = `
-          <div class="avatar">${s.avatar}</div>
-          <div class="name">${s.name}</div>
-          <div class="role">${s.role}</div>
-          <div class="tension-bar"><div class="fill" style="width:${s.tension}%"></div></div>
-        `;
-        d.onclick = () => selectSuspect(s.id);
-        grid.appendChild(d);
-      });
-    }
-
-    function renderGallery() {
-      const g = document.getElementById('gallery');
-      g.innerHTML = '';
-      (currentCase.photos || []).forEach(p => {
-        g.innerHTML += `<div class="photo"><div class="icon">${p.icon}</div><div>${p.label}</div></div>`;
-      });
-    }
-
-    function renderCaseList() {
-      const l = document.getElementById('caseList');
-      l.innerHTML = '';
-      ALL_CASES.forEach(c => {
-        l.innerHTML += `
-          <div class="case-item ${c.id === currentCase.id ? 'active' : ''}">
-            <span>📂</span> ${c.title} <span class="badge">${c.id}</span>
+    function inspectEvidence(name, report) {
+      if (!discoveredClues.some(c => c.name === name)) {
+        discoveredClues.push({ name, report });
+        document.getElementById('clueCount').textContent = `(${discoveredClues.length}/4)`;
+        
+        const list = document.getElementById('evidenceList');
+        if (discoveredClues.length === 1) list.innerHTML = '';
+        list.innerHTML += `
+          <div class="evidence-item" onclick="confrontClue('${name}', '${report}')">
+            <strong>${name}</strong>
+            <div style="color:var(--text-muted); font-size:11px; margin-top:2px;">${report}</div>
           </div>
         `;
-      });
+        document.getElementById('partnerText').textContent = `حرز ممتاز! عثرت على (${name}). يمكنك الآن مواجهة المشتبهين به.`;
+      }
     }
 
-    function selectSuspect(id) {
-      state.currentSuspectId = id;
-      state.history = [];
-      const s = currentCase.suspects.find(x => x.id === id);
-      renderSuspects();
-      document.getElementById('questionInput').disabled = false;
-      document.getElementById('sendBtn').disabled = false;
-      document.getElementById('confrontBtn').disabled = false;
-      document.getElementById('questionInput').focus();
-      addLog('system', `🕵️ بدأت جلسة التحقيق مع ${s.name} (${s.role}).`);
-    }
+    async function handleSendQuestion() {
+      const input = document.getElementById('questionInput');
+      const q = input.value.trim();
+      if (!q) return;
 
-    function addLog(type, text) {
-      const box = document.getElementById('transcript');
-      const div = document.createElement('div');
-      div.className = `msg ${type}`;
-      div.textContent = type === 'player' ? `[المحقق ${player.name}]: ${text}` : text;
-      box.appendChild(div);
-      box.scrollTop = box.scrollHeight;
-    }
+      const transcript = document.getElementById('transcript');
+      transcript.innerHTML += `<div class="msg player">[المحقق حسين]: ${q}</div>`;
+      input.value = '';
+      transcript.scrollTop = transcript.scrollHeight;
 
-    // ===== محرك الاستجواب عبر Groq =====
-    async function askAI(question) {
-      if (!state.currentSuspectId || state.isBusy) return;
-      const suspect = currentCase.suspects.find(x => x.id === state.currentSuspectId);
-
-      state.isBusy = true;
-      state.asked++;
-      addLog('player', question);
-      addLog('system', '⏳ جاري تحليل انفعالات المشتبه به...');
-
-      const systemPrompt = `أنت تمثل شخصية "${suspect.name}" (${suspect.role}) في قضية "${currentCase.title}".
-الضحية: "${currentCase.victim.name}".
-سرك: "${suspect.personality.secret}".
-حالتك: ${suspect.personality.guilty ? 'القاتل الفعلي وتتهرب بذكاء' : 'بريء تماماً من القتل'}.
-المحقق يوجه لك سؤالاً.
+      const prompt = `أنت تمثل شخصية "${currentSuspect.name}" (${currentSuspect.role}) في قضية قتل مستشفى القادسية.
+القتيل: ماجد بن سليمان العتيبي في القبو.
+سرك: "${currentSuspect.secret}".
+حالتك: ${currentSuspect.guilty ? 'القاتل الفعلي وتتهرب بذكاء' : 'بريء تماماً من القتل'}.
+سؤال المحقق: "${q}".
 أجب بصيغة JSON حصراً:
 {
-  "reply": "(حركة الجسد) الرد الكلامي المباشر بجملة أو جملتين",
-  "tensionDelta": رقم بين -5 إلى 15
+  "reply": "(لغة الجسد) الرد الكلامي المباشر",
+  "tensionDelta": رقم بين 5 و 25,
+  "partnerAdvice": "ملاحظة تكتيكية قصيرة جداً من المحقق المساعد للمحقق"
 }`;
 
       try {
-        const messages = [
-          { role: 'system', content: systemPrompt },
-          ...state.history.slice(-2),
-          { role: 'user', content: question }
-        ];
+        const res = await fetch(GROQ_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            response_format: { type: 'json_object' }
+          })
+        });
+        const data = await res.json();
+        const parsed = JSON.parse(data.choices[0].message.content);
 
-        const parsed = await callAI(messages, true);
-
-        const box = document.getElementById('transcript');
-        if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري تحليل')) {
-          box.removeChild(box.lastElementChild);
-        }
-
-        addLog('suspect', parsed.reply);
-        state.history.push({ role: 'user', content: question }, { role: 'assistant', content: parsed.reply });
-
-        suspect.tension = Math.max(0, Math.min(100, suspect.tension + (parsed.tensionDelta || 5)));
-        renderSuspects();
-
-        if (suspect.tension >= 100) {
-          if (suspect.personality.guilty) {
-            addLog('clue', `💥 انهار ${suspect.name} واعترف بارتكاب الجريمة!`);
-          } else {
-            addLog('hint', `🛑 صرخ ${suspect.name}: "أنا بريء تماماً! سري فقط هو: ${suspect.personality.secret}"`);
-            suspect.tension = 75;
-          }
-        }
-      } catch (err) {
-        console.error('Groq Error:', err);
-        const box = document.getElementById('transcript');
-        if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري تحليل')) {
-          box.removeChild(box.lastElementChild);
-        }
-        addLog('system', `⚠️ تعذر الاتصال بالخادم: (${err.message})`);
-      }
-
-      state.isBusy = false;
-      document.getElementById('questionInput').value = '';
-    }
-
-    // ===== مواجهة المشتبه به بالأدلة =====
-    async function confrontWithClue(clueName) {
-      if (!state.currentSuspectId) return addLog('system', '⚠️ اختر مشتبهاً به أولاً لمواجهته بهذا الحرز.');
-      if (state.isBusy) return;
-
-      const suspect = currentCase.suspects.find(x => x.id === state.currentSuspectId);
-      const evidenceObj = SCENE_EVIDENCE.find(e => e.name === clueName) || { name: clueName, report: 'حرز تم العثور عليه' };
-      const isDirectlyLinked = evidenceObj.relatedSuspects && evidenceObj.relatedSuspects.includes(suspect.name);
-
-      state.isBusy = true;
-      addLog('player', `⚖️ [مواجهة بالدليل]: أضع أمامك (${clueName})! التقرير: "${evidenceObj.report}". ما تفسيرك؟`);
-      addLog('system', `⏳ جاري رصد ردة فعل ${suspect.name}...`);
-
-      const systemPrompt = `أنت تمثل شخصية "${suspect.name}" (${suspect.role}).
-الضحية: "${currentCase.victim.name}".
-سرك: "${suspect.personality.secret}".
-حالتك: ${suspect.personality.guilty ? 'القاتل الفعلي' : 'بريء'}.
-المحقق يواجهك بالدليل: "${clueName}". الارتباط الحقيقي بك: (${isDirectlyLinked ? 'نعم يرتبط بك' : 'لا يخصك'}).
-
-أخرج JSON حصراً:
-{
-  "bodyLanguage": "(لغة الجسد)",
-  "dialogue": "الرد الصوتي المباشر",
-  "tensionDelta": رقم بين -10 و 35,
-  "lieDetected": true أو false,
-  "contradictionHint": "تلميح قصير بالثغرة إذا كذب"
-}`;
-
-      try {
-        const messages = [
-          { role: 'system', content: systemPrompt },
-          ...state.history.slice(-2),
-          { role: 'user', content: `المواجهة بالدليل: ${clueName}` }
-        ];
-
-        const result = await callAI(messages, true);
-
-        const box = document.getElementById('transcript');
-        if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري رصد')) {
-          box.removeChild(box.lastElementChild);
-        }
-
-        const fullReply = `${result.bodyLanguage} "${result.dialogue}"`;
-        addLog('suspect', fullReply);
-        state.history.push({ role: 'user', content: `[مواجهة]: ${clueName}` }, { role: 'assistant', content: fullReply });
-
-        suspect.tension = Math.max(0, Math.min(100, suspect.tension + (result.tensionDelta || 20)));
-        renderSuspects();
-
-        if (result.lieDetected && result.contradictionHint) {
-          addLog('clue', `⚡ رصد تناقض: ${result.contradictionHint}`);
-        }
-      } catch (err) {
-        console.error('Confront Error:', err);
-        const box = document.getElementById('transcript');
-        if (box.lastElementChild && box.lastElementChild.textContent.includes('جاري رصد')) {
-          box.removeChild(box.lastElementChild);
-        }
-        addLog('system', '⚠️ حدث خطأ أثناء تحليل المواجهة.');
-      }
-      state.isBusy = false;
-    }
-
-    // ===== منظومة التحريات الرقمية والمالية =====
-    function openCyberForensics() {
-      calculateAccurateRank();
-      if (player.rank < 4) {
-        return addLog('system', '🚫 [إذن النيابة مرفوض]: تفتيش السجلات الرقمية يتطلب رتبة "محقق أول" (المستوى 4) فما فوق.');
-      }
-      document.getElementById('termOfficerName').textContent = `${player.name} (${RANKS[player.rank - 1].title})`;
-      document.getElementById('cyberTerminalOverlay').classList.add('active');
-      renderTerminalRecords();
-    }
-
-    function closeCyberForensics() {
-      document.getElementById('cyberTerminalOverlay').classList.remove('active');
-    }
-
-    function switchTermTab(tab) {
-      currentTermTab = tab;
-      document.getElementById('tabBank').classList.toggle('active', tab === 'bank');
-      document.getElementById('tabTelecom').classList.toggle('active', tab === 'telecom');
-      renderTerminalRecords();
-    }
-
-    function renderTerminalRecords() {
-      const box = document.getElementById('terminalDataBox');
-      const killer = currentCase.trueKiller || currentCase.suspects[0].name;
-
-      if (currentTermTab === 'bank') {
-        const records = [
-          { title: `حوالة بنكية بقيمة 85,000 ريال`, detail: `إلى حساب (${killer}) قبل الحادث بيومين`, susp: true, name: `حوالة مشبوهة لصالح ${killer}` },
-          { title: `سحب نقدي 5,000 ريال`, detail: `بطاقة الضحية (${currentCase.victim.name}) ليلة الحادث`, susp: false, name: `سحب نقدي ليلة الحادث` }
-        ];
-        box.innerHTML = records.map(r => `
-          <div class="data-row">
-            <div><strong>${r.title}</strong><div style="font-size:12px;color:#b2dfdb;">${r.detail}</div></div>
-            <button class="extract-btn" onclick="extractDigitalEvidence('${r.name}', '${r.detail}', '${killer}')">استخراج كحرز</button>
-          </div>
-        `).join('');
-      } else {
-        const records = [
-          { title: `رسالة نصية محذوفة مسترجعة`, detail: `"إذا لم تنفذ ما اتفقنا عليه ستندم.." مرسلة من (${killer})`, susp: true, name: `رسالة تهديد من ${killer}` },
-          { title: `تتبع برج الاتصالات`, detail: `رصد إشارة هاتف (${killer}) قرب المسرح وقت الحادث`, susp: true, name: `برج الاتصال يدين ${killer}` }
-        ];
-        box.innerHTML = records.map(r => `
-          <div class="data-row">
-            <div><strong>${r.title}</strong><div style="font-size:12px;color:#b2dfdb;">${r.detail}</div></div>
-            <button class="extract-btn" onclick="extractDigitalEvidence('${r.name}', '${r.detail}', '${killer}')">استخراج كحرز</button>
-          </div>
-        `).join('');
+        transcript.innerHTML += `<div class="msg suspect">${parsed.reply}</div>`;
+        document.getElementById('partnerText').textContent = parsed.partnerAdvice || 'لاحظ كيف يحاول التهرب.';
+        transcript.scrollTop = transcript.scrollHeight;
+      } catch (e) {
+        transcript.innerHTML += `<div class="msg system">⚠️ تعذر الاتصال بالخادم.</div>`;
       }
     }
 
-    function extractDigitalEvidence(name, report, target) {
-      const discovered = getDiscoveredEvidenceForCurrentCase();
-      if (!discovered.some(e => e.name === name)) {
-        const newEv = { id: 'dig_' + Date.now(), name: name, icon: '💾', report: report, relatedSuspects: [target] };
-        SCENE_EVIDENCE.push(newEv);
-        discovered.push(newEv);
-        
-        const prevRank = player.rank;
-        player.xp += 15;
-        checkRankPromotion(prevRank);
-        updateHeader();
-        if (auth.currentUser) savePlayerData(auth.currentUser.uid);
-
-        renderDiscoveredEvidenceList();
-        addLog('clue', `💾 [أثر رقمي]: تم استخراج "${name}" وإضافته للأحراز.`);
-      }
-      closeCyberForensics();
+    function confrontClue(name, report) {
+      const input = document.getElementById('questionInput');
+      input.value = `أواجهك بهذا الدليل: (${name})! التقرير يثبت: ${report}، ما ردك؟`;
+      handleSendQuestion();
     }
 
-    // ===== توجيه الاتهام النهائي =====
     function openAccusationModal() {
-      const discovered = getDiscoveredEvidenceForCurrentCase();
-      if (discovered.length === 0) return addLog('system', '⚠️ اجمع دليلاً واحداً على الأقل قبل إحالة القضية.');
-      
-      const sSelect = document.getElementById('accusedSuspectSelect');
-      sSelect.innerHTML = currentCase.suspects.map(s => `<option value="${s.name}">${s.avatar} ${s.name} (${s.role})</option>`).join('');
-
-      const cSelect = document.getElementById('accusedClueSelect');
-      cSelect.innerHTML = discovered.map(e => `<option value="${e.name}">${e.icon} ${e.name}</option>`).join('');
-
       document.getElementById('accuseModal').classList.add('active');
     }
 
-    function closeAccusationModal() {
+    function closeAccuseModal() {
       document.getElementById('accuseModal').classList.remove('active');
     }
 
-    function submitFinalIndictment() {
-      const suspect = document.getElementById('accusedSuspectSelect').value;
-      const clue = document.getElementById('accusedClueSelect').value;
-      closeAccusationModal();
-
-      const isKillerCorrect = (suspect === currentCase.trueKiller);
-      const clueObj = SCENE_EVIDENCE.find(e => e.name === clue);
-      const isClueLinked = clueObj && clueObj.relatedSuspects && clueObj.relatedSuspects.includes(suspect);
-
-      let earnedXP = 0;
-      let status = '';
-
-      if (isKillerCorrect && isClueLinked) {
-        earnedXP = (currentCase.rewards ? currentCase.rewards.xp : 120) + 50;
-        status = '✅ إدانة قاطعة مع دليل إثبات دامغ';
-      } else if (isKillerCorrect) {
-        earnedXP = 60;
-        status = '⚠️ إدانة صحيحة مع ضعف في الدليل';
+    function submitIndictment() {
+      const accused = document.getElementById('accuseSuspectSelect').value;
+      closeAccuseModal();
+      if (accused === 'د. فهد') {
+        alert('🎉 مبروك سيادة المحقق! تم إثبات الجريمة على د. فهد بنجاح وإحالته للمحاكمة. حصلت على +150 XP!');
       } else {
-        earnedXP = 15;
-        status = '❌ اتهام باطل لبريء';
+        alert('❌ للأسف، الأدلة غير كافية لإدانة هذا الشخص وتم رفض مذكرة التوقيف من النيابة.');
       }
-
-      const prevRank = player.rank;
-      player.xp += earnedXP;
-      checkRankPromotion(prevRank);
-
-      if (auth.currentUser) savePlayerData(auth.currentUser.uid);
-      updateHeader();
-
-      document.getElementById('reportContent').innerHTML = `
-        <div class="stat-row"><span>المتهم المحال:</span><strong>${suspect}</strong></div>
-        <div class="stat-row"><span>الدليل المقدم:</span><strong>${clue}</strong></div>
-        <div class="stat-row"><span>الحكم:</span><strong style="color:${isKillerCorrect ? 'var(--green)' : 'var(--red)'}">${status}</strong></div>
-        <div class="stat-row"><span>الخبرة المكتسبة:</span><strong style="color:var(--gold);">+${earnedXP} XP</strong></div>
-        <div class="stat-row"><span>الرتبة الحالية:</span><strong>${RANKS[player.rank - 1].title}</strong></div>
-      `;
-      document.getElementById('reportOverlay').classList.add('active');
     }
-
-    // ===== توليد القضايا الإجرائي عبر Groq =====
-    async function generateNewProceduralCase() {
-      if (state.isBusy) return;
-      const btn = document.getElementById('generateCaseBtn');
-      btn.disabled = true;
-      btn.textContent = '⏳ جاري التوليد...';
-
-      addLog('system', '📂 [الأرشيف الجنائي]: جاري فتح ملف بلاغ جديد بالذكاء الاصطناعي...');
-
-      calculateAccurateRank();
-      const suspectsCount = Math.min(8, 4 + (player.rank || 1));
-      const caseNumber = '#' + Math.floor(100 + Math.random() * 900);
-
-      const prompt = `أنت مصمم ألعاب غموض وجرائم. ولد قضية جنائية معقدة برقم: ${caseNumber} وعدد المشتبه بهم بدقة: ${suspectsCount}.
-القواعد:
-1. شخص واحد فقط guilty: true وباقي الأشخاص guilty: false ولكن لكل منهم سر مريب personality.secret.
-2. ولد 4 أدلة sceneEvidence بإحداثيات (top و left) وتقرير معمل جنائي report وربط relatedSuspects.
-أخرج JSON حصراً:
-{
-  "id": "${caseNumber}",
-  "title": "عنوان مثير",
-  "type": "قتل عمد",
-  "description": "شرح ملابسات الجريمة",
-  "victim": { "name": "اسم الضحية", "age": "العمر", "job": "المهنة", "cause": "سبب الوفاة", "story": "القصة" },
-  "photos": [{ "icon": "🚪", "label": "وصف المكان", "desc": "تفاصيل" }],
-  "suspects": [{ "id": "s1", "name": "الاسم", "role": "الوظيفة", "avatar": "👨‍💼", "tension": 10, "personality": { "secret": "السر", "guilty": true } }],
-  "sceneEvidence": [{ "id": "e1", "name": "اسم الحرز", "icon": "🧤", "top": "35%", "left": "25%", "report": "تقرير الحرز", "relatedSuspects": ["اسم المتهم"] }],
-  "trueKiller": "اسم القاتل المطابق تماماً لأحد الأسماء",
-  "rewards": { "xp": 150, "reputation": 20 }
-}`;
-
-      try {
-        const genCase = await callAI([{ role: 'user', content: prompt }], true);
-        ALL_CASES.unshift(genCase);
-        loadCaseData(genCase);
-        addLog('system', `✨ تم توليد قضية (${genCase.title}) بنجاح!`);
-      } catch (e) {
-        console.error(e);
-        addLog('system', '⚠️ تعذر توليد قضية جديدة.');
-      }
-      btn.disabled = false;
-      btn.textContent = '⚡ فتح ملف قضية عشوائية';
-    }
-
-    // ===== أحداث الواجهة =====
-    document.getElementById('sendBtn').addEventListener('click', () => {
-      const val = document.getElementById('questionInput').value.trim();
-      if (val) askAI(val);
-    });
 
     document.getElementById('questionInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') document.getElementById('sendBtn').click();
+      if (e.key === 'Enter') handleSendQuestion();
     });
-
-    document.getElementById('confrontBtn').addEventListener('click', () => {
-      const discovered = getDiscoveredEvidenceForCurrentCase();
-      if (discovered.length > 0) confrontWithClue(discovered[0].name);
-      else addLog('system', '⚠️ افحص مسرح الجريمة لجمع الأدلة أولاً.');
-    });
-
-    document.getElementById('hintBtn').addEventListener('click', () => {
-      if (player.xp >= 20) {
-        player.xp -= 20;
-        const randomClue = SCENE_EVIDENCE[Math.floor(Math.random() * SCENE_EVIDENCE.length)];
-        addLog('hint', `💡 الخبير الجنائي: ركز على فحص الحرز: "${randomClue.name}"`);
-        updateHeader();
-        if (auth.currentUser) savePlayerData(auth.currentUser.uid);
-      } else {
-        addLog('system', '⚠️ لا تملك رصيد XP كافٍ (تحتاج 20 XP).');
-      }
-    });
-
-    document.getElementById('closeReportBtn').addEventListener('click', () => {
-      document.getElementById('reportOverlay').classList.remove('active');
-      loadCaseData(currentCase);
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      loadCaseData(currentCase);
-    });
-
-    window.onload = function() {
-      auth.onAuthStateChanged(async (user) => {
-        if (user) {
-          await loadPlayerData(user.uid);
-          enterGame();
-        }
-      });
-    };
   </script>
 </body>
 </html>
