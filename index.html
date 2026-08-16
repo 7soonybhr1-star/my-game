@@ -449,7 +449,6 @@
     </div>
   </div>
 
-  <!-- بقية الواجهة كما هي -->
   <!-- تقرير النيابة -->
   <div class="report-overlay" id="reportOverlay">
     <div class="report-card">
@@ -548,14 +547,13 @@
 
   <script>
     // ===== إعدادات Firebase =====
-    // ⚠️ استبدل هذه القيم بالإعدادات الخاصة بك من Firebase Console
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyDnl3yV7W_NOS5RydRQiBg1N0WdWfjxf9w",
+      authDomain: "detective-game-1e8be.firebaseapp.com",
+      projectId: "detective-game-1e8be",
+      storageBucket: "detective-game-1e8be.firebasestorage.app",
+      messagingSenderId: "166723378551",
+      appId: "1:166723378551:web:6f4db36d588f28cf0b5572"
     };
 
     // تهيئة Firebase
@@ -672,11 +670,8 @@
       btn.textContent = 'جاري الدخول...';
 
       try {
-        // إنشاء بريد إلكتروني وهمي من الاسم
         const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
-        
         await auth.signInWithEmailAndPassword(email, password);
-        // المستخدم موجود، تحميل بياناته
         await loadPlayerData(auth.currentUser.uid);
         enterGame();
       } catch (error) {
@@ -684,6 +679,8 @@
           showError('لا يوجد حساب بهذا الاسم. قم بالتسجيل أولاً.');
         } else if (error.code === 'auth/wrong-password') {
           showError('كلمة السر غير صحيحة');
+        } else if (error.code === 'auth/invalid-email') {
+          showError('الاسم غير صالح');
         } else {
           showError('فشل تسجيل الدخول: ' + error.message);
         }
@@ -720,10 +717,8 @@
 
       try {
         const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
-        
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         
-        // إنشاء ملف جديد للاعب
         player = {
           name: name,
           email: email,
@@ -737,6 +732,8 @@
       } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
           showError('هذا الاسم مستخدم بالفعل. اختر اسماً آخر.');
+        } else if (error.code === 'auth/invalid-email') {
+          showError('الاسم غير صالح');
         } else {
           showError('فشل التسجيل: ' + error.message);
         }
@@ -792,7 +789,9 @@
     // ===== خروج =====
     async function handleLogout() {
       if (confirm('هل تريد الخروج؟ سيتم حفظ تقدمك.')) {
-        await savePlayerData(auth.currentUser.uid);
+        if (auth.currentUser) {
+          await savePlayerData(auth.currentUser.uid);
+        }
         await auth.signOut();
         location.reload();
       }
