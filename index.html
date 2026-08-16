@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق الجنائي الشاملة</title>
+  <title>غرفة التحقيق الجنائي - Detective HQ</title>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -20,17 +20,19 @@
 
     :root {
       --gold: #d4a843;
-      --gold-glow: rgba(212, 168, 67, 0.25);
-      --dark-bg: #090807;
-      --panel-bg: rgba(18, 15, 12, 0.95);
-      --card-bg: #14110e;
-      --border-color: #2b231a;
+      --gold-glow: rgba(212, 168, 67, 0.35);
+      --dark-bg: #070605;
+      --panel-bg: #0d0b08;
+      --card-bg: #120f0c;
+      --sidebar-bg: #090806;
+      --border-color: #261e15;
+      --border-highlight: #453724;
       --text-muted: #8d7d6f;
       --text-light: #ece3d8;
-      --sidebar-width: 290px;
       --cyan: #00ffcc;
-      --red: #cc4444;
-      --green: #44cc88;
+      --red: #e63946;
+      --green: #2a9d8f;
+      --sidebar-width: 250px;
     }
 
     body {
@@ -39,13 +41,11 @@
       color: var(--text-light);
       min-height: 100vh;
       display: flex;
-      background-image:
-        radial-gradient(circle at 10% 20%, #1c150f 0%, transparent 50%),
-        radial-gradient(circle at 90% 80%, #19120c 0%, transparent 50%);
-      background-attachment: fixed;
+      flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* ===== نافذة تسجيل الدخول ===== */
+    /* ===== نافذة تسجيل الدخول وحسابات المستخدمين ===== */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -128,77 +128,110 @@
     .error-msg { color: #cc6666; font-size: 12px; margin-top: 10px; display: none; }
     .error-msg.show { display: block; }
 
-    /* ===== الشريط الجانبي ===== */
-    .sidebar {
-      width: var(--sidebar-width);
-      height: 100vh;
-      background: var(--panel-bg);
-      border-left: 1px solid var(--border-color);
-      position: fixed;
-      right: 0;
-      top: 0;
-      overflow-y: auto;
-      padding: 24px 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-    }
-    .sidebar .brand { padding: 0 22px 18px; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; }
-    .sidebar .brand h2 { font-size: 22px; font-weight: 900; color: var(--gold); }
-    .sidebar .brand h2 span { color: var(--text-light); }
-    .sidebar .brand .sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-    .sidebar .section-title { font-size: 10px; color: var(--text-muted); padding: 0 22px; margin: 16px 0 8px; letter-spacing: 2px; }
-    .sidebar .case-item {
+    /* ===== الشريط العلوي ===== */
+    .top-navbar {
+      height: 60px;
+      background: linear-gradient(180deg, #15110c 0%, #0a0806 100%);
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      padding: 10px 18px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border-right: 3px solid transparent;
-      gap: 12px;
-      font-size: 14px;
-      color: var(--text-muted);
-      border: 1px solid rgba(212, 168, 67, 0.05);
-      border-radius: 8px;
-      margin: 4px 12px;
-    }
-    .sidebar .case-item:hover { border-color: var(--gold); color: #fff; background: rgba(212, 168, 67, 0.06); }
-    .sidebar .case-item.active { border-right-color: var(--gold); border-color: rgba(212, 168, 67, 0.3); background: rgba(212, 168, 67, 0.1); color: #fff; }
-    .sidebar .case-item .badge { font-size: 10px; background: #0c0a08; padding: 2px 8px; border-radius: 12px; color: var(--gold); border: 1px solid var(--border-color); margin-right: auto; }
-
-    /* ===== المحتوى الرئيسي ===== */
-    .main-content {
-      margin-right: var(--sidebar-width);
-      flex: 1;
-      padding: 22px 30px;
-      min-height: 100vh;
-    }
-
-    .main-header {
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      margin-bottom: 20px;
-      gap: 12px;
-      flex-wrap: wrap;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     }
-    .main-header .title { font-size: 18px; font-weight: 700; color: var(--text-light); }
-    .main-header .title .highlight { color: var(--gold); }
-    .main-header .badge-id {
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--gold);
       display: flex;
       align-items: center;
       gap: 10px;
-      background: #0a0806;
+    }
+    .brand-title span { color: #fff; }
+    .officer-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(212, 168, 67, 0.08);
+      border: 1px solid var(--border-highlight);
       padding: 4px 14px;
       border-radius: 30px;
-      border: 1px solid var(--border-color);
       font-size: 13px;
     }
-    .main-header .badge-id .rank-name { color: var(--gold); font-weight: 700; }
-    .logout-btn { background: transparent; border: 1px solid #5a3030; color: #cc6666; padding: 2px 10px; border-radius: 6px; font-family: 'Cairo'; font-size: 11px; cursor: pointer; }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid #5a3030;
+      color: #cc6666;
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-family: 'Cairo';
+      font-size: 11px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    .app-container {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 60px);
+    }
+
+    .main-sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border-right: 3px solid transparent;
+      transition: all 0.25s ease;
+    }
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(212, 168, 67, 0.05);
+    }
+    .nav-item.active {
+      color: var(--gold);
+      background: linear-gradient(90deg, rgba(212, 168, 67, 0.15) 0%, transparent 100%);
+      border-right-color: var(--gold);
+    }
+
+    .content-area {
+      flex: 1;
+      padding: 24px 30px;
+      overflow-y: auto;
+      background: radial-gradient(circle at 80% 20%, #15100a 0%, transparent 60%);
+    }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .glass-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
+    }
 
     /* شريط الرتبة */
     .rank-bar {
@@ -219,41 +252,34 @@
     .rank-bar .xp-bar { width: 160px; height: 5px; background: #14110e; border-radius: 4px; overflow: hidden; margin-top: 4px; }
     .rank-bar .xp-bar .fill { height: 100%; background: linear-gradient(90deg, var(--gold), #ffdf88); width: 0%; transition: width 0.6s; }
 
-    /* بطاقة القضية */
-    .case-hero {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 22px 26px;
-      margin-bottom: 16px;
-      border-right: 4px solid var(--gold);
+    /* ملف القضية والضحية الشامل */
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-color);
     }
-    .case-hero .case-title { font-size: 24px; font-weight: 900; }
-    .case-hero .case-meta { display: flex; gap: 24px; margin-top: 6px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
-    .case-hero .case-meta span { color: var(--gold); font-weight: 700; }
-    .case-hero .case-desc { font-size: 14px; color: #b7a99c; margin-top: 10px; line-height: 1.8; }
+    .dossier-card {
+      background: #090806;
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .dossier-card strong {
+      color: var(--gold);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
 
-    /* ===== مسرح الجريمة الميداني ===== */
-    .crime-scene-container {
-      background: #0d0b09;
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-    .crime-scene-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .crime-scene-header h3 { font-size: 16px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
-    
+    /* مسرح الجريمة */
     .scene-canvas {
       position: relative;
       width: 100%;
-      height: 380px;
+      height: 360px;
       background-color: #060504;
       background-image: 
         radial-gradient(circle at center, rgba(0, 0, 0, 0.45) 0%, rgba(5, 4, 3, 0.95) 100%),
@@ -264,8 +290,8 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: inset 0 0 70px rgba(0,0,0,0.95), 0 8px 30px rgba(0,0,0,0.8);
+      margin-bottom: 20px;
     }
-
     .scene-canvas::before {
       content: "CRIME SCENE - DO NOT CROSS • مسرح جريمة مغلق";
       position: absolute;
@@ -279,11 +305,9 @@
       transform: rotate(-25deg);
       box-shadow: 0 4px 15px rgba(0,0,0,0.8);
       opacity: 0.9;
-      letter-spacing: 1px;
       pointer-events: none;
       z-index: 10;
     }
-
     .flashlight-overlay {
       position: absolute;
       inset: 0;
@@ -291,7 +315,6 @@
       background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 80px, rgba(4, 3, 2, 0.78) 220px);
       z-index: 3;
     }
-    
     .hotspot {
       position: absolute;
       width: 48px;
@@ -300,16 +323,16 @@
       border: 2px solid var(--gold);
       border-radius: 10px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       font-size: 18px;
-      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.85), 0 0 15px rgba(212, 168, 67, 0.3);
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.85);
       z-index: 5;
-      backdrop-filter: blur(4px);
     }
+    .hotspot:hover { transform: scale(1.2) translateY(-4px); border-color: #fff; }
+    .hotspot.discovered { border-color: var(--green); background: rgba(14, 30, 20, 0.92); }
     .hotspot::after {
       content: attr(data-index);
       position: absolute;
@@ -325,50 +348,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid #000;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
     }
-    .hotspot:hover {
-      transform: scale(1.2) translateY(-4px);
-      border-color: #fff;
-      box-shadow: 0 10px 25px rgba(212, 168, 67, 0.6);
-    }
-    .hotspot.discovered { border-color: var(--green); background: rgba(14, 30, 20, 0.92); }
-    .hotspot.discovered::after { background: var(--green); color: #fff; }
 
-    /* بطاقة الضحية */
-    .victim-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 18px 22px;
-      margin-bottom: 16px;
-      border-right: 4px solid #8d6b38;
-      font-size: 13px;
-    }
-    .victim-card h4 { color: var(--gold); font-size: 16px; margin-bottom: 8px; }
-    .victim-card .details-grid {
+    /* المشتبه بهم */
+    .suspects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 8px 18px;
-      color: #c4b5a6;
-      margin-bottom: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .victim-card .story-box {
-      background: #090807;
-      border: 1px solid var(--border-color);
-      padding: 12px 14px;
-      border-radius: 8px;
-      color: #d1c4b6;
-      line-height: 1.7;
-    }
-
-    /* شبكة الأدلة والمشتبهين */
-    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
-    .gallery .photo { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; text-align: center; font-size: 12px; color: var(--text-muted); }
-    .gallery .photo .icon { font-size: 32px; margin-bottom: 2px; }
-
-    .suspects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 18px; }
     .suspect-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -377,67 +365,41 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
-      position: relative;
     }
     .suspect-card:hover { border-color: var(--gold); transform: translateY(-3px); }
     .suspect-card.active { border-color: var(--gold); background: rgba(212, 168, 67, 0.08); box-shadow: 0 0 15px var(--gold-glow); }
-    .suspect-card .avatar { font-size: 34px; }
-    .suspect-card .name { font-size: 13px; font-weight: 700; color: #f0e6dc; }
+    .suspect-card .avatar { font-size: 34px; margin-bottom: 4px; }
+    .suspect-card .name { font-size: 13px; font-weight: 700; }
     .suspect-card .role { font-size: 11px; color: var(--text-muted); }
-    
-    /* عداد التوتر ورادار قياس التوتر اللحظي (Rank 2+) */
-    .tension-ui-group { margin-top: 8px; }
-    .suspect-card .tension-bar { height: 4px; background: #0c0a08; border-radius: 4px; overflow: hidden; margin-bottom: 2px; }
-    .suspect-card .tension-bar .fill { height: 100%; background: linear-gradient(90deg, #44cc88, var(--gold), #cc4444); transition: width 0.6s; width: 0%; }
-    .suspect-card .rank2-radar { font-size: 9px; color: #cc4444; display: none; }
-    
-    /* عداد الصبر (New System) */
-    .suspect-card .patience-meter { font-size: 10px; color: #ffca28; display: none; margin-top: 3px; border: 1px solid rgba(255, 202, 40, 0.3); border-radius: 4px; padding: 1px 4px; }
-    
-    /* شارة "مغلق قانونياً" */
-    .suspect-card .status-badge { position: absolute; top: 4px; left: 4px; font-size: 16px; display: none; }
+    .tension-bar { height: 4px; background: #000; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .tension-bar .fill { height: 100%; background: linear-gradient(90deg, #44cc88, var(--gold), #cc4444); width: 0%; transition: width 0.6s; }
 
-    /* منطقة التحقيق */
-    .investigation-grid { display: grid; grid-template-columns: calc(100% - 240px) 230px; gap: 10px; margin-bottom: 12px; }
-    
-    .transcript-and-partner { position: relative; }
+    /* الاستجواب */
+    .investigation-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
     .transcript {
-      background: #070605;
+      background: #060504;
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      height: 380px;
+      height: 360px;
       overflow-y: auto;
-      padding: 14px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
     .transcript .msg { padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6; max-width: 90%; }
-    .transcript .msg.player { background: #0f1a24; border-right: 3px solid #4a9eff; align-self: flex-start; color: #cbe5ff; }
-    .transcript .msg.suspect { background: #1a1510; border-right: 3px solid var(--gold); align-self: flex-end; color: #ede0d0; }
+    .transcript .msg.player { background: #0d1b2a; border-right: 3px solid #4a9eff; align-self: flex-start; color: #d0e6ff; }
+    .transcript .msg.suspect { background: #16120d; border-right: 3px solid var(--gold); align-self: flex-end; color: #f0e6dc; }
     .transcript .msg.system { background: transparent; color: var(--text-muted); font-size: 12px; align-self: center; font-style: italic; }
-    .transcript .msg.clue { background: #0e1e14; border-right: 3px solid #44cc88; align-self: center; color: #7cedaf; }
-    .transcript .msg.hint { background: #1a1a0e; border-right: 3px solid #cccc44; align-self: center; color: #e6e67c; }
-
-    /* همسات المحقق المساعد (Partner AI) */
-    .partner-whisper {
-      background: rgba(0, 255, 204, 0.05);
-      border: 1px solid rgba(0, 255, 204, 0.3);
-      padding: 6px 12px;
-      border-radius: 8px;
-      margin-top: -10px;
-      margin-bottom: 10px;
-      color: #80cbc4;
-      font-size: 11px;
-      display: none;
-      align-items: center;
-      gap: 6px;
-    }
 
     .input-area { display: flex; gap: 10px; margin-top: 10px; }
     .input-area input {
       flex: 1;
-      background: #0d0b09;
+      background: #090807;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 10px 14px;
@@ -446,9 +408,9 @@
       outline: none;
     }
     .input-area input:focus { border-color: var(--gold); }
-    .input-area button {
-      background: var(--gold);
-      color: #090807;
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #a17822);
+      color: #000;
       border: none;
       padding: 0 20px;
       border-radius: 8px;
@@ -456,84 +418,63 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .input-area button:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    .action-bar { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .action-bar button {
-      background: transparent;
+    .partner-box {
+      background: rgba(0, 255, 204, 0.05);
+      border: 1px solid rgba(0, 255, 204, 0.25);
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #80cbc4;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .evidence-list { display: flex; flex-direction: column; gap: 8px; }
+    .evidence-item {
+      background: #0b0907;
       border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-family: 'Cairo';
+      border-right: 3px solid var(--green);
+      padding: 10px 12px;
+      border-radius: 8px;
       font-size: 12px;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .action-bar button:hover { border-color: var(--gold); color: var(--gold); }
-    .action-bar button.primary { border-color: var(--gold); color: var(--gold); }
-    
-    /* ميزات المحقق المساعد والرتب العليا */
-    .action-bar button.partner-action { border-color: var(--cyan); color: var(--cyan); }
-    .action-bar button.cyber-action { border-color: var(--cyan); color: var(--cyan); display: none; }
-    .action-bar button.final-indictment { border-color: var(--red); color: #ff6666; font-weight: 700; }
-    .action-bar button.hint-btn { border-color: #cccc44; color: #cccc44; }
+    .evidence-item:hover { background: #14110d; border-color: var(--gold); }
 
-    /* حقيبة الأحراز ولوحة الخيوط */
-    .evidence-and-board { display: flex; flex-direction: column; gap: 10px; }
-    
-    .evidence-panel {
-      background: #070605;
+    /* دليل وشرح اللعبة */
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .guide-card {
+      background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      padding: 14px;
-      max-height: 200px;
-      overflow-y: auto;
+      padding: 20px;
+      border-top: 3px solid var(--gold);
     }
-    .evidence-panel h3 { font-size: 13px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; }
-    .evidence-panel .clue-item {
-      padding: 8px 10px;
-      background: #110e0b;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: #c9bcaf;
-      border-right: 3px solid #44cc88;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .evidence-panel .clue-item:hover { background: #1a1510; }
+    .guide-card h4 { color: var(--gold); font-size: 15px; margin-bottom: 8px; }
+    .guide-card p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
 
-    /* لوحة الخيوط والأدلة (Corkboard - New System) */
-    .corkboard-panel {
-      background: #1a1510;
-      border: 1px solid var(--gold);
-      border-radius: 12px;
-      padding: 14px;
-      height: 220px;
-      position: relative;
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNkNGU0RjQiIGZpbGwtb3BhY2l0eT0iMC4wNiI+PHBhdGggZD0iTTAgMGg0MHY0MEgwVjB6bTIwIDIwaDIwdjIwSDIWMjB6TTAgMjBoMjB2MjBIMFYyMHoyMCAwaDIwdjIwSDIwVjB6Ii8+PC9nPjwvZz48L3N2Zz4=');
-    }
-    .corkboard-panel h3 { font-size: 13px; color: var(--gold); margin-bottom: 8px; text-align: center; }
-    .drop-zone { border: 2px dashed rgba(212, 168, 67, 0.4); border-radius: 8px; height: calc(100% - 30px); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; text-align: center; }
-    .drop-zone.hover { background: rgba(212, 168, 67, 0.1); border-color: var(--gold); }
-    .connected-link { background: rgba(0, 255, 204, 0.1); border: 1px solid var(--cyan); border-radius: 6px; padding: 4px; font-size: 11px; color: #fff; text-align: center; margin-top: 8px; display: none; }
-
-    /* ===== النوافذ المنبثقة ===== */
-    .evidence-modal, .terminal-overlay, .accuse-overlay, .level-up-overlay, .report-overlay {
+    /* النوافذ المنبثقة */
+    .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 3, 2, 0.94);
+      background: rgba(3, 2, 2, 0.94);
       backdrop-filter: blur(10px);
-      z-index: 2100;
+      z-index: 2000;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .evidence-modal.active, .terminal-overlay.active, .accuse-overlay.active, .level-up-overlay.active, .report-overlay.active { display: flex; }
-
-    .evidence-card, .report-card, .accuse-card, .level-up-card {
+    .modal-overlay.active { display: flex; }
+    .modal-card {
       background: var(--panel-bg);
       border: 1px solid var(--gold);
       border-radius: 16px;
@@ -541,184 +482,481 @@
       max-width: 520px;
       width: 100%;
       text-align: right;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
     }
-    
-    /* اتهام نهائي مشروط (Grade System - New System) */
-    .accuse-card { border-color: var(--red); }
-    .grade-badge { background: #1a1510; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid var(--gold); margin-top: 10px; }
-    .grade-letter { font-size: 24px; font-weight: 900; color: var(--gold); }
 
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .main-content { margin-right: 0; padding: 10px; }
+    @media (max-width: 900px) {
+      .app-container { flex-direction: column; }
+      .main-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; }
+      .nav-item { padding: 8px 14px; border-right: none; border-bottom: 3px solid transparent; font-size: 12px; }
+      .nav-item.active { border-bottom-color: var(--gold); }
       .investigation-grid { grid-template-columns: 1fr; }
-      .evidence-and-board { flex-direction: row; flex-wrap: wrap; }
-      .evidence-panel, .corkboard-panel { flex: 1; min-width: 200px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- شاشة الدخول -->
+  <!-- شاشة تسجيل الدخول والحسابات -->
   <div class="auth-overlay" id="authOverlay">
     <div class="auth-card">
       <div class="badge-icon">🛡️</div>
-      <h2>غرفة التحقيق الجنائي الشاملة</h2>
-      <p>سجّل دخولك لبناء مسيرتك المهنية الأسطورية</p>
+      <h2>غرفة التحقيق الجنائي</h2>
+      <p>سجّل دخولك لحفظ مسيرتك المهنية ونقاطك سحابياً</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">دخول</button>
+        <button class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">تسجيل جديد</button>
+      </div>
+
       <div id="loginForm">
         <div class="auth-input-group">
           <label>اسم المحقق</label>
           <input type="text" id="loginName" placeholder="أدخل اسمك">
         </div>
+        <div class="auth-input-group">
+          <label>كلمة السر</label>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+        </div>
         <button class="auth-btn" id="loginBtn" onclick="handleLogin()">دخول الميدان</button>
       </div>
+
+      <div id="registerForm" style="display:none;">
+        <div class="auth-input-group">
+          <label>اسم المحقق</label>
+          <input type="text" id="registerName" placeholder="اختر اسمك">
+        </div>
+        <div class="auth-input-group">
+          <label>كلمة السر</label>
+          <input type="password" id="registerPassword" placeholder="6 أحرف على الأقل">
+        </div>
+        <div class="auth-input-group">
+          <label>تأكيد كلمة السر</label>
+          <input type="password" id="registerPasswordConfirm" placeholder="أعد كتابة كلمة السر">
+        </div>
+        <button class="auth-btn" id="registerBtn" onclick="handleRegister()">إنشاء الحساب</button>
+      </div>
+
       <div class="error-msg" id="errorMsg"></div>
     </div>
   </div>
 
-  <!-- احتفالية الترقية (Rank & Perk System) -->
-  <div class="level-up-overlay" id="levelUpOverlay">
-    <div class="level-up-card">
-      <div class="badge-anim" id="levelUpBadge">🛡️</div>
-      <h2 style="color:var(--gold);">ترقية رسمية!</h2>
-      <div id="levelUpRankTitle" style="display:inline-block; background:rgba(212,168,67,0.15); color:var(--gold); border:1px solid var(--gold); padding:3px 14px; border-radius:20px; font-size:13px; font-weight:700; margin-bottom:14px;">محقق ميداني</div>
-      <div class="perks-box">
-        <h4 style="color:#44cc88; font-size:13px; margin-bottom:8px;">🎁 الصلاحيات المفتوحة حديثاً:</h4>
-        <ul id="levelUpPerksList"></ul>
-      </div>
-      <button class="auth-btn" onclick="closeLevelUpModal()">استلام الشارة والعودة للميدان</button>
+  <!-- الشريط العلوي -->
+  <header class="top-navbar">
+    <div class="brand-title">
+      <span>🛡️</span> غرفة <span>التحقيق الجنائي</span>
     </div>
-  </div>
-
-  <!-- التفتيش الرقمي والمالي (Rank 3+ Requirement) -->
-  <div class="terminal-overlay" id="cyberTerminalOverlay">
-    <div class="terminal-card">
-      <div class="terminal-header">
-        <h3 style="color:var(--cyan);">💻 وحدة التحريات الرقمية (إذن النيابة)</h3>
-        <span style="font-size:12px; color:#80cbc4;">مصرح لـ: <strong id="termOfficerName">محقق أول</strong></span>
-      </div>
-      <div class="terminal-tabs">
-        <button class="term-tab active" id="tabBank" onclick="switchTermTab('bank')">💳 الحسابات المالية</button>
-        <button class="term-tab" id="tabTelecom" onclick="switchTermTab('telecom')">📱 تفريغ الأجهزة</button>
-      </div>
-      <div class="terminal-content-box" id="terminalDataBox"></div>
-      <button class="auth-btn" style="margin-top:14px; background:transparent; border:1px solid var(--cyan); color:var(--cyan);" onclick="closeCyberForensics()">إغلاق المنظومة الرقمية</button>
+    <div class="officer-badge">
+      <span id="topBadgeIcon">🛡️</span>
+      <span id="topOfficerRank" style="color:var(--gold); font-weight:700;">متدرب</span>
+      <span id="topOfficerName">/ غير مسجل</span>
+      <button class="logout-btn" id="logoutBtn" onclick="handleLogout()">خروج</button>
     </div>
-  </div>
+  </header>
 
-  <!-- الاتهام النهائي المشروط (Grading System) -->
-  <div class="report-overlay" id="reportOverlay">
-    <div class="report-card">
-      <h2>📋 محضر إحالة النيابة العامة النهائي</h2>
-      <div id="reportContent"></div>
-      <button class="close-btn" id="closeReportBtn">تحديث ملف المسيرة المهنية</button>
-    </div>
-  </div>
-
-  <!-- الشريط الجانبي (Archived Cases) -->
-  <aside class="sidebar">
-    <div class="brand">
-      <h2>📁 <span>غرفة</span> التحقيق</h2>
-      <div class="sub">الحقيقة لا تخفى</div>
-    </div>
-    <div style="padding: 0 14px; margin-bottom: 12px;">
-      <button id="generateCaseBtn" class="auth-btn" style="background: linear-gradient(135deg, #44cc88, #237a4e); font-size: 13px; padding: 8px;" onclick="generateNewProceduralCase()">
-        ⚡ فتح ملف قضية جديدة
-      </button>
-    </div>
-    <div class="section-title">أرشيف القضايا الجنائية</div>
-    <div id="caseList"></div>
-  </aside>
-
-  <!-- المحتوى الرئيسي -->
-  <main class="main-content">
-    <header class="main-header">
-      <div class="title">🕵️ <span class="highlight">التحقيق</span> الجنائي</div>
-      <div class="badge-id">
-        <span id="badgeIcon">🛡️</span>
-        <span class="rank-name" id="badgeRank">متدرب</span>
-        <span id="badgeDisplayName">/ غير مسجل</span>
+  <div class="app-container">
+    
+    <!-- القائمة الجانبية -->
+    <aside class="main-sidebar">
+      <div class="nav-item active" onclick="switchPage('gamePage')">
+        <span>🔍</span> مسرح التحقيق
       </div>
-    </header>
-
-    <!-- شريط الرتبة والخبرة (Progression UI) -->
-    <div class="rank-bar">
-      <div>
-        <div class="rank-title" id="rankTitle">محقق متدرب</div>
-        <div class="rank-sub" id="rankSub">قضايا أولية</div>
+      <div class="nav-item" onclick="switchPage('guidePage')">
+        <span>📖</span> شرح اللعبة
       </div>
-      <div>
-        <div style="font-size:12px;color:var(--text-muted);">الخبرة: <span id="xpCurrent" style="color:var(--gold)">0</span> / <span id="xpNext">150</span></div>
-        <div class="xp-bar"><div class="fill" id="xpBar"></div></div>
+      <div class="nav-item" onclick="switchPage('ranksPage')">
+        <span>🏆</span> نظام الرتب
       </div>
-    </div>
-
-    <!-- بطاقة مسرح الجريمة -->
-    <div class="case-hero">
-      <div class="case-title" id="caseTitle">مستشفى القادسية</div>
-      <div class="case-meta">
-        <div>رقم البلاغ: <span id="caseId">#10</span></div>
-        <div>المشتبهين: <span id="caseSuspectsCount">3</span></div>
-        <div>التصنيف: <span id="caseType">قتل عمد</span></div>
+      <div class="nav-item" onclick="switchPage('rulesPage')">
+        <span>⚖️</span> التعليمات والقوانين
       </div>
-      <div class="case-desc" id="caseDesc">تم العثور على جثة مقاول في القبو المعزول أثناء انقطاع الكهرباء.</div>
-    </div>
+    </aside>
 
-    <!-- شبكة المشتبه بهم (Tension, Patience, Status) -->
-    <div class="suspects-grid" id="suspectsGrid"></div>
+    <!-- المحتوى -->
+    <main class="content-area">
 
-    <!-- همسات المحقق المساعد (Partner AI Insight) -->
-    <div class="partner-whisper" id="partnerWhisper">
-      <span>🤝 المحقق المساعد:</span>
-      <span id="partnerWhisperText">اختر مشتبهاً به للبدء، سأوافيك بملاحظاتي اللحظية هنا.</span>
-    </div>
-
-    <!-- منطقة الاستجواب (Patience Lockout) -->
-    <div class="investigation-grid">
-      <div class="transcript-and-partner">
-        <div class="transcript" id="transcript">
-          <div class="msg system">📋 اختر أحد المشتبهين للبدء. لديك عدد محدود من الأسئلة قبل أن يطلبوا محاميهم.</div>
-        </div>
-        <div class="input-area">
-          <input type="text" id="questionInput" placeholder="✍️ وجّه سؤالك للمشتبه به بحرية..." disabled>
-          <button id="sendBtn" disabled>استجواب</button>
-        </div>
-      </div>
-
-      <!-- حقيبة الأحراز ولوحة الخيوط (ドラッグ＆ドロップ New System) -->
-      <div class="evidence-and-board">
-        <div class="evidence-panel">
-          <h3>📦 حقيبة الأحراز <span id="clueCount" style="color:var(--gold);">0/0</span></h3>
-          <div id="evidenceList">
-            <!-- Example Evidence -->
-            <div class="clue-item" draggable="true" ondragstart="onDragStart(event, '🩸', 'بصمة دم المقبض', 's1')">🩸 بصمة دم المقبض</div>
-          </div>
-        </div>
+      <!-- ================= 1. مسرح التحقيق والملف الشامل ================= -->
+      <section id="gamePage" class="page-section active">
         
-        <div class="corkboard-panel">
-          <h3>📌 لوحة الخيوط</h3>
-          <div class="drop-zone" id="corkboardDropZone" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
-            افلت حرزاً هنا لربطه بالمشتبه الحالي
+        <!-- شريط الرتبة والتطور للمحقق الحالي -->
+        <div class="rank-bar">
+          <div>
+            <div class="rank-title" id="rankTitle">محقق متدرب</div>
+            <div class="rank-sub" id="rankSub">المستوى 1 • قضايا أولية</div>
           </div>
-          <div class="connected-link" id="connectedLink"></div>
+          <div>
+            <div style="font-size:12px;color:var(--text-muted);">الخبرة: <span id="xpCurrent" style="color:var(--gold)">0</span> / <span id="xpNext">150</span></div>
+            <div class="xp-bar"><div class="fill" id="xpBar"></div></div>
+          </div>
         </div>
+
+        <!-- بطاقة ملف البلاغ والمجني عليه -->
+        <div class="glass-panel" style="border-right: 4px solid var(--gold);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2 style="font-size:22px; font-weight:900; color:var(--gold);">قضية مستشفى القادسية</h2>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">رقم البلاغ: #10-B • التصنيف: جنائي / قتل عمد مع سبق الإصرار</div>
+            </div>
+            <button class="btn-gold" style="font-size:12px; padding:8px 16px;" onclick="openAccusationModal()">⚖️ توجيه الاتهام النهائي</button>
+          </div>
+
+          <!-- تفاصيل الضحية والحادثة لاستنتاج الدوافع -->
+          <div class="dossier-grid">
+            <div class="dossier-card">
+              <strong>👤 هوية المجني عليه</strong>
+              <div>ماجد بن سليمان العتيبي (34 سنة)</div>
+              <div style="font-size:11px; color:var(--text-muted);">مقاول ترميم وإنشاءات متعاقد مع المستشفى</div>
+            </div>
+            <div class="dossier-card">
+              <strong>⏱️ توقيت ومكان الجريمة</strong>
+              <div>الجمعة الماضية • 11:15 مساءً</div>
+              <div style="font-size:11px; color:var(--text-muted);">قبو المستشفى المعزول (أثناء انقطاع الكهرباء لـ 10 دقائق)</div>
+            </div>
+            <div class="dossier-card">
+              <strong>🔬 تقرير الطب الشرعي المبدئي</strong>
+              <div>اختناق حاد بعد تخدير موضعي سريع</div>
+              <div style="font-size:11px; color:var(--text-muted);">عُثر على مادة مهدئة جراحية في دمه ومسحة دم على الباب</div>
+            </div>
+            <div class="dossier-card">
+              <strong>📌 حيثيات وخلفية الضحية</strong>
+              <div>عثر أثناء ترميم القبو على فواتير أدوية مزورة</div>
+              <div style="font-size:11px; color:var(--text-muted);">كان يهدد بتقديمها للنيابة وطلب لقاء المدير الطبي قبل مقتله</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- مسرح الجريمة التفاعلي -->
+        <div class="scene-canvas" id="sceneCanvas">
+          <div class="flashlight-overlay"></div>
+          <div class="hotspot" id="spot-1" style="top:32%; left:22%;" data-index="1" onclick="inspectEvidence('قفازات طبية ممزقة', 'عُثر عليها ملقاة قرب القبو، ممزقة من جهة الإبهام وتطابق المقاس الجراحي لدكتور فهد.')">🧤</div>
+          <div class="hotspot" id="spot-2" style="top:46%; left:78%;" data-index="2" onclick="inspectEvidence('بصمة دم على المقبض', 'مسحة دم على المزلاج الداخلي للقبو تطابق فصيلة دم نادرة لأحد المتواجدين.')">🩸</div>
+          <div class="hotspot" id="spot-3" style="top:68%; left:48%;" data-index="3" onclick="inspectEvidence('هاتف الضحية المتصدع', 'سجل المكالمات يوضح اتصالاً مدته 4 دقائق مع المدير د. فهد قبل الحادث بـ 15 دقيقة فقط.')">📱</div>
+          <div class="hotspot" id="spot-4" style="top:26%; left:62%;" data-index="4" onclick="inspectEvidence('علبة مهدئ جراحي فارغة', 'عقار مهدئ سريع المفعول مخصص لغرف العمليات برقم تشغيلة مسجل في صيدلية المستشفى.')">💊</div>
+        </div>
+
+        <!-- شبكة المشتبه بهم -->
+        <div style="font-size:14px; font-weight:700; color:var(--gold); margin-bottom:10px;">👥 المشتبه بهم (انقر لاختيار المشتبه واستجوابه):</div>
+        <div class="suspects-grid" id="suspectsGrid">
+          <div class="suspect-card active" onclick="selectSuspect('د. فهد', 'المدير الطبي', '👨‍⚕️', 'تلاعب بصفقات أدوية منتهية واختلس ميزانية المستشفى وخاف من فضح ماجد لأمره', true)">
+            <div class="avatar">👨‍⚕️</div>
+            <div class="name">د. فهد</div>
+            <div class="role">المدير الطبي</div>
+            <div class="tension-bar"><div class="fill" style="width:10%;"></div></div>
+          </div>
+          <div class="suspect-card" onclick="selectSuspect('جابر', 'عامل الخدمات', '🧹', 'يسرق أدوات ومعدات قديمة من القبو وكان خائفاً من اكتشاف سرقاته', false)">
+            <div class="avatar">🧹</div>
+            <div class="name">جابر</div>
+            <div class="role">عامل الخدمات</div>
+            <div class="tension-bar"><div class="fill" style="width:25%;"></div></div>
+          </div>
+          <div class="suspect-card" onclick="selectSuspect('مبارك', 'حارس الأمن', '🛡️', 'نام أثناء نوبة الحراسة وقت انقطاع الكهرباء ويدعي سماع أصوات ليغطي نومه', false)">
+            <div class="avatar">🛡️</div>
+            <div class="name">مبارك</div>
+            <div class="role">حارس الأمن</div>
+            <div class="tension-bar"><div class="fill" style="width:20%;"></div></div>
+          </div>
+          <div class="suspect-card" onclick="selectSuspect('هند', 'صيدلانية', '💊', 'لاحظت نقصاً في عبوات المهدئ الجراحي وسكتت خشية العقاب الإداري', false)">
+            <div class="avatar">💊</div>
+            <div class="name">هند</div>
+            <div class="role">صيدلانية</div>
+            <div class="tension-bar"><div class="fill" style="width:15%;"></div></div>
+          </div>
+        </div>
+
+        <!-- منطقة الاستجواب -->
+        <div class="investigation-grid">
+          <div>
+            <div class="partner-box" id="partnerBox">
+              <span>🤝 المحقق المساعد:</span>
+              <span id="partnerText">اختر المشتبه به وواجهه بتناقضات تواجده وقت انقطاع الكهرباء (11:15 مساءً).</span>
+            </div>
+
+            <div class="transcript" id="transcript">
+              <div class="msg system">📋 بدأت جلسة التحقيق. يمكنك توجيه أسئلة حرة أو مواجهة المشتبهين بالأحراز والأوقات.</div>
+            </div>
+
+            <div class="input-area">
+              <input type="text" id="questionInput" placeholder="✍️ اكتب سؤالك للمشتبه به هنا...">
+              <button class="btn-gold" id="sendBtn" onclick="handleSendQuestion()">استجواب</button>
+            </div>
+          </div>
+
+          <!-- حقيبة الأحراز -->
+          <div class="glass-panel" style="margin:0;">
+            <div style="font-size:14px; font-weight:700; color:var(--gold); margin-bottom:10px;">
+              📦 حقيبة الأحراز <span id="clueCount" style="font-size:12px; color:var(--text-muted);">(0/4)</span>
+            </div>
+            <div class="evidence-list" id="evidenceList">
+              <div id="emptyEvidenceMsg" style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">
+                انقر على النقاط المشبوهة في مسرح الجريمة لجمع الأدلة وفحصها.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= 2. شرح اللعبة ================= -->
+      <section id="guidePage" class="page-section">
+        <div class="glass-panel">
+          <h3 style="color:var(--gold); margin-bottom:16px;">📖 دليل المحقق - كيف تستنتج الحل؟</h3>
+          <div class="guide-grid">
+            <div class="guide-card">
+              <h4>1. مطابقة الخط الزمني</h4>
+              <p>انقطعت الكهرباء الساعة 11:15 مساءً لـ 10 دقائق في القبو. تحقق من مكان كل مشتبه به في تلك الدقائق بالتحديد.</p>
+            </div>
+            <div class="guide-card">
+              <h4>2. الدافع الحقيقي</h4>
+              <p>المجني عليه (ماجد) مقاول وجد أوراق تزوير. ابحث عن الشخص الذي كان سيتضرر أكثر من كشف هذه الوثائق.</p>
+            </div>
+            <div class="guide-card">
+              <h4>3. وسيلة القتل والتخدير</h4>
+              <p>استُخدم مهدئ جراحي خاص. هذا يحصر الشبهة فيمن يملك صلاحية الوصول إلى الأدوية المحظورة.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. الرتب ================= -->
+      <section id="ranksPage" class="page-section">
+        <div class="glass-panel">
+          <h3 style="color:var(--gold); margin-bottom:16px;">🏆 سلم الرتب الجنائية</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--gold);">
+              <strong>🛡️ محقق متدرب (0 XP)</strong>: استجواب المشتبه بهم وجمع أدلة المسرح.
+            </div>
+            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong>🔍 مساعد محقق (150 XP)</strong>: رادار التوتر اللحظي وكشف التناقضات.
+            </div>
+            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong>🔬 محقق ميداني (400 XP)</strong>: تقارير السموم والطب الشرعي الفورية.
+            </div>
+            <div style="background:#000; padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+              <strong>💻 محقق أول (800 XP)</strong>: تفتيش السجلات الرقمية وتفريغ الهواتف بإذن النيابة.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. القوانين ================= -->
+      <section id="rulesPage" class="page-section">
+        <div class="glass-panel">
+          <h3 style="color:var(--gold); margin-bottom:16px;">⚖️ القواعد الجنائية</h3>
+          <p style="font-size:13px; color:var(--text-muted); line-height:1.8;">
+            - لا توجه اتهامات مرسلة بدون دليل مادي يربط المتهم بمسرح الجريمة في القبو.<br>
+            - المشتبه به البريء قد يكذب خوفاً من كشف تقصيره، تأكد من التفريق بين التقصير الوظيفي والقتل العمد.<br>
+            - اعتراف المتهم المنهار يتطلب حرزاً حاسماً مثل فصيلة الدم أو الهاتف لإثبات الإدانة أمام النيابة.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- نافذة الاتهام النهائي -->
+  <div class="modal-overlay" id="accuseModal">
+    <div class="modal-card">
+      <h3 style="color:var(--red); margin-bottom:12px;">⚖️ مذكرة إحالة المتهم للنيابة العامة</h3>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px; color:var(--text-muted);">حدد القاتل الرئيسي:</label>
+        <select id="accuseSuspectSelect" style="width:100%; background:#000; border:1px solid var(--border-color); color:#fff; padding:8px; border-radius:6px; font-family:'Cairo'; margin-top:4px;">
+          <option value="د. فهد">👨‍⚕️ د. فهد (المدير الطبي)</option>
+          <option value="جابر">🧹 جابر (عامل الخدمات)</option>
+          <option value="مبارك">🛡️ مبارك (حارس الأمن)</option>
+          <option value="هند">💊 هند (صيدلانية)</option>
+        </select>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button class="btn-gold" style="background:var(--red); color:#fff; flex:2;" onclick="submitIndictment()">إصدار مذكرة القبض</button>
+        <button class="btn-gold" style="background:transparent; border:1px solid var(--border-color); color:#fff; flex:1;" onclick="closeAccuseModal()">تراجع</button>
       </div>
     </div>
-
-    <!-- شريط الإجراءات (Cyber Audit, Bad Cop, Final Indictment) -->
-    <div class="action-bar">
-      <button class="partner-action" id="badCopBtn" disabled onclick="useBadCop()">👮‍♂️ الشرطي السيء (تهديد)</button>
-      <button class="cyber-action" id="cyberAuditBtn" onclick="openCyberForensics()">💻 تفتيش السجلات (محقق أول+)</button>
-      <button class="final-indictment" onclick="openAccusationModal()">⚖️ توجيه الاتهام النهائي</button>
-      <button class="hint-btn" id="hintBtn" onclick="useHint()">💡 تلميح (20 XP)</button>
-      <button id="resetBtn" onclick="resetCase()">🔄 إعادة الجلسة</button>
-    </div>
-
-  </main>
+  </div>
 
   <script>
-    // التنقل بين التبويبات
+    // ===== إعدادات Firebase =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnl3yV7W_NOS5RydRQiBg1N0WdWfjxf9w",
+      authDomain: "detective-game-1e8be.firebaseapp.com",
+      projectId: "detective-game-1e8be",
+      storageBucket: "detective-game-1e8be.firebasestorage.app",
+      messagingSenderId: "166723378551",
+      appId: "1:166723378551:web:6f4db36d588f28cf0b5572"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ===== إعدادات الذكاء الاصطناعي (Groq API) =====
+    const GROQ_API_KEY = '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';
+    const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+    // ===== الرتب المعتمدة =====
+    const RANKS = [
+      { level: 1, title: 'محقق متدرب', badge: '🛡️', xpRequired: 0, sub: 'المستوى 1 • قضايا أولية' },
+      { level: 2, title: 'مساعد محقق', badge: '🔍', xpRequired: 150, sub: 'المستوى 2 • سرقة واحتيال' },
+      { level: 3, title: 'محقق ميداني', badge: '🔬', xpRequired: 400, sub: 'المستوى 3 • وفيات مشبوهة' },
+      { level: 4, title: 'محقق أول', badge: '💻', xpRequired: 800, sub: 'المستوى 4 • جرائم كبرى' },
+      { level: 5, title: 'رئيس قسم الجنايات', badge: '👑', xpRequired: 1500, sub: 'المستوى 5 • قضايا النخبة' }
+    ];
+
+    let player = {
+      name: '',
+      email: '',
+      rank: 1,
+      xp: 0,
+      discoveredEvidence: []
+    };
+
+    let currentSuspect = { 
+      name: 'د. فهد', 
+      role: 'المدير الطبي', 
+      secret: 'تلاعب بصفقات أدوية منتهية واختلس ميزانية المستشفى وخاف من فضح ماجد لأمره', 
+      guilty: true, 
+      tension: 10 
+    };
+
+    // ===== إدارة المستخدم والمصادقة مع Firebase =====
+    function switchAuthTab(tab) {
+      document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+      document.getElementById('registerTab').classList.toggle('active', tab === 'register');
+      document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+      hideError();
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+    function hideError() {
+      document.getElementById('errorMsg').classList.remove('show');
+    }
+
+    async function handleLogin() {
+      hideError();
+      const name = document.getElementById('loginName').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!name || !password) return showError('يرجى إدخال الاسم وكلمة السر');
+
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'جاري الدخول...';
+
+      try {
+        const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
+        await auth.signInWithEmailAndPassword(email, password);
+        await loadPlayerData(auth.currentUser.uid);
+        enterGame();
+      } catch (error) {
+        showError('فشل الدخول: تحقق من صحة البيانات أو أنشئ حساباً جديداً.');
+        btn.disabled = false;
+        btn.textContent = 'دخول الميدان';
+      }
+    }
+
+    async function handleRegister() {
+      hideError();
+      const name = document.getElementById('registerName').value.trim();
+      const password = document.getElementById('registerPassword').value;
+      const confirm = document.getElementById('registerPasswordConfirm').value;
+      if (!name || !password) return showError('يرجى إدخال البيانات كاملة');
+      if (password.length < 6) return showError('كلمة السر يجب أن تكون 6 أحرف على الأقل');
+      if (password !== confirm) return showError('كلمتا السر غير متطابقتين');
+
+      const btn = document.getElementById('registerBtn');
+      btn.disabled = true;
+      btn.textContent = 'جاري الإنشاء...';
+
+      try {
+        const email = name.toLowerCase().replace(/\s+/g, '.') + '@detective.game';
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        player = { name: name, email: email, rank: 1, xp: 0, discoveredEvidence: [] };
+        await savePlayerData(userCredential.user.uid);
+        enterGame();
+      } catch (error) {
+        showError('فشل التسجيل: ' + error.message);
+        btn.disabled = false;
+        btn.textContent = 'إنشاء الحساب';
+      }
+    }
+
+    async function savePlayerData(uid) {
+      try {
+        await db.collection('players').doc(uid).set({
+          name: player.name,
+          email: player.email,
+          rank: player.rank,
+          xp: player.xp,
+          discoveredEvidence: player.discoveredEvidence || [],
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      } catch (e) { console.error('Save Error:', e); }
+    }
+
+    async function loadPlayerData(uid) {
+      try {
+        const doc = await db.collection('players').doc(uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          player = {
+            name: data.name || '',
+            email: data.email || '',
+            rank: data.rank || 1,
+            xp: data.xp || 0,
+            discoveredEvidence: data.discoveredEvidence || []
+          };
+        }
+      } catch (e) { console.error('Load Error:', e); }
+    }
+
+    function enterGame() {
+      document.getElementById('authOverlay').classList.add('hidden');
+      updateRankUI();
+      renderDiscoveredEvidence();
+      
+      const transcript = document.getElementById('transcript');
+      transcript.innerHTML = `<div class="msg system">📋 مرحباً بك سيادة المحقق ${player.name}! تم تحميل ملف القضية بنجاح.</div>`;
+    }
+
+    async function handleLogout() {
+      if (confirm('هل تريد تسجيل الخروج من منظومة التحقيق؟')) {
+        if (auth.currentUser) await savePlayerData(auth.currentUser.uid);
+        await auth.signOut();
+        location.reload();
+      }
+    }
+
+    // ===== تحديث الرتبة والخبرة =====
+    function updateRankUI() {
+      let currentRankIndex = 0;
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (player.xp >= RANKS[i].xpRequired) {
+          currentRankIndex = i;
+          break;
+        }
+      }
+      player.rank = RANKS[currentRankIndex].level;
+      const rankData = RANKS[currentRankIndex];
+
+      document.getElementById('topOfficerName').textContent = `/ المحقق ${player.name}`;
+      document.getElementById('topOfficerRank').textContent = rankData.title;
+      document.getElementById('topBadgeIcon').textContent = rankData.badge;
+      
+      document.getElementById('rankTitle').textContent = rankData.title;
+      document.getElementById('rankSub').textContent = rankData.sub;
+      document.getElementById('xpCurrent').textContent = player.xp;
+
+      const nextRank = RANKS[currentRankIndex + 1];
+      const nextXP = nextRank ? nextRank.xpRequired : player.xp + 100;
+      document.getElementById('xpNext').textContent = nextXP;
+
+      const baseXP = rankData.xpRequired;
+      const pct = nextRank ? Math.min(100, Math.max(0, ((player.xp - baseXP) / (nextXP - baseXP)) * 100)) : 100;
+      document.getElementById('xpBar').style.width = pct + '%';
+    }
+
+    // ===== التنقل بين التبويبات =====
     function switchPage(pageId) {
       document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -746,19 +984,6 @@
       }
     });
 
-    // إعدادات الذكاء الاصطناعي (Groq)
-    const GROQ_API_KEY = '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';
-    const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-
-    let currentSuspect = { 
-      name: 'د. فهد', 
-      role: 'المدير الطبي', 
-      secret: 'تلاعب بصفقات أدوية منتهية واختلس ميزانية المستشفى وخاف من فضح ماجد لأمره', 
-      guilty: true, 
-      tension: 10 
-    };
-    let discoveredClues = [];
-
     function selectSuspect(name, role, avatar, secret, guilty) {
       currentSuspect = { name, role, secret, guilty, tension: 10 };
       document.querySelectorAll('.suspect-card').forEach(c => c.classList.remove('active'));
@@ -770,20 +995,36 @@
     }
 
     function inspectEvidence(name, report) {
-      if (!discoveredClues.some(c => c.name === name)) {
-        discoveredClues.push({ name, report });
-        document.getElementById('clueCount').textContent = `(${discoveredClues.length}/4)`;
-        
-        const list = document.getElementById('evidenceList');
-        if (discoveredClues.length === 1) list.innerHTML = '';
-        list.innerHTML += `
-          <div class="evidence-item" onclick="confrontClue('${name}', '${report}')">
-            <strong>${name}</strong>
-            <div style="color:var(--text-muted); font-size:11px; margin-top:2px;">${report}</div>
-          </div>
-        `;
-        document.getElementById('partnerText').textContent = `حرز هام! عثرت على (${name}). يمكنك النقر عليه لمواجهة المشتبه به مباشرة.`;
+      if (!player.discoveredEvidence) player.discoveredEvidence = [];
+      const alreadyFound = player.discoveredEvidence.some(c => c.name === name);
+
+      if (!alreadyFound) {
+        player.discoveredEvidence.push({ name, report });
+        player.xp += 15;
+        updateRankUI();
+        if (auth.currentUser) savePlayerData(auth.currentUser.uid);
       }
+
+      renderDiscoveredEvidence();
+      document.getElementById('partnerText').textContent = `حرز هام! عثرت على (${name}). يمكنك النقر عليه لمواجهة المشتبه به مباشرة.`;
+    }
+
+    function renderDiscoveredEvidence() {
+      const list = document.getElementById('evidenceList');
+      const clues = player.discoveredEvidence || [];
+      document.getElementById('clueCount').textContent = `(${clues.length}/4)`;
+
+      if (clues.length === 0) {
+        list.innerHTML = `<div id="emptyEvidenceMsg" style="font-size:12px; color:var(--text-muted); text-align:center; padding:20px;">انقر على النقاط المشبوهة في مسرح الجريمة لجمع الأدلة وفحصها.</div>`;
+        return;
+      }
+
+      list.innerHTML = clues.map(c => `
+        <div class="evidence-item" onclick="confrontClue('${c.name}', '${c.report}')">
+          <strong>${c.name}</strong>
+          <div style="color:var(--text-muted); font-size:11px; margin-top:2px;">${c.report}</div>
+        </div>
+      `).join('');
     }
 
     async function handleSendQuestion() {
@@ -792,7 +1033,7 @@
       if (!q) return;
 
       const transcript = document.getElementById('transcript');
-      transcript.innerHTML += `<div class="msg player">[المحقق حسين]: ${q}</div>`;
+      transcript.innerHTML += `<div class="msg player">[المحقق ${player.name || 'حسين'}]: ${q}</div>`;
       input.value = '';
       transcript.scrollTop = transcript.scrollHeight;
 
@@ -860,6 +1101,9 @@
       const accused = document.getElementById('accuseSuspectSelect').value;
       closeAccuseModal();
       if (accused === 'د. فهد') {
+        player.xp += 150;
+        updateRankUI();
+        if (auth.currentUser) savePlayerData(auth.currentUser.uid);
         alert('🎉 إدانة قاطعة! تم إثبات أن د. فهد هو من استدرج ماجد للقبو وقام بتخديره وكتم أنفاسه للتغطية على قضايا الفساد المالي. مبروك الترقية (+150 XP)!');
       } else {
         alert('❌ اتهام غير صحيح! الشخص الذي حددته بريء من القتل وسره لا يرقَ لجريمة قتل عمد.');
@@ -869,6 +1113,16 @@
     document.getElementById('questionInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleSendQuestion();
     });
+
+    // الاستماع لحالة تسجيل الدخول التلقائية
+    window.onload = function() {
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          await loadPlayerData(user.uid);
+          enterGame();
+        }
+      });
+    };
   </script>
 </body>
 </html>
