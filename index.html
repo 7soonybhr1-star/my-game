@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غرفة التحقيق - نظام الحسابات</title>
+  <title>غرفة التحقيق - نظام الهوية الجنائية</title>
   <style>
-    /* ============================================================
-       التصميم السينمائي المتقدم
-       ============================================================ */
+    /* ===== التصميم الأساسي ===== */
     * {
       margin: 0;
       padding: 0;
@@ -17,9 +15,7 @@
 
     :root {
       --primary: #d4a843;
-      --primary-dim: rgba(212, 168, 67, 0.08);
       --gold: #d4a843;
-      --gold-glow: rgba(212, 168, 67, 0.15);
       --dark-bg: #0a0806;
       --panel-bg: rgba(16, 14, 12, 0.92);
       --border-color: #2a2218;
@@ -40,32 +36,6 @@
       background-attachment: fixed;
     }
 
-    /* ===== تأثير نبض الشاشة ===== */
-    @keyframes highTensionPulse {
-      0%,
-      100% {
-        box-shadow: inset 0 0 30px rgba(204, 68, 68, 0.05);
-      }
-      50% {
-        box-shadow: inset 0 0 70px rgba(204, 68, 68, 0.25);
-      }
-    }
-    .high-tension {
-      animation: highTensionPulse 2s infinite ease-in-out;
-    }
-    .critical-tension {
-      animation: highTensionPulse 1s infinite ease-in-out;
-    }
-
-    /* ===== تأثير لمعان الذهب ===== */
-    .gold-glow {
-      background: linear-gradient(135deg, #d4a843 0%, #fff2b2 50%, #aa7c11 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(0 2px 8px rgba(212, 168, 67, 0.4));
-    }
-
     /* ===== الشريط الجانبي ===== */
     .sidebar {
       width: var(--sidebar-width);
@@ -79,7 +49,7 @@
       padding: 24px 0;
       z-index: 100;
       backdrop-filter: blur(16px);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.4s;
     }
     .sidebar::-webkit-scrollbar {
       width: 3px;
@@ -98,7 +68,6 @@
       font-weight: 900;
       color: var(--gold);
       letter-spacing: 2px;
-      text-shadow: 0 0 40px rgba(212, 168, 67, 0.1);
     }
     .sidebar .brand h2 span {
       color: var(--text-light);
@@ -107,7 +76,6 @@
       font-size: 12px;
       color: var(--text-muted);
       margin-top: 4px;
-      letter-spacing: 1px;
     }
     .sidebar .section-title {
       font-size: 10px;
@@ -116,7 +84,6 @@
       margin: 18px 0 10px 0;
       letter-spacing: 3px;
       text-transform: uppercase;
-      font-weight: 700;
     }
     .sidebar .case-item {
       display: flex;
@@ -128,8 +95,6 @@
       gap: 12px;
       font-size: 14px;
       color: #9a8a7a;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(212, 168, 67, 0.05);
       border-radius: 6px;
       margin: 2px 10px;
@@ -137,12 +102,12 @@
     .sidebar .case-item:hover {
       transform: translateX(-4px);
       border-color: rgba(212, 168, 67, 0.3);
-      background: var(--primary-dim);
+      background: rgba(212, 168, 67, 0.05);
       color: #eee;
     }
     .sidebar .case-item.active {
       border-right-color: var(--gold);
-      background: var(--primary-dim);
+      background: rgba(212, 168, 67, 0.08);
       color: #eee;
       border-color: rgba(212, 168, 67, 0.2);
     }
@@ -180,10 +145,9 @@
       flex: 1;
       padding: 24px 32px;
       min-height: 100vh;
-      transition: filter 0.5s;
     }
 
-    /* ===== الهيدر مع شارة المحقق ===== */
+    /* ===== الهيدر ===== */
     .main-header {
       display: flex;
       justify-content: space-between;
@@ -214,20 +178,26 @@
       border-radius: 30px;
       border: 1px solid var(--border-color);
       font-size: 13px;
-      transition: all 0.5s;
+      flex-wrap: wrap;
     }
     .main-header .badge-id .rank-icon {
       font-size: 22px;
-      filter: drop-shadow(0 0 10px rgba(212, 168, 67, 0.2));
-      transition: all 0.5s;
     }
     .main-header .badge-id .rank-name {
       color: var(--gold);
       font-weight: 700;
     }
-    .main-header .badge-id .rank-level {
+    .main-header .badge-id .display-name {
+      color: var(--text-light);
+      font-weight: 400;
+    }
+    .main-header .badge-id .level-badge {
+      font-size: 10px;
       color: var(--text-muted);
-      font-size: 11px;
+      background: #1a1410;
+      padding: 1px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
     }
     .main-header .status {
       font-size: 13px;
@@ -244,12 +214,12 @@
       color: var(--gold);
     }
     .main-header .status .pulse-dot {
-      display: inline-block;
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: #44cc88;
       animation: pulseDot 1.5s infinite;
+      display: inline-block;
     }
     @keyframes pulseDot {
       0%,
@@ -261,6 +231,21 @@
         opacity: 0.3;
         transform: scale(0.7);
       }
+    }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid #5a3a3a;
+      color: #aa6a6a;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .logout-btn:hover {
+      background: #5a3a3a;
+      color: #e8ddd0;
     }
 
     /* ===== شريط الرتبة ===== */
@@ -284,7 +269,6 @@
     }
     .rank-bar .rank-badge {
       font-size: 32px;
-      filter: drop-shadow(0 0 20px rgba(212, 168, 67, 0.2));
     }
     .rank-bar .rank-details .rank-title {
       font-size: 18px;
@@ -319,7 +303,7 @@
       height: 100%;
       background: linear-gradient(90deg, var(--gold), #ffdd88);
       border-radius: 4px;
-      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: width 0.8s;
     }
 
     /* ===== بطاقة القضية ===== */
@@ -330,26 +314,13 @@
       padding: 24px 28px;
       margin-bottom: 22px;
       border-right: 4px solid var(--gold);
-      background: linear-gradient(135deg, rgba(16, 14, 12, 0.95), rgba(26, 20, 16, 0.9));
       position: relative;
       overflow: hidden;
-      transition: border-color 0.5s;
-    }
-    .case-hero::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(212, 168, 67, 0.03), transparent 70%);
-      border-radius: 50%;
     }
     .case-hero .case-title {
       font-size: 26px;
       font-weight: 900;
       color: #eee;
-      letter-spacing: 1px;
     }
     .case-hero .case-title .gold {
       color: var(--gold);
@@ -391,16 +362,13 @@
       padding: 3px 14px;
       border-radius: 20px;
       border: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .case-hero .case-tools .tool.locked {
-      opacity: 0.4;
     }
     .case-hero .case-tools .tool.unlocked {
       border-color: var(--gold);
       color: var(--gold);
+    }
+    .case-hero .case-tools .tool.locked {
+      opacity: 0.4;
     }
 
     /* ===== الضحية ===== */
@@ -411,7 +379,6 @@
       padding: 16px 22px;
       margin-bottom: 18px;
       border-right: 4px solid #8b6b3d;
-      backdrop-filter: blur(4px);
     }
     .victim-card h4 {
       color: var(--gold);
@@ -446,7 +413,6 @@
       padding: 14px;
       text-align: center;
       transition: all 0.4s ease;
-      cursor: default;
     }
     .gallery .photo:hover {
       border-color: var(--gold);
@@ -455,7 +421,6 @@
     .gallery .photo .icon {
       font-size: 40px;
       display: block;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
     .gallery .photo .label {
       font-size: 12px;
@@ -482,7 +447,6 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.4s ease;
-      position: relative;
     }
     .suspect-card:hover {
       border-color: var(--gold);
@@ -490,12 +454,11 @@
     }
     .suspect-card.active {
       border-color: var(--gold);
-      background: var(--primary-dim);
+      background: rgba(212, 168, 67, 0.08);
     }
     .suspect-card .avatar {
       font-size: 38px;
       display: block;
-      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
       transition: transform 0.3s;
     }
     .suspect-card .avatar.tense {
@@ -581,7 +544,6 @@
       .rank-bar {
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
       }
       .rank-bar .rank-progress {
         align-items: stretch;
@@ -589,8 +551,9 @@
       .rank-bar .rank-progress .xp-bar {
         width: 100%;
       }
-      .main-header .badge-id .rank-name {
-        font-size: 12px;
+      .main-header .badge-id {
+        font-size: 11px;
+        padding: 4px 10px;
       }
     }
 
@@ -598,23 +561,12 @@
       background: #050403;
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      height: 360px;
+      height: 380px;
       overflow-y: auto;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-    }
-    .transcript .typing-indicator {
-      color: var(--gold);
-      font-size: 12px;
-      padding: 4px 12px;
-      opacity: 0;
-      transition: opacity 0.3s;
-      align-self: flex-start;
-    }
-    .transcript .typing-indicator.active {
-      opacity: 1;
     }
     .transcript .msg {
       padding: 10px 16px;
@@ -665,14 +617,6 @@
       align-self: center;
       color: #ffaa44;
       font-weight: 700;
-    }
-    .transcript .msg.rank-up {
-      background: #0d1a0d;
-      border-right: 3px solid var(--gold);
-      align-self: center;
-      color: var(--gold);
-      font-weight: 700;
-      font-size: 16px;
     }
     @keyframes fadeSlide {
       from {
@@ -766,22 +710,9 @@
       border-color: #44cc88;
       color: #44cc88;
     }
-    .action-bar button.secondary:hover {
-      background: #44cc88;
-      color: #0a0806;
-    }
     .action-bar button.danger {
       border-color: #cc6644;
       color: #cc6644;
-    }
-    .action-bar button.promotion {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: rgba(212, 168, 67, 0.05);
-    }
-    .action-bar button.promotion:hover {
-      background: var(--gold);
-      color: #0a0806;
     }
 
     .evidence-panel {
@@ -800,7 +731,6 @@
       margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
-      letter-spacing: 1px;
     }
     .evidence-panel h3 .count {
       color: var(--gold);
@@ -833,74 +763,82 @@
       font-size: 13px;
     }
 
-    /* ===== شاشة بناء الاتهام ===== */
-    .accusation-overlay {
+    /* ===== نافذة التسجيل ===== */
+    .auth-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.88);
-      z-index: 1000;
-      display: none;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 2000;
+      display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
     }
-    .accusation-overlay.active {
-      display: flex;
+    .auth-overlay.hidden {
+      display: none;
     }
-    .accusation-card {
+    .auth-card {
       background: var(--panel-bg);
       border: 1px solid var(--border-color);
       border-radius: 20px;
-      padding: 32px 36px;
-      max-width: 580px;
+      padding: 36px 40px;
+      max-width: 440px;
       width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
       border-right: 4px solid var(--gold);
       animation: fadeSlide 0.5s ease;
+      text-align: center;
     }
-    .accusation-card h2 {
+    .auth-card .auth-icon {
+      font-size: 48px;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 0 30px rgba(212, 168, 67, 0.15));
+    }
+    .auth-card h2 {
       color: var(--gold);
       font-size: 22px;
-      text-align: center;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 14px;
+      font-weight: 900;
+      letter-spacing: 1px;
     }
-    .accusation-card .form-group {
-      margin-bottom: 16px;
-    }
-    .accusation-card .form-group label {
-      display: block;
+    .auth-card .sub {
       color: var(--text-muted);
       font-size: 13px;
-      margin-bottom: 4px;
+      margin: 2px 0 18px 0;
     }
-    .accusation-card .form-group select,
-    .accusation-card .form-group input {
+    .auth-card .form-group {
+      margin-bottom: 14px;
+      text-align: right;
+    }
+    .auth-card .form-group label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .auth-card .form-group input {
       width: 100%;
       background: #0a0806;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 10px 16px;
       color: #e8ddd0;
       font-family: 'Cairo', sans-serif;
       font-size: 14px;
       outline: none;
+      transition: border 0.3s;
     }
-    .accusation-card .form-group select:focus,
-    .accusation-card .form-group input:focus {
+    .auth-card .form-group input:focus {
       border-color: var(--gold);
     }
-    .accusation-card .form-group select option {
-      background: #1a1410;
+    .auth-card .form-group input::placeholder {
+      color: #4a3a2a;
     }
-    .accusation-card .submit-accusation {
-      display: block;
+    .auth-card .auth-btn {
       width: 100%;
       background: var(--gold);
       color: #0a0806;
@@ -909,18 +847,52 @@
       border-radius: 10px;
       font-family: 'Cairo', sans-serif;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: 0.3s;
-      margin-top: 10px;
+      margin-top: 4px;
     }
-    .accusation-card .submit-accusation:hover {
+    .auth-card .auth-btn:hover {
       transform: scale(1.02);
       box-shadow: 0 0 30px rgba(212, 168, 67, 0.3);
     }
-    .accusation-card .submit-accusation:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    .auth-card .auth-error {
+      color: #cc6644;
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 20px;
+    }
+    .auth-card .auth-success {
+      color: #44cc88;
+      font-size: 13px;
+      margin-top: 8px;
+      min-height: 20px;
+    }
+    .auth-card .divider {
+      border-top: 1px solid var(--border-color);
+      margin: 14px 0;
+    }
+    .auth-card .switch-auth {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .auth-card .switch-auth a {
+      color: var(--gold);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .auth-card .switch-auth a:hover {
+      text-decoration: underline;
+    }
+    .auth-card .mode-badge {
+      display: inline-block;
+      font-size: 10px;
+      background: rgba(212, 168, 67, 0.1);
+      color: var(--gold);
+      padding: 2px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(212, 168, 67, 0.2);
+      margin-bottom: 6px;
     }
 
     /* ===== تقرير النيابة ===== */
@@ -960,6 +932,14 @@
       margin-bottom: 20px;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 14px;
+    }
+    .report-card .report-signature {
+      text-align: center;
+      font-size: 14px;
+      color: var(--gold);
+      border-top: 1px solid var(--border-color);
+      padding-top: 14px;
+      margin-top: 14px;
     }
     .report-card .stat-item {
       display: flex;
@@ -1032,161 +1012,20 @@
       box-shadow: 0 0 30px rgba(212, 168, 67, 0.3);
     }
 
-    /* ===== نافذة تسجيل الدخول ===== */
-    .auth-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.92);
-      z-index: 2000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      backdrop-filter: blur(16px);
-    }
-    .auth-overlay.hidden {
-      display: none;
-    }
-    .auth-card {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 40px 44px;
-      max-width: 420px;
-      width: 100%;
-      border-right: 4px solid var(--gold);
-      animation: fadeSlide 0.5s ease;
-      text-align: center;
-    }
-    .auth-card .auth-icon {
-      font-size: 56px;
-      margin-bottom: 10px;
-      filter: drop-shadow(0 0 30px rgba(212, 168, 67, 0.15));
-    }
-    .auth-card h2 {
-      color: var(--gold);
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-    .auth-card .sub {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin: 4px 0 22px 0;
-    }
-    .auth-card .form-group {
-      margin-bottom: 16px;
-      text-align: right;
-    }
-    .auth-card .form-group label {
-      display: block;
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .auth-card .form-group input {
-      width: 100%;
-      background: #0a0806;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 12px 16px;
-      color: #e8ddd0;
-      font-family: 'Cairo', sans-serif;
-      font-size: 15px;
-      outline: none;
-      transition: border 0.3s;
-    }
-    .auth-card .form-group input:focus {
-      border-color: var(--gold);
-    }
-    .auth-card .form-group input::placeholder {
-      color: #4a3a2a;
-    }
-    .auth-card .auth-btn {
-      width: 100%;
-      background: var(--gold);
-      color: #0a0806;
-      border: none;
-      padding: 13px;
-      border-radius: 10px;
-      font-family: 'Cairo', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 6px;
-    }
-    .auth-card .auth-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 30px rgba(212, 168, 67, 0.3);
-    }
-    .auth-card .auth-error {
-      color: #cc6644;
-      font-size: 13px;
-      margin-top: 10px;
-      min-height: 20px;
-    }
-    .auth-card .auth-success {
-      color: #44cc88;
-      font-size: 13px;
-      margin-top: 10px;
-      min-height: 20px;
-    }
-    .auth-card .divider {
-      border-top: 1px solid var(--border-color);
-      margin: 16px 0;
-    }
-    .auth-card .switch-auth {
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-    .auth-card .switch-auth a {
-      color: var(--gold);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .auth-card .switch-auth a:hover {
-      text-decoration: underline;
-    }
-
-    /* ===== زر تسجيل الخروج ===== */
-    .logout-btn {
-      background: transparent;
-      border: 1px solid #5a3a3a;
-      color: #aa6a6a;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-right: 6px;
-    }
-    .logout-btn:hover {
-      background: #5a3a3a;
-      color: #e8ddd0;
-    }
-
     .transcript::-webkit-scrollbar,
     .evidence-panel::-webkit-scrollbar,
     .sidebar::-webkit-scrollbar,
-    .report-card::-webkit-scrollbar,
-    .accusation-card::-webkit-scrollbar {
+    .report-card::-webkit-scrollbar {
       width: 3px;
     }
     .transcript::-webkit-scrollbar-track,
     .evidence-panel::-webkit-scrollbar-track,
-    .report-card::-webkit-scrollbar-track,
-    .accusation-card::-webkit-scrollbar-track {
+    .report-card::-webkit-scrollbar-track {
       background: #050403;
     }
     .transcript::-webkit-scrollbar-thumb,
     .evidence-panel::-webkit-scrollbar-thumb,
-    .report-card::-webkit-scrollbar-thumb,
-    .accusation-card::-webkit-scrollbar-thumb {
+    .report-card::-webkit-scrollbar-thumb {
       background: var(--gold);
       border-radius: 10px;
     }
@@ -1210,47 +1049,35 @@
 </head>
 <body>
 
-  <!-- ===== نافذة تسجيل الدخول ===== -->
+  <!-- ===== نافذة التسجيل والدخول ===== -->
   <div class="auth-overlay" id="authOverlay">
     <div class="auth-card">
       <div class="auth-icon">🕵️</div>
       <h2>غرفة التحقيق</h2>
-      <div class="sub">سجل دخولك لتبدأ التحقيق</div>
+      <div class="sub">سجل دخولك أو أنشئ ملفاً جنائياً</div>
+      <div class="mode-badge" id="authModeBadge">🔐 تسجيل الدخول</div>
+
       <div class="form-group">
-        <label>👤 اسم المحقق / رقم الشارة</label>
-        <input type="text" id="authInput" placeholder="مثال: محقق 7" dir="rtl">
+        <label>👤 اسم المستخدم (للدخول)</label>
+        <input type="text" id="authUsername" placeholder="مثال: saqr99" dir="ltr">
       </div>
+      <div class="form-group">
+        <label>📛 الاسم الرسمي للمحقق</label>
+        <input type="text" id="authDisplayName" placeholder="مثال: صقر العتيبي" dir="rtl">
+      </div>
+      <div class="form-group">
+        <label>🔑 كلمة المرور</label>
+        <input type="password" id="authPassword" placeholder="••••••••" dir="ltr">
+      </div>
+
       <div id="authError" class="auth-error"></div>
       <div id="authSuccess" class="auth-success"></div>
-      <button class="auth-btn" id="authBtn">🚪 دخول / إنشاء ملف</button>
+      <button class="auth-btn" id="authBtn">🚪 دخول</button>
+
       <div class="divider"></div>
       <div class="switch-auth">
         <span id="authSwitchText">ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a></span>
       </div>
-    </div>
-  </div>
-
-  <!-- ===== شاشة بناء الاتهام ===== -->
-  <div class="accusation-overlay" id="accusationOverlay">
-    <div class="accusation-card">
-      <h2>⚖️ بناء لائحة الاتهام</h2>
-      <div class="form-group">
-        <label>🔍 المتهم الرئيسي</label>
-        <select id="accusationSuspect">
-          <option value="">-- اختر المشتبه --</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>📌 الدليل القاطع</label>
-        <select id="accusationEvidence">
-          <option value="">-- اختر الدليل --</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>💡 الدافع</label>
-        <input type="text" id="accusationMotive" placeholder="اكتب الدافع المحتمل...">
-      </div>
-      <button class="submit-accusation" id="submitAccusationBtn">🔨 توجيه الاتهام</button>
     </div>
   </div>
 
@@ -1259,6 +1086,7 @@
     <div class="report-card" id="reportCard">
       <h2>📋 تقرير النيابة العامة</h2>
       <div id="reportContent"></div>
+      <div class="report-signature" id="reportSignature">تقرير صادر بتوقيع: محقق متدرب / غير معروف</div>
       <button class="close-report" id="closeReportBtn">📂 متابعة المسار المهني</button>
     </div>
   </div>
@@ -1271,8 +1099,6 @@
     </div>
     <div class="section-title">أرشيف القضايا</div>
     <div id="caseList"></div>
-    <div class="section-title">مهام الترقية</div>
-    <div id="promotionList"></div>
   </aside>
 
   <!-- ===== المحتوى الرئيسي ===== -->
@@ -1283,7 +1109,8 @@
       <div class="badge-id" id="badgeId">
         <span class="rank-icon" id="badgeIcon">🛡️</span>
         <span class="rank-name" id="badgeRank">محقق متدرب</span>
-        <span class="rank-level" id="badgeLevel">المستوى 1</span>
+        <span class="display-name" id="badgeDisplayName">/ غير معروف</span>
+        <span class="level-badge" id="badgeLevel">المستوى 1</span>
         <button class="logout-btn" id="logoutBtn">🚪 خروج</button>
       </div>
       <div class="status"><span class="pulse-dot"></span> الحالة: <span class="hl" id="globalStatus">قيد التحقيق</span></div>
@@ -1294,7 +1121,7 @@
       <div class="rank-info">
         <div class="rank-badge" id="rankBadge">🛡️</div>
         <div class="rank-details">
-          <div class="rank-title gold-glow" id="rankTitle">محقق متدرب</div>
+          <div class="rank-title" id="rankTitle">محقق متدرب</div>
           <div class="rank-sub" id="rankSub">المستوى 1 • قضايا سرقة بسيطة</div>
         </div>
       </div>
@@ -1320,8 +1147,6 @@
         <span class="tool unlocked">📝 أسئلة نصية</span>
         <span class="tool locked">📱 فحص سجلات الهاتف</span>
         <span class="tool locked">🔬 فحص البصمات</span>
-        <span class="tool locked">📜 أمر تفتيش</span>
-        <span class="tool locked">💼 تحليل مالي</span>
       </div>
     </div>
 
@@ -1341,8 +1166,7 @@
     <div class="investigation-area">
       <div>
         <div class="transcript" id="transcript">
-          <div class="msg system">📋 اختر مشتبهاً وابدأ الاستجواب. اكتب سؤالك بحرية.</div>
-          <div class="typing-indicator" id="typingIndicator">✍️ المشتبه يكتب...</div>
+          <div class="msg system">📋 اختر مشتبهاً وابدأ الاستجواب. اسأل بحرية.</div>
         </div>
         <div class="input-area">
           <input type="text" id="questionInput" placeholder="✍️ اكتب سؤالك للمشتبه..." disabled>
@@ -1352,9 +1176,6 @@
           <button class="primary" id="confrontBtn" disabled>⚔️ واجه بالدليل</button>
           <button class="secondary" id="summaryBtn">📋 ملخص</button>
           <button class="danger" id="resetBtn">🔄 إعادة</button>
-          <button class="secondary" id="contradictionBtn" disabled style="border-color:#ffaa44;color:#ffaa44;">🔍 تناقضات</button>
-          <button class="promotion" id="promotionBtn" disabled>⭐ قضية ترقية</button>
-          <button class="primary" id="accusationBtn" style="border-color:var(--gold);color:var(--gold);">⚖️ توجيه الاتهام</button>
         </div>
       </div>
       <div class="evidence-panel" id="evidencePanel">
@@ -1366,12 +1187,80 @@
 
   <script>
     // ================================================================
-    //  نظام إدارة الحسابات (Account System)
+    //  نظام الهوية الجنائية المتكامل
     // ================================================================
 
-    // ===== هيكل بيانات اللاعب =====
+    // ===== تعريف الرتب والألقاب =====
+    const RANKS = [{
+      level: 1,
+      title: 'محقق متدرب',
+      badge: '🛡️',
+      sub: 'قضايا سرقة بسيطة',
+      xpRequired: 0,
+      tools: ['📝 أسئلة نصية']
+    }, {
+      level: 2,
+      title: 'مساعد محقق',
+      badge: '🔍',
+      sub: 'قضايا احتيال مالي',
+      xpRequired: 100,
+      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف']
+    }, {
+      level: 3,
+      title: 'محقق ميداني',
+      badge: '🔬',
+      sub: 'جرائم سرية ووفيات مشبوهة',
+      xpRequired: 250,
+      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات']
+    }, {
+      level: 4,
+      title: 'محقق أول',
+      badge: '⚖️',
+      sub: 'جرائم قتل معقدة',
+      xpRequired: 500,
+      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش']
+    }, {
+      level: 5,
+      title: 'مفتش قضايا جنائية',
+      badge: '👁️',
+      sub: 'جرائم منظمة وفساد',
+      xpRequired: 900,
+      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي']
+    }, {
+      level: 6,
+      title: 'رئيس قسم التحقيقات',
+      badge: '👑',
+      sub: 'القضايا الباردة والجرائم المستحيلة',
+      xpRequired: 1500,
+      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي', '🗄️ الأرشيف السري']
+    }];
+
+    // ===== الحصول على اللقب الكامل =====
+    function getFullTitle(rank, displayName) {
+      const rankData = RANKS[rank - 1];
+      if (!rankData) return `محقق / ${displayName || 'غير معروف'}`;
+      return `${rankData.title} / ${displayName || 'غير معروف'}`;
+    }
+
+    function getRankBadge(rank) {
+      const rankData = RANKS[rank - 1];
+      return rankData ? rankData.badge : '🛡️';
+    }
+
+    function getRankTitle(rank) {
+      const rankData = RANKS[rank - 1];
+      return rankData ? rankData.title : 'محقق';
+    }
+
+    // ================================================================
+    //  نظام الحسابات المتقدم
+    // ================================================================
+
+    // هيكل بيانات اللاعب
     const DEFAULT_PLAYER = {
-      name: '',
+      username: '',
+      displayName: '',
+      password: '',
       rank: 1,
       xp: 0,
       reputation: 0,
@@ -1384,7 +1273,7 @@
       promotionCasePassed: false
     };
 
-    // ===== دوال الحفظ والتحميل =====
+    // دوال التخزين
     function getPlayerKey(username) {
       return `detective_${username.toLowerCase().trim()}`;
     }
@@ -1395,49 +1284,25 @@
         const data = localStorage.getItem(key);
         if (data) {
           const parsed = JSON.parse(data);
-          // دمج مع القيم الافتراضية لضمان وجود جميع الحقول
-          return { ...DEFAULT_PLAYER, ...parsed, name: username };
+          return { ...DEFAULT_PLAYER, ...parsed, username: username };
         }
-      } catch (e) {
-        console.warn('فشل تحميل اللاعب:', e);
-      }
+      } catch (e) {}
       return null;
     }
 
     function savePlayer(player) {
       try {
-        const key = getPlayerKey(player.name);
-        const data = JSON.stringify(player);
-        localStorage.setItem(key, data);
+        const key = getPlayerKey(player.username);
+        localStorage.setItem(key, JSON.stringify(player));
         return true;
-      } catch (e) {
-        console.warn('فشل حفظ اللاعب:', e);
-        return false;
-      }
+      } catch (e) { return false; }
     }
 
     function deletePlayer(username) {
       try {
-        const key = getPlayerKey(username);
-        localStorage.removeItem(key);
+        localStorage.removeItem(getPlayerKey(username));
         return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    function getAllPlayers() {
-      const players = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('detective_')) {
-          try {
-            const data = JSON.parse(localStorage.getItem(key));
-            players.push(data.name || key.replace('detective_', ''));
-          } catch (e) {}
-        }
-      }
-      return players;
+      } catch (e) { return false; }
     }
 
     // ================================================================
@@ -1447,86 +1312,19 @@
     let isLoggedIn = false;
 
     // ================================================================
-    //  نظام الرتب والتقييم
+    //  بيانات القضية
     // ================================================================
-    const RANKS = [{
-      level: 1,
-      title: 'محقق متدرب',
-      badge: '🛡️',
-      sub: 'قضايا سرقة بسيطة',
-      xpRequired: 0,
-      tools: ['📝 أسئلة نصية'],
-      caseTypes: ['سرقة', 'اختفاء ممتلكات'],
-      maxSuspects: 3,
-      description: 'المبتدئون يبدأون هنا. قضايا بسيطة، أدلة ظاهرة.'
-    }, {
-      level: 2,
-      title: 'مساعد محقق',
-      badge: '🔍',
-      sub: 'قضايا احتيال مالي',
-      xpRequired: 100,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف'],
-      caseTypes: ['احتيال مالي', 'اقتحام منشآت'],
-      maxSuspects: 4,
-      description: 'تبدأ القضايا بالتعقيد. تحتاج إلى ربط الأدلة.'
-    }, {
-      level: 3,
-      title: 'محقق ميداني',
-      badge: '🔬',
-      sub: 'جرائم سرية ووفيات مشبوهة',
-      xpRequired: 250,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات'],
-      caseTypes: ['وفاة مشبوهة', 'جرائم سرية'],
-      maxSuspects: 5,
-      description: 'الميدان يتطلب دقة. كل بصمة تحكي قصة.'
-    }, {
-      level: 4,
-      title: 'محقق أول',
-      badge: '⚖️',
-      sub: 'جرائم قتل معقدة',
-      xpRequired: 500,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش'],
-      caseTypes: ['قتل معقد', 'جرائم متشابكة'],
-      maxSuspects: 6,
-      description: 'الآن أنت تلعب مع الكبار. القضايا تتشابك.'
-    }, {
-      level: 5,
-      title: 'مفتش قضايا جنائية',
-      badge: '👁️',
-      sub: 'جرائم منظمة وفساد',
-      xpRequired: 900,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي'],
-      caseTypes: ['جرائم منظمة', 'فساد كبرى'],
-      maxSuspects: 7,
-      description: 'المال والسلطة. هنا تحتاج إلى ذكاء حاد.'
-    }, {
-      level: 6,
-      title: 'رئيس قسم التحقيقات',
-      badge: '👑',
-      sub: 'القضايا الباردة والجرائم المستحيلة',
-      xpRequired: 1500,
-      tools: ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي', '🗄️ الأرشيف السري'],
-      caseTypes: ['قضايا باردة', 'جرائم شبه مستحيلة'],
-      maxSuspects: 8,
-      description: 'أنت الأسطورة. القضايا التي عجز عنها الجميع.'
-    }];
-
-    // ================================================================
-    //  جميع القضايا
-    // ================================================================
-    const ALL_CASES = [{
+    const CASE_DATA = {
       id: '#10',
       title: 'مستشفى القادسية',
       difficulty: 'صعبة',
-      type: 'قتل معقد',
-      requiredRank: 3,
+      type: 'قتل',
       description: 'مستشفى القادسية الأهلي، مبنى متعب على طريق سريع خارج المدينة. عُثر على رجل ميت في القبو. لا هوية، لا ملفات.',
       victim: {
         name: 'ماجد بن سليمان العتيبي',
         age: '34 سنة',
         job: 'مقاول بناء',
-        cause: 'اختناق',
-        bio: 'كان يعمل على صفقة عقارية مع المستشفى.'
+        cause: 'اختناق'
       },
       photos: [
         { icon: '🚪', label: 'باب القبو', desc: 'موصد من الداخل' },
@@ -1536,24 +1334,79 @@
         { icon: '💊', label: 'علبة دواء', desc: 'فارغة' },
         { icon: '📝', label: 'رسالة', desc: '"لا تفتح القبو"' }
       ],
-      suspects: [
-        { id: 's1', name: 'د. ريم', role: 'طبيبة امتياز', avatar: '👩‍⚕️', tension: 18, patience: 100,
-          relation: 'شهدت دخول الضحية' },
-        { id: 's2', name: 'مبارك', role: 'حارس الأمن', avatar: '🛡️', tension: 22, patience: 100,
-          relation: 'كان في الخدمة ليلة الحادث' },
-        { id: 's3', name: 'د. فهد', role: 'المدير الطبي', avatar: '👨‍⚕️', tension: 12, patience: 100,
-          relation: 'على خلاف مع الضحية' },
-        { id: 's4', name: 'جابر', role: 'عامل الخدمات', avatar: '🧹', tension: 30, patience: 100,
-          relation: 'سمع صوتاً' },
-        { id: 's5', name: 'هند', role: 'صيدلانية', avatar: '💊', tension: 20, patience: 100,
-          relation: 'رأت الضحية يطلب دواءً' },
-        { id: 's6', name: 'عادل', role: 'محاسب', avatar: '🧾', tension: 14, patience: 100,
-          relation: 'مسؤول عن المدفوعات' },
-        { id: 's7', name: 'نوال', role: 'رئيسة التمريض', avatar: '👩‍⚕️', tension: 24, patience: 100,
-          relation: 'تعرف الضحية' },
-        { id: 's8', name: 'ناصر', role: 'سائق إسعاف', avatar: '🚑', tension: 16, patience: 100,
-          relation: 'خارج المستشفى' }
-      ],
+      suspects: [{
+        id: 's1',
+        name: 'د. ريم',
+        role: 'طبيبة امتياز',
+        avatar: '👩‍⚕️',
+        tension: 15,
+        patience: 100,
+        relation: 'شهدت دخول الضحية',
+        personality: { style: 'عصبية', secret: 'علاقة سرية', guilty: false }
+      }, {
+        id: 's2',
+        name: 'مبارك',
+        role: 'حارس الأمن',
+        avatar: '🛡️',
+        tension: 20,
+        patience: 100,
+        relation: 'كان في الخدمة ليلة الحادث',
+        personality: { style: 'هادئ', secret: 'كان نائماً', guilty: false }
+      }, {
+        id: 's3',
+        name: 'د. فهد',
+        role: 'المدير الطبي',
+        avatar: '👨‍⚕️',
+        tension: 10,
+        patience: 100,
+        relation: 'على خلاف مع الضحية',
+        personality: { style: 'متعجرف', secret: 'أخطاء طبية', guilty: true }
+      }, {
+        id: 's4',
+        name: 'جابر',
+        role: 'عامل الخدمات',
+        avatar: '🧹',
+        tension: 28,
+        patience: 100,
+        relation: 'سمع صوتاً من القبو',
+        personality: { style: 'خائف', secret: 'يسرق أدوات', guilty: false }
+      }, {
+        id: 's5',
+        name: 'هند',
+        role: 'صيدلانية',
+        avatar: '💊',
+        tension: 18,
+        patience: 100,
+        relation: 'رأت الضحية يطلب دواءً',
+        personality: { style: 'دقيقة', secret: 'تتعاطى مهدئات', guilty: false }
+      }, {
+        id: 's6',
+        name: 'عادل',
+        role: 'محاسب',
+        avatar: '🧾',
+        tension: 12,
+        patience: 100,
+        relation: 'مسؤول عن مدفوعات الضحية',
+        personality: { style: 'منطقي', secret: 'يختلس أموالاً', guilty: false }
+      }, {
+        id: 's7',
+        name: 'نوال',
+        role: 'رئيسة التمريض',
+        avatar: '👩‍⚕️',
+        tension: 22,
+        patience: 100,
+        relation: 'تعرف الضحية',
+        personality: { style: 'قوية', secret: 'علاقة مع الضحية', guilty: false }
+      }, {
+        id: 's8',
+        name: 'ناصر',
+        role: 'سائق إسعاف',
+        avatar: '🚑',
+        tension: 16,
+        patience: 100,
+        relation: 'خارج المستشفى',
+        personality: { style: 'سريعة', secret: 'كان يشرب', guilty: false }
+      }],
       clues: [
         'سوار معصم عليه حروف M.J',
         'فاتورة كهرباء مرتفعة للقبو',
@@ -1566,865 +1419,145 @@
         'كاميرا مراقبة معطلة منذ 3 أيام',
         'علبة دواء فارغة باسم غير موجود'
       ],
-      scenario: {
-        timeline: [
-          '9:00 مساءً - الضحية يدخل المستشفى.',
-          '10:30 مساءً - شاهده جابر يتجه نحو القبو.',
-          '11:15 مساءً - آخر مكالمة.',
-          '11:45 مساءً - سمع جابر صوتاً.',
-          '12:00 - انقطاع الكهرباء 10 دقائق.',
-          '1:00 صباحاً - عُثر على الجثة.'
-        ],
-        witnesses: [
-          'جابر: سمعت صوتاً يشبه الصراخ.',
-          'نوال: رأيت الضحية يتحدث مع المدير.',
-          'هند: طلب دواءً غريباً.',
-          'مبارك: الكاميرات معطلة.'
-        ]
-      },
       evidenceMap: {
         'قفازات طبية ممزقة في سلة المهملات': ['د. فهد', 'جابر'],
         'بصمة دم على مقبض الباب الخلفي': ['مبارك', 'ناصر'],
         'سوار معصم عليه حروف M.J': ['د. ريم', 'نوال'],
         'فاتورة كهرباء مرتفعة للقبو': ['عادل'],
         'رسالة مكتوبة بخط اليد: "لا تفتح القبو"': ['جابر'],
-        'علبة دواء فارغة باسم غير موجود': ['هند', 'د. ريم'],
-        'جدول مناوبة يظهر أن مبارك كان خارج القبو': ['مبارك']
+        'علبة دواء فارغة باسم غير موجود': ['هند', 'د. ريم']
       },
       trueKiller: 'د. فهد',
       rewards: { xp: 120, reputation: 15 }
-    }, {
-      id: '#7',
-      title: 'جثة القاعة رقم 7',
-      difficulty: 'صعبة',
-      type: 'قتل',
-      requiredRank: 3,
-      description: 'قبل ليلة واحدة من تسليم مشروع تخرج، عُثر على أحدهم ميتاً في القاعة رقم 7.',
-      victim: {
-        name: 'نادر الفهد',
-        age: '28 سنة',
-        job: 'قائد فريق التخرج',
-        cause: 'طعنة',
-        bio: 'كان يعمل على مشروع للمكفوفين.'
-      },
-      photos: [
-        { icon: '🔬', label: 'المختبر', desc: 'مكان الاجتماع' },
-        { icon: '🗡️', label: 'مشرط', desc: 'مفقود' },
-        { icon: '📹', label: 'كاميرا', desc: 'معطلة' },
-        { icon: '📱', label: 'هاتف', desc: '"لا تثق بأحد"' },
-        { icon: '📝', label: 'ملاحظات', desc: 'ممسوح' }
-      ],
-      suspects: [
-        { id: 't1', name: 'سارة', role: 'مطورة', avatar: '👩‍💻', tension: 20, patience: 100, relation: 'شريكة' },
-        { id: 't2', name: 'فهد', role: 'مهندس صوت', avatar: '🎧', tension: 25, patience: 100, relation: 'آخر من رآه' },
-        { id: 't3', name: 'ليلى', role: 'مصممة', avatar: '🎨', tension: 18, patience: 100, relation: 'على خلاف' },
-        { id: 't4', name: 'سامي', role: 'مختبر', avatar: '🔬', tension: 28, patience: 100, relation: 'يعرف سراً' },
-        { id: 't5', name: 'هناء', role: 'منسقة', avatar: '📋', tension: 16, patience: 100, relation: 'تدير الميزانية' }
-      ],
-      clues: [
-        'مشرط مختبر مفقود',
-        'بصمة على لوحة المفاتيح',
-        'جدول زمني غير مكتمل',
-        'رسالة: "لا تثق بأحد"',
-        'كسر في نافذة المختبر'
-      ],
-      scenario: {
-        timeline: [
-          '6:00 مساءً - اجتماع الفريق.',
-          '8:00 مساءً - غادر الجميع.',
-          '10:00 مساءً - ضوء في المختبر.',
-          '12:00 - انقطاع التيار.',
-          '8:00 صباحاً - عُثر على الجثة.'
-        ],
-        witnesses: [
-          'فهد: غادرت معه لكنني عدت.',
-          'سارة: سمعت صوتاً.',
-          'ليلى: كان متوتراً.'
-        ]
-      },
-      evidenceMap: {
-        'مشرط مختبر مفقود': ['فهد', 'سامي'],
-        'بصمة على لوحة المفاتيح': ['سارة', 'ماجد']
-      },
-      trueKiller: 'فهد',
-      rewards: { xp: 100, reputation: 12 }
-    }, {
-      id: '#3',
-      title: 'الغرفة المغلقة',
-      difficulty: 'متوسطة',
-      type: 'قتل',
-      requiredRank: 2,
-      description: 'في فندق "المدينة القديمة"، عُثر على رجل ميت في غرفة مغلقة من الداخل.',
-      victim: {
-        name: 'سمير الهاشمي',
-        age: '45 سنة',
-        job: 'رجل أعمال',
-        cause: 'تسمم',
-        bio: 'كان مسافراً منفرداً.'
-      },
-      photos: [
-        { icon: '🚪', label: 'باب الغرفة', desc: 'مقفل من الداخل' },
-        { icon: '🥤', label: 'كأس ماء', desc: 'به مادة غريبة' },
-        { icon: '📱', label: 'هاتف', desc: '"سأنتظرك"' },
-        { icon: '👣', label: 'أثر حذاء', desc: 'غير مكتمل' }
-      ],
-      suspects: [
-        { id: 'h1', name: 'مدير الفندق', role: 'سمير', avatar: '👔', tension: 20, patience: 100,
-          relation: 'يريد إخفاء الحادث' },
-        { id: 'h2', name: 'هدى', role: 'تنظيف', avatar: '🧹', tension: 28, patience: 100, relation: 'رأت شيئاً' },
-        { id: 'h3', name: 'ناصر', role: 'حارس', avatar: '🛡️', tension: 22, patience: 100, relation: 'كاميرات معطلة' },
-        { id: 'h4', name: 'ريم', role: 'نزيلة', avatar: '👩', tension: 25, patience: 100, relation: 'سمعت أصواتاً' }
-      ],
-      clues: [
-        'مزلاج داخلي',
-        'كأس به مادة غريبة',
-        'رسالة: "سأنتظرك"',
-        'أثر حذاء غير مكتمل'
-      ],
-      scenario: {
-        timeline: [
-          '8:00 مساءً - يسجل في الفندق.',
-          '10:00 مساءً - طلب العشاء.',
-          '11:30 مساءً - سمعت ريم صوتاً.',
-          '8:00 صباحاً - عُثر على الجثة.'
-        ],
-        witnesses: [
-          'ريم: سمعت شجاراً.',
-          'هدى: رأيت شخصاً يغادر.'
-        ]
-      },
-      evidenceMap: {
-        'كأس به مادة غريبة': ['فارس', 'مدير الفندق'],
-        'رسالة: "سأنتظرك"': ['ريم']
-      },
-      trueKiller: 'مدير الفندق',
-      rewards: { xp: 80, reputation: 10 }
-    }, {
-      id: '#5',
-      title: 'اختفاء المهندس',
-      difficulty: 'متوسطة',
-      type: 'اختفاء',
-      requiredRank: 2,
-      description: 'مهندس موقع بناء اختفى فجأة قبل يومين من تسليم المشروع.',
-      victim: {
-        name: 'زياد الخالدي',
-        age: '37 سنة',
-        job: 'مهندس موقع',
-        cause: 'مفقود',
-        bio: 'اكتشف خطأً في الأساسات.'
-      },
-      photos: [
-        { icon: '🏗️', label: 'موقع البناء', desc: 'مشروع ضخم' },
-        { icon: '📐', label: 'مخططات', desc: 'خطأ في الأساسات' },
-        { icon: '📱', label: 'هاتفه', desc: 'في المكتب' },
-        { icon: '🔦', label: 'كاميرا', desc: 'ظل عند منتصف الليل' }
-      ],
-      suspects: [
-        { id: 'z1', name: 'أيمن', role: 'مدير المشروع', avatar: '📐', tension: 30, patience: 100,
-          relation: 'يريد إخفاء التقصير' },
-        { id: 'z2', name: 'سليمان', role: 'مشرف', avatar: '🔧', tension: 22, patience: 100, relation: 'يعرف كل شيء' },
-        { id: 'z3', name: 'نوال', role: 'محاسب', avatar: '🧾', tension: 18, patience: 100, relation: 'لاحظت تحويلات' },
-        { id: 'z4', name: 'راشد', role: 'حارس', avatar: '🚧', tension: 25, patience: 100, relation: 'كان نائماً' }
-      ],
-      clues: [
-        'هاتفه في المكتب',
-        'سيارته في الموقف',
-        'رسالة: "الأساسات ليست كما تبدو"',
-        'رائحة كيماوية'
-      ],
-      scenario: {
-        timeline: [
-          '6:00 مساءً - انتهى دوامه.',
-          '10:00 مساءً - شوهد في الموقع.',
-          '12:00 - ظهر في كاميرا المراقبة.',
-          '8:00 صباحاً - اختفى.'
-        ],
-        witnesses: [
-          'فوزية: كان قلقاً.',
-          'راشد: سمعت صوتاً.'
-        ]
-      },
-      evidenceMap: {
-        'رسالة: "الأساسات ليست كما تبدو"': ['سليمان', 'أيمن'],
-        'ظل في كاميرا المراقبة': ['راشد']
-      },
-      trueKiller: 'أيمن',
-      rewards: { xp: 70, reputation: 8 }
-    }, {
-      id: '#2',
-      title: 'فضيحة ألفا بيوتك',
-      difficulty: 'سهلة',
-      type: 'احتيال مالي',
-      requiredRank: 1,
-      description: 'انهار سهم شركة "ألفا بيوتك" بعد تسريب معلومات خطيرة.',
-      victim: {
-        name: 'الشركة والمرضى',
-        age: 'غير محدد',
-        job: 'قطاع الأدوية',
-        cause: 'انهيار سمعة',
-        bio: 'شركة تكنولوجيا حيوية.'
-      },
-      photos: [
-        { icon: '💻', label: 'الخادم', desc: 'مخترق' },
-        { icon: '📧', label: 'بريد مشفر', desc: 'من حساب داخلي' },
-        { icon: '💾', label: 'USB', desc: 'غير مسجل' }
-      ],
-      suspects: [
-        { id: 'a1', name: 'د. ياسر', role: 'مدير أبحاث', avatar: '🧪', tension: 20, patience: 100,
-          relation: 'يدافع عن الشركة' },
-        { id: 'a2', name: 'نورة', role: 'مطورة', avatar: '💻', tension: 28, patience: 100, relation: 'تعرف الثغرات' },
-        { id: 'a3', name: 'خالد', role: 'محلل', avatar: '📊', tension: 18, patience: 100, relation: 'لديه حساب شخصي' }
-      ],
-      clues: [
-        'سجل دخول في الثالثة فجراً',
-        'بريد مشفر',
-        'جهاز USB غير مسجل'
-      ],
-      scenario: {
-        timeline: [
-          '3:00 صباحاً - تسجيل دخول.',
-          '4:00 صباحاً - نسخ البيانات.',
-          '8:00 صباحاً - ظهور التسريب.'
-        ],
-        witnesses: [
-          'سعد: كنت في الخادم.',
-          'نورة: هناك ثغرة أمنية.'
-        ]
-      },
-      evidenceMap: {
-        'سجل دخول في الثالثة فجراً': ['سعد', 'نورة'],
-        'جهاز USB غير مسجل': ['سعد']
-      },
-      trueKiller: 'نورة',
-      rewards: { xp: 50, reputation: 5 }
-    }];
+    };
 
     // ================================================================
-    //  مهام الترقية
+    //  محرك الشخصيات الحية
     // ================================================================
-    const PROMOTION_CASES = [{
-      rank: 2,
-      title: 'قضية الترقية - المستوى 2',
-      description: 'أثبت جدارتك لتصبح مساعد محقق. حل هذه القضية دون مساعدة.',
-      caseData: {
-        id: '#P1',
-        title: 'سرقة المكتبة',
-        type: 'سرقة',
-        difficulty: 'سهلة',
-        description: 'سرقت مكتبة الجامعة ليلاً. 3 مشتبهين، أدلة ظاهرة. أوجد الجاني.',
-        victim: { name: 'المكتبة', cause: 'سرقة كتب نادرة' },
-        suspects: [
-          { id: 'p1', name: 'أحمد', role: 'طالب', avatar: '👨‍🎓', tension: 10, patience: 100, relation: 'شوهد بالقرب' },
-          { id: 'p2', name: 'سامي', role: 'حارس', avatar: '🛡️', tension: 15, patience: 100, relation: 'كان في الخدمة' },
-          { id: 'p3', name: 'ليلى', role: 'أمينة مكتبة', avatar: '👩‍🏫', tension: 12, patience: 100,
-            relation: 'لديها المفتاح' }
-        ],
-        clues: ['بصمة على الباب', 'كاميرا تظهر شخصاً', 'مفتاح مفقود'],
-        evidenceMap: {
-          'بصمة على الباب': ['سامي'],
-          'مفتاح مفقود': ['ليلى']
-        },
-        trueKiller: 'سامي',
-        rewards: { xp: 30, reputation: 5 }
-      }
-    }, {
-      rank: 3,
-      title: 'قضية الترقية - المستوى 3',
-      description: 'حل قضية وفاة مشبوهة لتثبت أنك محقق ميداني.',
-      caseData: {
-        id: '#P2',
-        title: 'وفاة في المختبر',
-        type: 'وفاة مشبوهة',
-        difficulty: 'متوسطة',
-        description: 'عُثر على فني مختبر ميتاً. 4 مشتبهين.',
-        victim: { name: 'فني المختبر', cause: 'اختناق' },
-        suspects: [
-          { id: 'p1', name: 'د. سامر', role: 'مدير المختبر', avatar: '👨‍🔬', tension: 20, patience: 100,
-            relation: 'على خلاف مع الضحية' },
-          { id: 'p2', name: 'نورة', role: 'فنية', avatar: '👩‍🔬', tension: 18, patience: 100, relation: 'شهدت الحادث' },
-          { id: 'p3', name: 'خالد', role: 'حارس', avatar: '🛡️', tension: 25, patience: 100, relation: 'كان في الخدمة' },
-          { id: 'p4', name: 'منى', role: 'محاسبة', avatar: '🧾', tension: 15, patience: 100, relation: 'لديها دوافع' }
-        ],
-        clues: ['قفازات ممزقة', 'فاتورة غاز', 'بصمة على الباب'],
-        evidenceMap: {
-          'قفازات ممزقة': ['د. سامر'],
-          'بصمة على الباب': ['خالد']
-        },
-        trueKiller: 'د. سامر',
-        rewards: { xp: 50, reputation: 10 }
-      }
-    }];
-
-    // ================================================================
-    //  محرك الشخصيات الذكية
-    // ================================================================
-    class CharacterAI {
-      constructor(suspect, victimName, caseData) {
+    class HumanCharacterAI {
+      constructor(suspect, victimName) {
         this.suspect = suspect;
         this.victim = victimName;
-        this.caseData = caseData;
-        this.emotionalState = 'هادئ';
-        this.confessionThreshold = 0.7;
-        this.memory = [];
+        this.personality = suspect.personality || { style: 'محايد', secret: 'لا شيء', guilty: false };
+        this.tension = suspect.tension || 15;
         this.patience = suspect.patience || 100;
-        this.refusalCount = 0;
+        this.memory = [];
+        this.trustLevel = 30;
       }
 
       analyze(question) {
         const q = question.toLowerCase();
         return {
+          isWeird: q.length < 4 || q.includes('هاها') || q.includes('ضحك'),
+          isBluff: q.includes('أعتقد') || q.includes('أتوقع') || q.includes('ربما'),
+          isDirect: q.includes('هل') || q.includes('أليس'),
+          isAccusation: q.includes('أنت') || q.includes('قتل') || q.includes('فعلتها'),
+          isEmpathetic: q.includes('تفهم') || q.includes('أفهم') || q.includes('أشعر'),
           location: q.includes('أين') || q.includes('مكان') || q.includes('القبو'),
           time: q.includes('متى') || q.includes('وقت') || q.includes('ليلة'),
           person: q.includes('من') || q.includes('شخص') || q.includes(this.victim),
-          reason: q.includes('لماذا') || q.includes('سبب') || q.includes('دافع'),
-          evidence: q.includes('دليل') || q.includes('أثبت') || q.includes('السوار') || q.includes('بصمة'),
-          confront: q.includes('واجه') || q.includes('اعترف') || q.includes('الحقيقة'),
-          direct: q.includes('هل') || q.includes('أليس'),
-          nonsense: q.length < 5 || q.includes('هاها') || q.includes('لالا')
+          reason: q.includes('لماذا') || q.includes('سبب'),
+          evidence: q.includes('دليل') || q.includes('أثبت') || q.includes('السوار'),
+          confront: q.includes('واجه') || q.includes('اعترف')
         };
       }
 
-      isLogicalQuestion(question) {
-        const analysis = this.analyze(question);
-        const logicalTypes = ['location', 'time', 'person', 'reason', 'evidence', 'confront', 'direct'];
-        const hasLogical = logicalTypes.some(t => analysis[t]);
-        return hasLogical && question.length > 5;
-      }
-
-      generateResponse(question, tension, history, clues, evidenceMap) {
+      generateResponse(question, tension, history, clues) {
         const analysis = this.analyze(question);
         const t = tension / 100;
-        const foundClues = clues.filter(c => c.found).length;
-        const isNearConfession = t > this.confessionThreshold;
+        const isGuilty = this.personality.guilty;
 
-        if (t > 0.85) this.emotionalState = 'منهار';
-        else if (t > 0.6) this.emotionalState = 'مراوغ';
-        else if (t > 0.35) this.emotionalState = 'متوتر';
-        else this.emotionalState = 'هادئ';
-
-        if (!this.isLogicalQuestion(question)) {
-          this.refusalCount++;
-          this.patience = Math.max(0, this.patience - 15);
-          if (this.patience <= 0 || this.refusalCount > 3) {
-            return 'أنا لا أريد الإجابة على أسئلة غير منطقية. سأتصل بمحامي.';
-          }
-          return 'هذا السؤال غير منطقي. من فضلك اسأل شيئاً مهماً.';
+        if (analysis.isWeird) {
+          const weirdResponses = [
+            `(ينظر إليك باستغراب) ... ماذا؟ ${this.suspect.name} مشغول بجريمة، ليس لديه وقت للنكات.`,
+            `(يضحك بعصبية) هل هذا سؤال تحقيق أم مزحة؟`,
+            `${this.suspect.name} يحاول أن يكون جاداً، لكن سؤالك غريب جداً...`,
+            `(يتنهد) أنت تضيع وقتي. اسأل عن ${this.victim}.`
+          ];
+          return weirdResponses[Math.floor(Math.random() * weirdResponses.length)];
         }
 
-        this.patience = Math.min(100, this.patience + 3);
-        this.refusalCount = Math.max(0, this.refusalCount - 1);
-
-        let relatedEvidence = [];
-        for (const [clue, suspects] of Object.entries(evidenceMap || {})) {
-          if (suspects.includes(this.suspect.name) && clues.find(c => c.text === clue && c.found)) {
-            relatedEvidence.push(clue);
-          }
+        if (analysis.isBluff && isGuilty) {
+          this.tension = Math.min(100, this.tension + 15);
+          return `(يبتسم بعصبية) أنت تحاول خداعي؟ ${this.suspect.name} ليس غبياً. لكن... ربما أنت على حق.`;
         }
 
-        if (analysis.evidence && relatedEvidence.length > 0 && Math.random() < (0.3 + t * 0.4)) {
-          return `حسناً... لقد وجدت ${relatedEvidence[0]}؟ هذا... هذا لا يثبت شيئاً. لكنني سأعترف بأنني كنت هناك.`;
+        if (analysis.isEmpathetic && this.trustLevel > 50) {
+          this.trustLevel = Math.min(100, this.trustLevel + 10);
+          return `(يتنهد بعمق) حسناً... ${this.suspect.name} سيكون صادقاً معك. ${this.personality.secret}. لكن هذا لا يعني أنني قتلت ${this.victim}.`;
         }
 
-        if (analysis.confront && relatedEvidence.length > 0 && t > 0.5) {
-          return `أنت واجهتني بـ ${relatedEvidence[0]}... لا أستطيع الإنكار. نعم، أنا أعرف عن ذلك. لكنني لست القاتل!`;
+        if (analysis.isAccusation && isGuilty && t > 0.6) {
+          return `(يتحول وجهه للشحوب) ... كيف عرفت؟ لا... أنت تخمن. ليس لديك دليل.`;
         }
 
-        if (isNearConfession && Math.random() < t * 0.5) {
-          return this.generateConfession();
+        let responses = [];
+        if (analysis.location) {
+          responses = [
+            `كنت في الطابق العلوي. ${this.victim} كان في القبو.`,
+            `القبو؟ لا أذهب هناك. لكنني سمعت أن ${this.victim} كان هناك.`,
+            `${this.victim} كان في القبو. رأيته يدخل.`
+          ];
+        } else if (analysis.time) {
+          responses = [
+            `كان حوالي منتصف الليل. سمعت صوتاً من القبو.`,
+            `لا أتذكر الساعة بالضبط. كان يوماً طويلاً.`,
+            `ربما الحادية عشرة. ${this.victim} كان يتجول.`
+          ];
+        } else if (analysis.person) {
+          responses = [
+            `${this.victim}؟ نعم أعرفه. لكنني لا أريد التحدث عنه.`,
+            `أنا لا أعرف ${this.victim} جيداً. لكنني رأيته عدة مرات.`,
+            `${this.victim} كان شخصاً غريباً.`
+          ];
+        } else if (analysis.reason) {
+          responses = [
+            `ربما ${this.victim} كان يبحث عن شيء في القبو.`,
+            `لا أعرف لماذا. لكنني متأكد أن هناك من يعرف.`,
+            `ربما بسبب المال. ${this.victim} كان لديه مشاكل.`
+          ];
+        } else if (analysis.evidence) {
+          responses = [
+            `أدلة؟ أنت تمزح. ليس لديك أي دليل حقيقي.`,
+            `إذا كان لديك دليل، فأظهره.`,
+            `الأدلة يمكن أن تكون مزروعة.`
+          ];
+        } else {
+          responses = [
+            `هذا سؤال غريب. ${this.victim} لم يكن شخصاً عادياً.`,
+            `لا أعرف ماذا أقول. كل شيء مرتبك.`,
+            `${this.victim} كان لديه الكثير من الأسرار.`
+          ];
         }
 
-        return this.generateNaturalResponse(analysis, t);
-      }
-
-      generateNaturalResponse(analysis, tension) {
-        const victim = this.victim;
-        const responses = [
-          `لا أتذكر بالضبط. كان يومًا طويلاً.`,
-          `كنت في مكان ما... لكن ${victim} كان في القبو.`,
-          `${victim}؟ نعم أعرفه. لكنني لا أريد التحدث عنه.`,
-          `لماذا؟ ربما ${victim} كان يبحث عن شيء.`,
-          `أدلة؟ أنت تمزح. ليس لديك أي دليل حقيقي.`,
-          `أنت تتهمني؟ هذا جنون. لم أفعل أي شيء لـ ${victim}.`,
-          `أنا خائف. ${victim} كان يهددني.`,
-          `نعم، أعرف ${victim}. لكن لم أره تلك الليلة.`
-        ];
         let response = responses[Math.floor(Math.random() * responses.length)];
-        if (tension > 0.5) response += ' أنا متوتر.';
-        if (tension > 0.75) response += ' لا أستطيع تحمل هذا!';
+        if (t > 0.6) response += ' (صوته يرتجف قليلاً)';
         return response;
       }
-
-      generateConfession() {
-        const victim = this.victim;
-        const confessions = [
-          `أنا... لا أستطيع الاستمرار. نعم، كنت في القبو مع ${victim}. لكنني لم أقتله!`,
-          `سأخبرك الحقيقة. ${victim} كان يهددني. لكنه مات قبل أن أفعل أي شيء.`,
-          `أنا من وجد ${victim}. لكنه كان ميتاً. أنا لست القاتل.`,
-          `${victim} كان يبحث عن المال. وجد شيئاً في القبو. لكنه لم يخرج.`
-        ];
-        return confessions[Math.floor(Math.random() * confessions.length)];
-      }
-
-      generateDefensiveResponse() {
-        const victim = this.victim;
-        const defenses = [
-          `هذا دليل على أن هناك من يريد توريطي في قضية ${victim}.`,
-          `كل هذه الأدلة يمكن أن تكون مزروعة.`,
-          `الأدلة لا تثبت أنني قتلت ${victim}. تثبت فقط أنني كنت هناك.`
-        ];
-        return defenses[Math.floor(Math.random() * defenses.length)];
-      }
-    }
-
-    // ================================================================
-    //  نظام التقييم مع حفظ تلقائي
-    // ================================================================
-    function evaluateCase(accusedName, evidenceUsed, motive, caseData) {
-      if (!currentPlayer) return;
-
-      const isCorrect = accusedName === caseData.trueKiller;
-      const foundClues = state.clues.filter(c => c.found).length;
-      const totalClues = state.clues.length;
-      const clueRatio = foundClues / totalClues;
-      const questionsUsed = state.askedQuestions;
-      const efficiency = Math.max(0, 1 - (questionsUsed / state.maxQuestions) * 0.5);
-
-      let xpEarned = caseData.rewards.xp || 50;
-      let repEarned = caseData.rewards.reputation || 5;
-
-      if (!isCorrect) {
-        xpEarned = Math.floor(xpEarned * 0.2);
-        repEarned = Math.floor(repEarned * 0.1);
-        currentPlayer.wrongAccusations = (currentPlayer.wrongAccusations || 0) + 1;
-      } else {
-        currentPlayer.solvedCases = (currentPlayer.solvedCases || 0) + 1;
-        if (clueRatio > 0.7) xpEarned += 20;
-        if (clueRatio > 0.9) xpEarned += 30;
-        if (efficiency > 0.7) xpEarned += 15;
-        if (efficiency > 0.9) xpEarned += 25;
-        if (state.gameOver) xpEarned += 30;
-        if (motive && motive.length > 5) xpEarned += 15;
-      }
-
-      currentPlayer.xp = (currentPlayer.xp || 0) + xpEarned;
-      currentPlayer.reputation = (currentPlayer.reputation || 0) + repEarned;
-      currentPlayer.completedCases = (currentPlayer.completedCases || 0) + 1;
-
-      // حفظ تلقائي
-      savePlayer(currentPlayer);
-
-      showReport(isCorrect, accusedName, evidenceUsed, motive, caseData, xpEarned, repEarned, clueRatio, efficiency,
-        questionsUsed, foundClues, totalClues);
-    }
-
-    function showReport(isCorrect, accused, evidence, motive, caseData, xp, rep, clueRatio, efficiency, questions, found,
-      total) {
-      const overlay = document.getElementById('reportOverlay');
-      const content = document.getElementById('reportContent');
-
-      const rankUp = checkRankUp();
-
-      let html = `
-        <div class="stat-item"><span class="label">لائحة الاتهام</span><span class="value ${isCorrect ? 'good' : 'bad'}">${isCorrect ? '✅ صحيح' : '❌ خاطئ'}</span></div>
-        <div class="stat-item"><span class="label">المتهم</span><span class="value">${accused}</span></div>
-        <div class="stat-item"><span class="label">الدليل القاطع</span><span class="value">${evidence || 'غير محدد'}</span></div>
-        <div class="stat-item"><span class="label">الدافع</span><span class="value">${motive || 'غير محدد'}</span></div>
-        <div class="stat-item"><span class="label">القاتل الحقيقي</span><span class="value ${isCorrect ? 'good' : 'bad'}">${isCorrect ? '✅ مطابق' : caseData.trueKiller}</span></div>
-        <div class="stat-item"><span class="label">الأدلة المكتشفة</span><span class="value">${found}/${total} (${Math.round(clueRatio*100)}%)</span></div>
-        <div class="stat-item"><span class="label">كفاءة الاستجواب</span><span class="value">${Math.round(efficiency*100)}%</span></div>
-        <div class="stat-item"><span class="label">عدد الأسئلة</span><span class="value">${questions}</span></div>
-        <div class="stat-item"><span class="label">نقاط الخبرة</span><span class="value gold">+${xp}</span></div>
-        <div class="stat-item"><span class="label">السمعة</span><span class="value gold">+${rep}</span></div>
-        <div class="total-score">${xp + rep} <span>نقاط إجمالية</span></div>
-      `;
-
-      if (rankUp) {
-        const newRank = RANKS[currentPlayer.rank - 1];
-        html += `
-          <div class="rank-up-badge">⭐</div>
-          <div class="stat-item" style="border-bottom:none;text-align:center;font-size:18px;color:var(--gold);">
-            🎉 ترقية! أنت الآن ${newRank.title}
-          </div>
-        `;
-      }
-
-      if (currentPlayer.badges && currentPlayer.badges.length > 0) {
-        html += `<div class="stat-item" style="border-bottom:none;text-align:center;font-size:14px;color:var(--gold);">
-          🏅 الأوسمة: ${currentPlayer.badges.join(' ')}
-        </div>`;
-      }
-
-      content.innerHTML = html;
-      overlay.classList.add('active');
-
-      updateRankDisplay();
-      updateUI();
-      savePlayer(currentPlayer);
-    }
-
-    function checkRankUp() {
-      if (!currentPlayer) return false;
-      const nextRank = RANKS[currentPlayer.rank];
-      if (nextRank && currentPlayer.xp >= nextRank.xpRequired) {
-        currentPlayer.rank++;
-        savePlayer(currentPlayer);
-        const promotion = PROMOTION_CASES.find(p => p.rank === currentPlayer.rank);
-        if (promotion) {
-          currentPlayer.promotionCaseAvailable = true;
-          addMessage('system', `⭐ قضية ترقية متاحة! أنت بحاجة لاجتيازها للترقية إلى ${nextRank.title}.`);
-        }
-        return true;
-      }
-      return false;
-    }
-
-    // ================================================================
-    //  دوال التحديث
-    // ================================================================
-    function updateRankDisplay() {
-      if (!currentPlayer) return;
-      const rank = RANKS[currentPlayer.rank - 1];
-      document.getElementById('rankBadge').textContent = rank.badge;
-      document.getElementById('rankTitle').textContent = rank.title;
-      document.getElementById('rankSub').textContent = `المستوى ${rank.level} • ${rank.sub}`;
-
-      document.getElementById('badgeIcon').textContent = rank.badge;
-      document.getElementById('badgeRank').textContent = rank.title;
-      document.getElementById('badgeLevel').textContent = `المستوى ${rank.level}`;
-
-      const nextRank = RANKS[currentPlayer.rank];
-      const xpNext = nextRank ? nextRank.xpRequired : currentPlayer.xp + 100;
-      document.getElementById('xpCurrent').textContent = currentPlayer.xp;
-      document.getElementById('xpNext').textContent = xpNext;
-      const progress = nextRank ? Math.min(100, (currentPlayer.xp / xpNext) * 100) : 100;
-      document.getElementById('xpBar').style.width = progress + '%';
-      document.getElementById('reputationDisplay').textContent = currentPlayer.reputation || 0;
-
-      updateTools(rank);
-    }
-
-    function updateTools(rank) {
-      const container = document.getElementById('caseTools');
-      const allTools = ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي', '🗄️ الأرشيف السري'];
-      container.innerHTML = '';
-      allTools.forEach(tool => {
-        const isUnlocked = rank.tools.includes(tool);
-        const span = document.createElement('span');
-        span.className = `tool ${isUnlocked ? 'unlocked' : 'locked'}`;
-        span.textContent = tool;
-        container.appendChild(span);
-      });
-    }
-
-    // ================================================================
-    //  نظام المصادقة (Auth)
-    // ================================================================
-    let authMode = 'login'; // 'login' | 'signup'
-
-    function initAuth() {
-      const overlay = document.getElementById('authOverlay');
-      const input = document.getElementById('authInput');
-      const btn = document.getElementById('authBtn');
-      const error = document.getElementById('authError');
-      const success = document.getElementById('authSuccess');
-      const switchText = document.getElementById('authSwitchText');
-      const switchLink = document.getElementById('authSwitchLink');
-
-      // التحقق من وجود لاعب نشط
-      const savedName = localStorage.getItem('current_detective');
-      if (savedName) {
-        const player = loadPlayer(savedName);
-        if (player) {
-          currentPlayer = player;
-          isLoggedIn = true;
-          overlay.classList.add('hidden');
-          onLoginSuccess();
-          return;
-        }
-      }
-
-      overlay.classList.remove('hidden');
-
-      switchLink.onclick = () => {
-        if (authMode === 'login') {
-          authMode = 'signup';
-          btn.textContent = '📝 إنشاء ملف جديد';
-          switchText.innerHTML = 'لديك ملف بالفعل؟ <a id="authSwitchLink">تسجيل الدخول</a>';
-          document.querySelector('.auth-card h2').textContent = '📝 ملف محقق جديد';
-          document.querySelector('.auth-card .sub').textContent = 'أنشئ ملفك الشخصي لبدء التحقيق';
-          document.getElementById('authSwitchLink').onclick = arguments.callee;
-        } else {
-          authMode = 'login';
-          btn.textContent = '🚪 دخول / إنشاء ملف';
-          switchText.innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
-          document.querySelector('.auth-card h2').textContent = 'غرفة التحقيق';
-          document.querySelector('.auth-card .sub').textContent = 'سجل دخولك لتبدأ التحقيق';
-          document.getElementById('authSwitchLink').onclick = arguments.callee;
-        }
-        error.textContent = '';
-        success.textContent = '';
-        input.value = '';
-        input.focus();
-      };
-
-      btn.onclick = () => {
-        const name = input.value.trim();
-        if (!name) {
-          error.textContent = '⚠️ الرجاء إدخال اسم المحقق.';
-          return;
-        }
-
-        error.textContent = '';
-        success.textContent = '';
-
-        if (authMode === 'login') {
-          const player = loadPlayer(name);
-          if (player) {
-            currentPlayer = player;
-            isLoggedIn = true;
-            overlay.classList.add('hidden');
-            localStorage.setItem('current_detective', name);
-            success.textContent = '✅ مرحباً بعودتك أيها المحقق!';
-            onLoginSuccess();
-          } else {
-            error.textContent = '❌ لا يوجد ملف بهذا الاسم. هل تريد إنشاء ملف جديد؟';
-          }
-        } else {
-          // تسجيل جديد
-          const existing = loadPlayer(name);
-          if (existing) {
-            error.textContent = '⚠️ هذا الاسم مستخدم بالفعل. اختر اسماً آخر.';
-            return;
-          }
-          const newPlayer = { ...DEFAULT_PLAYER, name: name };
-          if (savePlayer(newPlayer)) {
-            currentPlayer = newPlayer;
-            isLoggedIn = true;
-            overlay.classList.add('hidden');
-            localStorage.setItem('current_detective', name);
-            success.textContent = '✅ تم إنشاء الملف بنجاح!';
-            onLoginSuccess();
-          } else {
-            error.textContent = '❌ حدث خطأ أثناء إنشاء الملف. حاول مرة أخرى.';
-          }
-        }
-      };
-
-      // Enter key
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') btn.click();
-      });
-
-      input.focus();
-    }
-
-    function onLoginSuccess() {
-      if (!currentPlayer) return;
-      // تحديث الواجهة باسم المحقق
-      document.getElementById('badgeRank').textContent = currentPlayer.name + ' | ' + RANKS[currentPlayer.rank - 1].title;
-      updateRankDisplay();
-      renderCaseList();
-      renderPromotionList();
-      loadCase(ALL_CASES[0].id);
-      addMessage('system', `🕵️ مرحباً أيها المحقق ${currentPlayer.name}! استعد للتحقيق.`);
-    }
-
-    function logout() {
-      if (currentPlayer) {
-        savePlayer(currentPlayer);
-        localStorage.removeItem('current_detective');
-      }
-      currentPlayer = null;
-      isLoggedIn = false;
-      document.getElementById('authOverlay').classList.remove('hidden');
-      document.getElementById('authInput').value = '';
-      document.getElementById('authError').textContent = '';
-      document.getElementById('authSuccess').textContent = '';
-      authMode = 'login';
-      document.getElementById('authBtn').textContent = '🚪 دخول / إنشاء ملف';
-      document.querySelector('.auth-card h2').textContent = 'غرفة التحقيق';
-      document.querySelector('.auth-card .sub').textContent = 'سجل دخولك لتبدأ التحقيق';
-      document.getElementById('authSwitchText').innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
-      // إعادة تعيين حالة اللعبة
-      state = getDefaultState();
-      updateUI();
-      addMessage('system', '🚪 تم تسجيل الخروج. نراكم قريباً.');
     }
 
     // ================================================================
     //  حالة اللعبة
     // ================================================================
-    function getDefaultState() {
-      return {
-        currentCaseId: null,
-        currentSuspectId: null,
-        askedQuestions: 0,
-        maxQuestions: 25,
-        conversationHistory: [],
-        suspects: [],
-        clues: [],
-        foundClues: [],
-        gameOver: false,
-        caseData: null,
-        isPromotion: false,
-        totalTension: 0,
-        accusationMade: false
-      };
-    }
-
-    let state = getDefaultState();
-
-    // ================================================================
-    //  دوال تحميل القضية
-    // ================================================================
-    function loadCaseData(caseData) {
-      state.currentCaseId = caseData.id;
-      state.currentSuspectId = null;
-      state.askedQuestions = 0;
-      state.conversationHistory = [];
-      state.suspects = JSON.parse(JSON.stringify(caseData.suspects));
-      state.clues = caseData.clues.map(c => ({ text: c, found: false }));
-      state.foundClues = [];
-      state.gameOver = false;
-      state.caseData = caseData;
-      state.accusationMade = false;
-      state.totalTension = 0;
-
-      updateUI();
-      renderCaseList();
-
-      document.getElementById('globalStatus').textContent = 'قيد التحقيق';
-      document.getElementById('caseTitle').innerHTML = `${caseData.title.replace(' ', ' <span class="gold">')}</span>`;
-      document.getElementById('caseId').textContent = caseData.id || 'PROMO';
-      document.getElementById('caseSuspects').textContent = caseData.suspects.length;
-      document.getElementById('caseClues').textContent = caseData.clues.length;
-      document.getElementById('caseDifficulty').textContent = caseData.difficulty || 'متوسطة';
-      document.getElementById('caseType').textContent = caseData.type || 'جنائي';
-      document.getElementById('caseDesc').textContent = caseData.description;
-
-      document.getElementById('victimName').textContent = caseData.victim.name;
-      document.getElementById('victimAge').textContent = caseData.victim.age || 'غير معروف';
-      document.getElementById('victimJob').textContent = caseData.victim.job || 'غير معروف';
-      document.getElementById('victimCause').textContent = caseData.victim.cause || 'غير معروف';
-
-      renderGallery(caseData);
-      renderSuspects();
-      renderEvidence();
-      updateUI();
-
-      document.getElementById('transcript').innerHTML =
-        `<div class="msg system">📋 القضية: ${caseData.title}. اختر مشتبهاً وابدأ الاستجواب.</div>`;
-      document.getElementById('questionInput').disabled = true;
-      document.getElementById('sendBtn').disabled = true;
-      document.getElementById('confrontBtn').disabled = true;
-      document.getElementById('contradictionBtn').disabled = true;
-    }
-
-    function loadCase(caseId) {
-      if (!isLoggedIn || !currentPlayer) return;
-      if (caseId.includes('PROMO')) return;
-      const caseData = ALL_CASES.find(c => c.id === caseId);
-      if (!caseData) return;
-
-      if (caseData.requiredRank && currentPlayer.rank < caseData.requiredRank) {
-        addMessage('system', `🔒 هذه القضية تتطلب رتبة ${RANKS[caseData.requiredRank-1].title}. أنت حالياً ${RANKS[currentPlayer.rank-1].title}.`);
-        return;
-      }
-
-      loadCaseData(caseData);
-      renderCaseList();
-    }
-
-    function startPromotionCase() {
-      if (!currentPlayer || !currentPlayer.promotionCaseAvailable) {
-        addMessage('system', '⚠️ لا توجد قضية ترقية متاحة حالياً.');
-        return;
-      }
-
-      const promotion = PROMOTION_CASES.find(p => p.rank === currentPlayer.rank);
-      if (!promotion) {
-        addMessage('system', '⚠️ لا توجد قضية ترقية لهذه الرتبة.');
-        return;
-      }
-
-      addMessage('system', `⭐ بدء قضية الترقية: ${promotion.title}`);
-      addMessage('system', `📋 ${promotion.description}`);
-
-      const caseCopy = JSON.parse(JSON.stringify(promotion.caseData));
-      caseCopy.trueKiller = promotion.caseData.trueKiller;
-      caseCopy.evidenceMap = promotion.caseData.evidenceMap || {};
-      caseCopy.rewards = promotion.caseData.rewards || { xp: 30, reputation: 5 };
-
-      loadCaseData(caseCopy);
-
-      currentPlayer.promotionCaseAvailable = false;
-      currentPlayer.promotionCasePassed = false;
-      document.getElementById('promotionBtn').disabled = true;
-      savePlayer(currentPlayer);
-
-      addMessage('system', '🔒 هذه القضية تقييمية. لا توجد تلميحات. حظاً موفقاً!');
-    }
+    let state = {
+      currentSuspectId: null,
+      askedQuestions: 0,
+      maxQuestions: 25,
+      conversationHistory: [],
+      suspects: JSON.parse(JSON.stringify(CASE_DATA.suspects)),
+      clues: CASE_DATA.clues.map(c => ({ text: c, found: false })),
+      foundClues: [],
+      gameOver: false,
+      accusationMade: false
+    };
 
     // ================================================================
     //  دوال العرض
     // ================================================================
-    function renderCaseList() {
-      const container = document.getElementById('caseList');
-      container.innerHTML = '';
-      if (!currentPlayer) return;
-      ALL_CASES.forEach(c => {
-        const isActive = state.currentCaseId === c.id;
-        const isLocked = c.requiredRank && currentPlayer.rank < c.requiredRank;
-        const div = document.createElement('div');
-        div.className = `case-item${isActive ? ' active' : ''}`;
-        div.innerHTML = `
-          <span class="icon">${isLocked ? '🔒' : '📂'}</span>
-          ${c.title}
-          <span class="badge${isActive ? ' active-badge' : ''}">${c.id}</span>
-          ${isActive ? '<span class="status-dot"></span>' : ''}
-          ${isLocked ? '<span class="lock-icon">🔒</span>' : ''}
-        `;
-        div.onclick = () => {
-          if (isLocked) {
-            addMessage('system', `🔒 هذه القضية مقفلة. ترقّ إلى ${RANKS[c.requiredRank-1].title}.`);
-            return;
-          }
-          loadCase(c.id);
-        };
-        container.appendChild(div);
-      });
-    }
-
-    function renderPromotionList() {
-      const container = document.getElementById('promotionList');
-      container.innerHTML = '';
-      if (!currentPlayer) return;
-      const available = PROMOTION_CASES.filter(p => p.rank === currentPlayer.rank);
-      if (available.length === 0 || !currentPlayer.promotionCaseAvailable) {
-        container.innerHTML =
-          `<div class="case-item" style="opacity:0.5;cursor:default;"><span class="icon">✅</span> لا توجد مهام ترقية</div>`;
-        document.getElementById('promotionBtn').disabled = true;
-        return;
-      }
-
-      available.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'case-item active';
-        div.innerHTML = `
-          <span class="icon">⭐</span>
-          ${p.title}
-          <span class="badge active-badge">ترقية</span>
-        `;
-        div.onclick = () => startPromotionCase();
-        container.appendChild(div);
-      });
-      document.getElementById('promotionBtn').disabled = false;
-    }
-
-    function renderGallery(caseData) {
+    function renderGallery() {
       const container = document.getElementById('gallery');
       container.innerHTML = '';
-      (caseData || state.caseData).photos.forEach(p => {
+      CASE_DATA.photos.forEach(p => {
         const div = document.createElement('div');
         div.className = 'photo';
         div.innerHTML = `
@@ -2443,9 +1576,8 @@
         const card = document.createElement('div');
         card.className = `suspect-card${state.currentSuspectId === s.id ? ' active' : ''}`;
         const label = s.tension < 30 ? 'هادئ' : s.tension < 60 ? 'متوتر' : s.tension < 85 ? 'مراوغ' : 'منهار';
-        const avatarClass = s.tension > 60 ? 'tense' : s.tension > 80 ? 'breaking' : '';
         card.innerHTML = `
-          <span class="avatar ${avatarClass}">${s.avatar}</span>
+          <span class="avatar ${s.tension > 60 ? 'tense' : ''}">${s.avatar}</span>
           <div class="name">${s.name}</div>
           <div class="role">${s.role}</div>
           <div class="relation">${s.relation}</div>
@@ -2468,7 +1600,7 @@
         return;
       }
       list.innerHTML = found.map(c =>
-        `<div class="clue-item found" onclick="useEvidenceForConfront('${c.text}')"><span class="icon">🔍</span> ${c.text}</div>`
+        `<div class="clue-item found" onclick="useEvidence('${c.text}')"><span class="icon">🔍</span> ${c.text}</div>`
       ).join('');
     }
 
@@ -2476,49 +1608,23 @@
       renderSuspects();
       renderEvidence();
       const s = state.currentSuspectId ? state.suspects.find(s => s.id === state.currentSuspectId) : null;
-      const hasSuspect = !!s && !state.gameOver && !state.accusationMade;
-      const hasEvidence = state.foundClues.length > 0;
-
+      const hasSuspect = !!s && !state.gameOver;
       document.getElementById('questionInput').disabled = !hasSuspect || state.askedQuestions >= state.maxQuestions;
       document.getElementById('sendBtn').disabled = !hasSuspect || state.askedQuestions >= state.maxQuestions;
-      document.getElementById('confrontBtn').disabled = !hasSuspect || !hasEvidence;
-      document.getElementById('contradictionBtn').disabled = !hasSuspect || state.foundClues.length < 2;
-
-      if (state.gameOver || state.accusationMade) {
-        document.getElementById('globalStatus').textContent = '⚖️ تم الاتهام';
-      }
-
-      if (state.suspects.length > 0) {
-        const total = state.suspects.reduce((sum, s) => sum + s.tension, 0);
-        state.totalTension = Math.round(total / state.suspects.length);
-        const hero = document.getElementById('caseHero');
-        const main = document.getElementById('mainContent');
-        main.className = 'main-content';
-        if (state.totalTension > 70) {
-          hero.style.borderRightColor = '#cc4444';
-          main.classList.add('critical-tension');
-        } else if (state.totalTension > 45) {
-          hero.style.borderRightColor = '#d4a843';
-          main.classList.add('high-tension');
-        } else {
-          hero.style.borderRightColor = '#8b6b3d';
-        }
-      }
+      document.getElementById('confrontBtn').disabled = !hasSuspect || state.foundClues.length === 0;
+      if (state.gameOver) document.getElementById('globalStatus').textContent = '⚖️ تم الاتهام';
     }
 
     function selectSuspect(id) {
-      if (state.gameOver || state.accusationMade) {
+      if (state.gameOver) {
         addMessage('system', '⚠️ القضية منتهية.');
-        return;
-      }
-      if (state.askedQuestions >= state.maxQuestions) {
-        addMessage('system', '⚠️ وصلت للحد الأقصى (25 سؤال).');
         return;
       }
       state.currentSuspectId = id;
       const s = state.suspects.find(s => s.id === id);
       state.conversationHistory = [];
-      addMessage('system', `🕵️ اخترت ${s.name} (${s.role}). اكتب سؤالك.`);
+      const title = currentPlayer ? getFullTitle(currentPlayer.rank, currentPlayer.displayName) : 'المحقق';
+      addMessage('system', `🕵️ ${title} اختار ${s.name} (${s.role}). اكتب سؤالك بحرية.`);
       document.getElementById('questionInput').focus();
       updateUI();
     }
@@ -2527,215 +1633,61 @@
       const container = document.getElementById('transcript');
       const div = document.createElement('div');
       div.className = `msg ${type}`;
-      div.textContent = text;
+      // إضافة اللقب لرسائل المحقق
+      if (type === 'player' && currentPlayer) {
+        const title = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
+        div.textContent = `[${title}]: ${text}`;
+      } else {
+        div.textContent = text;
+      }
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
-
-      if (type === 'suspect') {
-        const typing = document.getElementById('typingIndicator');
-        typing.classList.add('active');
-        setTimeout(() => typing.classList.remove('active'), 1200);
-      }
     }
 
     // ================================================================
-    //  دالة استخدام الدليل في المواجهة
+    //  استخدام الدليل
     // ================================================================
-    window.useEvidenceForConfront = function(clueText) {
-      if (state.gameOver || state.accusationMade || !state.currentSuspectId) return;
+    window.useEvidence = function(clueText) {
+      if (state.gameOver || !state.currentSuspectId) return;
       const suspect = state.suspects.find(s => s.id === state.currentSuspectId);
       if (!suspect) return;
 
-      const evidenceMap = state.caseData.evidenceMap || {};
+      const evidenceMap = CASE_DATA.evidenceMap || {};
       const related = evidenceMap[clueText] || [];
 
       if (related.includes(suspect.name)) {
         const replies = [
-          `لا... لا أستطيع إنكار ذلك. ${clueText} كان لي. لكنني لم أقتله!`,
-          `حسناً، لقد وجدت ${clueText}. هذا دليل قوي. لكن هناك من هو أكثر ذنباً.`,
-          `أعترف! ${clueText} يخصني. لكن القصة أعمق مما تظن.`,
-          `نعم، أنا من ترك ${clueText}. لكنني كنت خائفاً.`
+          `(يتغير لونه) ... هذا الدليل يخصني. لكنني لم أقتله!`,
+          `(يبتلع ريقه) نعم، أنا من ترك ${clueText}. لكن القصة أعمق.`,
+          `(ينهار) لا أستطيع الإنكار. هذا دليل قوي. لكن ${CASE_DATA.victim.name} كان ميتاً بالفعل.`
         ];
-        const reply = replies[Math.floor(Math.random() * replies.length)];
+        const title = currentPlayer ? getFullTitle(currentPlayer.rank, currentPlayer.displayName) : 'المحقق';
         addMessage('player', `[مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
-        addMessage('suspect', reply);
+        addMessage('suspect', replies[Math.floor(Math.random() * replies.length)]);
         suspect.tension = Math.min(100, suspect.tension + 25);
         if (suspect.tension >= 100) {
           state.gameOver = true;
-          addMessage('confession', `💥 ${suspect.name} انهار واعترف!`);
+          addMessage('confession', `💥 ${suspect.name} اعترف!`);
           document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
-          setTimeout(openAccusationModal, 1500);
         }
       } else {
         const replies = [
-          `هذا الدليل لا يخصني! أنت تتهمني خطأً.`,
-          `لماذا توجّه هذا الدليل لي؟ أنا لا علاقة لي به.`,
-          `هذا دليل على أنك لست محققاً جيداً. هذا لا يخصني.`
+          `(يضحك ساخراً) هذا الدليل لا يخصني. أنت تخطئ.`,
+          `(ينظر إليك باستغراب) لماذا توجّه هذا الدليل لي؟ لا علاقة لي به.`
         ];
         addMessage('player', `[مواجهة] لدينا دليل: "${clueText}". ما تفسيرك؟`);
         addMessage('suspect', replies[Math.floor(Math.random() * replies.length)]);
         suspect.patience = Math.max(0, (suspect.patience || 100) - 10);
-        addMessage('system', '⚠️ هذا الدليل لا يتطابق مع هذا المشتبه. كن أكثر دقة.');
-        if (currentPlayer) {
-          currentPlayer.reputation = Math.max(0, (currentPlayer.reputation || 0) - 1);
-          savePlayer(currentPlayer);
-          updateRankDisplay();
-        }
+        addMessage('system', '⚠️ هذا الدليل لا يتطابق مع هذا المشتبه.');
       }
       updateUI();
     };
 
     // ================================================================
-    //  شاشة بناء الاتهام
-    // ================================================================
-    function openAccusationModal() {
-      if (state.gameOver || state.accusationMade) {
-        addMessage('system', '⚠️ القضية منتهية بالفعل.');
-        return;
-      }
-
-      const overlay = document.getElementById('accusationOverlay');
-      const suspectSelect = document.getElementById('accusationSuspect');
-      const evidenceSelect = document.getElementById('accusationEvidence');
-
-      suspectSelect.innerHTML = '<option value="">-- اختر المشتبه --</option>';
-      state.suspects.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.name;
-        opt.textContent = `${s.name} (${s.role})`;
-        suspectSelect.appendChild(opt);
-      });
-
-      evidenceSelect.innerHTML = '<option value="">-- اختر الدليل --</option>';
-      state.foundClues.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = c;
-        evidenceSelect.appendChild(opt);
-      });
-
-      document.getElementById('accusationMotive').value = '';
-      overlay.classList.add('active');
-    }
-
-    document.getElementById('submitAccusationBtn').addEventListener('click', function() {
-      const suspect = document.getElementById('accusationSuspect').value;
-      const evidence = document.getElementById('accusationEvidence').value;
-      const motive = document.getElementById('accusationMotive').value.trim();
-
-      if (!suspect || !evidence) {
-        addMessage('system', '⚠️ اختر المتهم والدليل القاطع.');
-        return;
-      }
-
-      document.getElementById('accusationOverlay').classList.remove('active');
-      state.accusationMade = true;
-      state.gameOver = true;
-
-      addMessage('system', `⚖️ تم توجيه الاتهام إلى ${suspect} بدليل "${evidence}" ودافع "${motive || 'غير محدد'}"`);
-
-      setTimeout(() => {
-        evaluateCase(suspect, evidence, motive, state.caseData);
-      }, 800);
-    });
-
-    // ================================================================
-    //  زر المواجهة والتناقضات والملخص
-    // ================================================================
-    function confrontWithEvidence() {
-      if (state.gameOver || state.accusationMade) return;
-      if (!state.currentSuspectId) return;
-      if (state.foundClues.length === 0) {
-        addMessage('system', '⚠️ ليس لديك أدلة.');
-        return;
-      }
-      const evidence = state.foundClues[0];
-      useEvidenceForConfront(evidence);
-    }
-
-    function showContradictions() {
-      if (!state.caseData || state.accusationMade) return;
-      const contradictions = [];
-      if (state.suspects.length > 1) {
-        for (let i = 0; i < state.suspects.length; i++) {
-          for (let j = i + 1; j < state.suspects.length; j++) {
-            const s1 = state.suspects[i];
-            const s2 = state.suspects[j];
-            if (s1.tension > 50 && s2.tension > 50) {
-              contradictions.push({
-                suspect1: s1.name,
-                suspect2: s2.name,
-                statement: `${s1.name} و ${s2.name} لديهما تناقض في أقوالهما حول الحادث.`
-              });
-            }
-          }
-        }
-      }
-
-      if (contradictions.length === 0) {
-        addMessage('system', '🔍 لم يتم العثور على تناقضات واضحة.');
-        return;
-      }
-
-      const c = contradictions[0];
-      addMessage('contradiction', `🔍 تناقض مكتشف! ${c.suspect1} و ${c.suspect2}: ${c.statement}`);
-      addMessage('system', `💡 استخدم هذا التناقض في استجواب ${c.suspect1} أو ${c.suspect2}.`);
-
-      const s1 = state.suspects.find(s => s.name === c.suspect1);
-      const s2 = state.suspects.find(s => s.name === c.suspect2);
-      if (s1) s1.tension = Math.min(100, s1.tension + 10);
-      if (s2) s2.tension = Math.min(100, s2.tension + 10);
-      updateUI();
-    }
-
-    function showSummary() {
-      const found = state.clues.filter(c => c.found).length;
-      const total = state.clues.length;
-      let msg = `📋 **ملخص التحقيق**\n`;
-      msg += `─ الأسئلة: ${state.askedQuestions}/${state.maxQuestions}\n`;
-      msg += `─ الأدلة: ${found}/${total}\n`;
-      if (state.caseData && state.caseData.scenario) {
-        msg += `─ التسلسل الزمني:\n`;
-        state.caseData.scenario.timeline.forEach(t => msg += `   • ${t}\n`);
-        msg += `─ أقوال الشهود:\n`;
-        state.caseData.scenario.witnesses.forEach(w => msg += `   • ${w}\n`);
-      }
-      msg += `─ أكثر المشتبهين توتراً:\n`;
-      const sorted = [...state.suspects].sort((a, b) => b.tension - a.tension);
-      sorted.slice(0, 3).forEach((s, i) => {
-        const emoji = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
-        msg += `   ${emoji} ${s.name} - ${s.tension}%\n`;
-      });
-      if (found >= total * 0.6) {
-        msg += `\n🔍 لديك أدلة كافية. توجه إلى "توجيه الاتهام".`;
-      } else {
-        msg += `\n📌 استمر في الاستجواب. ابحث عن المزيد من الأدلة.`;
-      }
-      addMessage('system', msg);
-    }
-
-    function resetCase() {
-      if (!state.currentCaseId) return;
-      if (state.currentCaseId.includes('PROMO')) {
-        const promo = PROMOTION_CASES.find(p => p.rank === (currentPlayer ? currentPlayer.rank : 1));
-        if (promo) {
-          const caseCopy = JSON.parse(JSON.stringify(promo.caseData));
-          caseCopy.trueKiller = promo.caseData.trueKiller;
-          caseCopy.evidenceMap = promo.caseData.evidenceMap || {};
-          caseCopy.rewards = promo.caseData.rewards || { xp: 30, reputation: 5 };
-          loadCaseData(caseCopy);
-        }
-        return;
-      }
-      const caseData = ALL_CASES.find(c => c.id === state.currentCaseId);
-      if (caseData) loadCaseData(caseData);
-    }
-
-    // ================================================================
     //  معالجة السؤال
     // ================================================================
     function handleQuestion(question) {
-      if (state.gameOver || state.accusationMade) {
+      if (state.gameOver) {
         addMessage('system', '⚠️ القضية منتهية.');
         return;
       }
@@ -2752,38 +1704,17 @@
       state.askedQuestions++;
       state.conversationHistory.push({ role: 'user', content: question });
 
-      const character = new CharacterAI(
-        suspect,
-        state.caseData.victim.name,
-        state.caseData
-      );
+      const character = new HumanCharacterAI(suspect, CASE_DATA.victim.name);
+      const reply = character.generateResponse(question, suspect.tension, state.conversationHistory, state.clues);
 
-      const reply = character.generateResponse(
-        question,
-        suspect.tension,
-        state.conversationHistory,
-        state.clues,
-        state.caseData.evidenceMap || {}
-      );
-
+      suspect.tension = character.tension;
       suspect.patience = character.patience;
-
-      if (!reply.includes('محامي') && !reply.includes('غير منطقي')) {
-        suspect.tension = Math.min(100, suspect.tension + Math.floor(Math.random() * 3) + 1);
-      } else {
-        suspect.tension = Math.min(100, suspect.tension + 2);
-        if (currentPlayer) {
-          currentPlayer.reputation = Math.max(0, (currentPlayer.reputation || 0) - 1);
-          savePlayer(currentPlayer);
-          updateRankDisplay();
-        }
-      }
 
       addMessage('player', question);
       addMessage('suspect', reply);
       state.conversationHistory.push({ role: 'assistant', content: reply });
 
-      if (Math.random() > 0.65 && state.clues.some(c => !c.found)) {
+      if (Math.random() > 0.7 && state.clues.some(c => !c.found)) {
         const hidden = state.clues.filter(c => !c.found);
         const newClue = hidden[Math.floor(Math.random() * hidden.length)];
         newClue.found = true;
@@ -2791,16 +1722,262 @@
         addMessage('clue', `🔍 تم العثور على دليل: ${newClue.text}`);
       }
 
-      if (suspect.tension >= 100 && !state.accusationMade) {
+      if (suspect.tension >= 100) {
         state.gameOver = true;
         addMessage('confession', `💥 ${suspect.name} انهار واعترف!`);
         document.getElementById('globalStatus').textContent = '✅ تم الاعتراف';
-        setTimeout(openAccusationModal, 1500);
       }
 
       updateUI();
       document.getElementById('questionInput').value = '';
       document.getElementById('questionInput').focus();
+    }
+
+    // ================================================================
+    //  نظام الحسابات - المصادقة
+    // ================================================================
+    let authMode = 'login';
+
+    function initAuth() {
+      const overlay = document.getElementById('authOverlay');
+      const usernameInput = document.getElementById('authUsername');
+      const displayNameInput = document.getElementById('authDisplayName');
+      const passwordInput = document.getElementById('authPassword');
+      const btn = document.getElementById('authBtn');
+      const error = document.getElementById('authError');
+      const success = document.getElementById('authSuccess');
+      const switchText = document.getElementById('authSwitchText');
+      const switchLink = document.getElementById('authSwitchLink');
+      const modeBadge = document.getElementById('authModeBadge');
+
+      // التحقق من وجود لاعب نشط
+      const savedUsername = localStorage.getItem('current_detective_username');
+      if (savedUsername) {
+        const player = loadPlayer(savedUsername);
+        if (player) {
+          currentPlayer = player;
+          isLoggedIn = true;
+          overlay.classList.add('hidden');
+          onLoginSuccess();
+          return;
+        }
+      }
+
+      overlay.classList.remove('hidden');
+
+      function updateAuthMode(mode) {
+        authMode = mode;
+        if (mode === 'login') {
+          btn.textContent = '🚪 دخول';
+          modeBadge.textContent = '🔐 تسجيل الدخول';
+          switchText.innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
+          document.querySelector('.auth-card h2').textContent = 'غرفة التحقيق';
+          document.querySelector('.auth-card .sub').textContent = 'سجل دخولك لتبدأ التحقيق';
+          displayNameInput.style.display = 'none';
+          displayNameInput.value = '';
+          document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'none';
+        } else {
+          btn.textContent = '📝 إنشاء ملف';
+          modeBadge.textContent = '📝 إنشاء ملف جديد';
+          switchText.innerHTML = 'لديك ملف بالفعل؟ <a id="authSwitchLink">تسجيل الدخول</a>';
+          document.querySelector('.auth-card h2').textContent = '📝 ملف محقق جديد';
+          document.querySelector('.auth-card .sub').textContent = 'أنشئ هويتك الجنائية';
+          displayNameInput.style.display = 'block';
+          document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'block';
+        }
+        document.getElementById('authSwitchLink').onclick = () => {
+          updateAuthMode(authMode === 'login' ? 'signup' : 'login');
+          error.textContent = '';
+          success.textContent = '';
+          usernameInput.value = '';
+          displayNameInput.value = '';
+          passwordInput.value = '';
+          usernameInput.focus();
+        };
+      }
+
+      updateAuthMode('login');
+
+      btn.onclick = () => {
+        const username = usernameInput.value.trim();
+        const displayName = displayNameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        error.textContent = '';
+        success.textContent = '';
+
+        if (!username) {
+          error.textContent = '⚠️ الرجاء إدخال اسم المستخدم.';
+          return;
+        }
+        if (!password) {
+          error.textContent = '⚠️ الرجاء إدخال كلمة المرور.';
+          return;
+        }
+
+        if (authMode === 'login') {
+          const player = loadPlayer(username);
+          if (player) {
+            if (player.password === password) {
+              currentPlayer = player;
+              isLoggedIn = true;
+              overlay.classList.add('hidden');
+              localStorage.setItem('current_detective_username', username);
+              success.textContent = '✅ مرحباً بعودتك أيها المحقق!';
+              onLoginSuccess();
+            } else {
+              error.textContent = '❌ كلمة المرور غير صحيحة.';
+            }
+          } else {
+            error.textContent = '❌ لا يوجد ملف بهذا الاسم. هل تريد إنشاء ملف جديد؟';
+          }
+        } else {
+          // تسجيل جديد
+          if (!displayName) {
+            error.textContent = '⚠️ الرجاء إدخال الاسم الرسمي للمحقق.';
+            return;
+          }
+          const existing = loadPlayer(username);
+          if (existing) {
+            error.textContent = '⚠️ هذا الاسم مستخدم بالفعل. اختر اسماً آخر.';
+            return;
+          }
+          const newPlayer = {
+            ...DEFAULT_PLAYER,
+            username: username,
+            displayName: displayName,
+            password: password
+          };
+          if (savePlayer(newPlayer)) {
+            currentPlayer = newPlayer;
+            isLoggedIn = true;
+            overlay.classList.add('hidden');
+            localStorage.setItem('current_detective_username', username);
+            success.textContent = '✅ تم إنشاء الملف بنجاح!';
+            onLoginSuccess();
+          } else {
+            error.textContent = '❌ حدث خطأ أثناء إنشاء الملف.';
+          }
+        }
+      };
+
+      usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
+      passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
+      displayNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btn.click(); });
+
+      usernameInput.focus();
+    }
+
+    function onLoginSuccess() {
+      if (!currentPlayer) return;
+      updateDetectiveDisplay();
+      renderCaseList();
+      updateUI();
+      const title = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
+      addMessage('system', `🕵️ مرحباً أيها ${title}! استعد للتحقيق.`);
+    }
+
+    function updateDetectiveDisplay() {
+      if (!currentPlayer) return;
+      const rank = RANKS[currentPlayer.rank - 1];
+      const fullTitle = getFullTitle(currentPlayer.rank, currentPlayer.displayName);
+
+      document.getElementById('badgeIcon').textContent = rank.badge;
+      document.getElementById('badgeRank').textContent = rank.title;
+      document.getElementById('badgeDisplayName').textContent = `/ ${currentPlayer.displayName}`;
+      document.getElementById('badgeLevel').textContent = `المستوى ${rank.level}`;
+
+      document.getElementById('rankBadge').textContent = rank.badge;
+      document.getElementById('rankTitle').textContent = rank.title;
+      document.getElementById('rankSub').textContent = `المستوى ${rank.level} • ${rank.sub}`;
+
+      const nextRank = RANKS[currentPlayer.rank];
+      const xpNext = nextRank ? nextRank.xpRequired : currentPlayer.xp + 100;
+      document.getElementById('xpCurrent').textContent = currentPlayer.xp;
+      document.getElementById('xpNext').textContent = xpNext;
+      const progress = nextRank ? Math.min(100, (currentPlayer.xp / xpNext) * 100) : 100;
+      document.getElementById('xpBar').style.width = progress + '%';
+      document.getElementById('reputationDisplay').textContent = currentPlayer.reputation || 0;
+
+      // تحديث الأدوات
+      const container = document.getElementById('caseTools');
+      const allTools = ['📝 أسئلة نصية', '📱 فحص سجلات الهاتف', '🔬 فحص البصمات', '📜 أمر تفتيش', '💼 تحليل مالي', '🗄️ الأرشيف السري'];
+      container.innerHTML = '';
+      allTools.forEach(tool => {
+        const isUnlocked = rank.tools.includes(tool);
+        const span = document.createElement('span');
+        span.className = `tool ${isUnlocked ? 'unlocked' : 'locked'}`;
+        span.textContent = tool;
+        container.appendChild(span);
+      });
+    }
+
+    function logout() {
+      if (currentPlayer) {
+        savePlayer(currentPlayer);
+        localStorage.removeItem('current_detective_username');
+      }
+      currentPlayer = null;
+      isLoggedIn = false;
+      document.getElementById('authOverlay').classList.remove('hidden');
+      document.getElementById('authUsername').value = '';
+      document.getElementById('authDisplayName').value = '';
+      document.getElementById('authPassword').value = '';
+      document.getElementById('authError').textContent = '';
+      document.getElementById('authSuccess').textContent = '';
+      authMode = 'login';
+      document.getElementById('authBtn').textContent = '🚪 دخول';
+      document.getElementById('authModeBadge').textContent = '🔐 تسجيل الدخول';
+      document.getElementById('authSwitchText').innerHTML = 'ليس لديك ملف؟ <a id="authSwitchLink">إنشاء ملف جديد</a>';
+      document.querySelector('.auth-card h2').textContent = 'غرفة التحقيق';
+      document.querySelector('.auth-card .sub').textContent = 'سجل دخولك لتبدأ التحقيق';
+      document.getElementById('authDisplayName').style.display = 'none';
+      document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'none';
+      document.getElementById('authSwitchLink').onclick = () => {
+        authMode = 'signup';
+        document.getElementById('authBtn').textContent = '📝 إنشاء ملف';
+        document.getElementById('authModeBadge').textContent = '📝 إنشاء ملف جديد';
+        document.getElementById('authSwitchText').innerHTML = 'لديك ملف بالفعل؟ <a id="authSwitchLink">تسجيل الدخول</a>';
+        document.querySelector('.auth-card h2').textContent = '📝 ملف محقق جديد';
+        document.querySelector('.auth-card .sub').textContent = 'أنشئ هويتك الجنائية';
+        document.getElementById('authDisplayName').style.display = 'block';
+        document.querySelector('.form-group label[for="authDisplayName"]').style.display = 'block';
+        document.getElementById('authSwitchLink').onclick = arguments.callee;
+      };
+      state = {
+        currentSuspectId: null,
+        askedQuestions: 0,
+        maxQuestions: 25,
+        conversationHistory: [],
+        suspects: JSON.parse(JSON.stringify(CASE_DATA.suspects)),
+        clues: CASE_DATA.clues.map(c => ({ text: c, found: false })),
+        foundClues: [],
+        gameOver: false,
+        accusationMade: false
+      };
+      updateUI();
+      document.getElementById('transcript').innerHTML = `<div class="msg system">🚪 تم تسجيل الخروج. نراكم قريباً.</div>`;
+      document.getElementById('globalStatus').textContent = 'غير متصل';
+    }
+
+    // ================================================================
+    //  قائمة القضايا
+    // ================================================================
+    function renderCaseList() {
+      const container = document.getElementById('caseList');
+      container.innerHTML = '';
+      const cases = [CASE_DATA];
+      cases.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'case-item active';
+        div.innerHTML = `
+          <span class="icon">📂</span>
+          ${c.title}
+          <span class="badge active-badge">${c.id}</span>
+          <span class="status-dot"></span>
+        `;
+        container.appendChild(div);
+      });
     }
 
     // ================================================================
@@ -2814,36 +1991,54 @@
     document.getElementById('questionInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') document.getElementById('sendBtn').click();
     });
-    document.getElementById('confrontBtn').addEventListener('click', confrontWithEvidence);
-    document.getElementById('summaryBtn').addEventListener('click', showSummary);
-    document.getElementById('resetBtn').addEventListener('click', resetCase);
-    document.getElementById('contradictionBtn').addEventListener('click', showContradictions);
-    document.getElementById('promotionBtn').addEventListener('click', startPromotionCase);
-    document.getElementById('accusationBtn').addEventListener('click', openAccusationModal);
+    document.getElementById('confrontBtn').addEventListener('click', () => {
+      if (state.foundClues.length > 0) {
+        useEvidence(state.foundClues[0]);
+      } else {
+        addMessage('system', '⚠️ ليس لديك أدلة.');
+      }
+    });
+    document.getElementById('summaryBtn').addEventListener('click', () => {
+      const found = state.clues.filter(c => c.found).length;
+      const total = state.clues.length;
+      let msg = `📋 **ملخص التحقيق**\n`;
+      msg += `─ الأسئلة: ${state.askedQuestions}/${state.maxQuestions}\n`;
+      msg += `─ الأدلة: ${found}/${total}\n`;
+      msg += `─ أكثر المشتبهين توتراً:\n`;
+      const sorted = [...state.suspects].sort((a, b) => b.tension - a.tension);
+      sorted.slice(0, 3).forEach((s, i) => {
+        const emoji = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
+        msg += `   ${emoji} ${s.name} - ${s.tension}%\n`;
+      });
+      addMessage('system', msg);
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      state.suspects = JSON.parse(JSON.stringify(CASE_DATA.suspects));
+      state.clues = CASE_DATA.clues.map(c => ({ text: c, found: false }));
+      state.foundClues = [];
+      state.askedQuestions = 0;
+      state.currentSuspectId = null;
+      state.conversationHistory = [];
+      state.gameOver = false;
+      document.getElementById('transcript').innerHTML = `<div class="msg system">🔄 تم إعادة القضية.</div>`;
+      document.getElementById('globalStatus').textContent = 'قيد التحقيق';
+      updateUI();
+    });
 
+    document.getElementById('logoutBtn').addEventListener('click', logout);
     document.getElementById('menuToggle').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('open');
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-
+    // إغلاق التقرير
     document.getElementById('closeReportBtn').addEventListener('click', () => {
       document.getElementById('reportOverlay').classList.remove('active');
-      renderCaseList();
-      renderPromotionList();
-    });
-
-    document.getElementById('reportOverlay').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) {
-        document.getElementById('reportOverlay').classList.remove('active');
-        renderCaseList();
-        renderPromotionList();
-      }
     });
 
     // ================================================================
     //  بدء التشغيل
     // ================================================================
+    renderGallery();
     initAuth();
   </script>
 </body>
